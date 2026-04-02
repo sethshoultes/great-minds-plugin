@@ -6,79 +6,109 @@ This file defines what happens on each scheduled tick. The orchestrator reads th
 
 | Job | Interval | Agent | Purpose |
 |-----|----------|-------|---------|
-| orchestrator | 5 min | Marcus (Moderator) | Advance project state — dispatch next round/task |
-| heartbeat | 10 min | Marcus (Moderator) | Write STATUS.md — progress, blockers, health check |
-| organizer | 20 min | Haiku | Tidy files, validate structure, consolidate memory |
-| jensen-review | 60 min | Jensen (Board) | Strategic review, spawn ideas as GitHub issues, advise |
-| dream | 60 min | Haiku | Reflect on work, extract patterns, prune memory |
+| monitor | 7 min | Orchestrator | Check agent status, file counts, recent commits, report |
+| organizer | 19 min | Organizer/Haiku | Nudge idle agents, validate structure, consolidate memory |
+| jensen-review | 60 min | Jensen (Board) | Strategic review, GitHub issues, advise |
+| dream | 60 min | Organizer/Haiku | Memory consolidation — orient, gather, consolidate, prune |
 
-## Orchestrator Tick (every 5 min) — Marcus Aurelius
+## Agent Roster (9 agents)
+
+| Agent | Role | Runtime |
+|-------|------|---------|
+| Marcus Aurelius | Moderator / Chief of Staff | tmux: admin |
+| Steve Jobs | Creative Director (Design, Brand, UX) | tmux: worker1 |
+| Elon Musk | Product Director (Engineering, Growth) | tmux: worker2 |
+| Jensen Huang | Board Member (Strategy, Reviews) | Cron: 60 min |
+| Margaret Hamilton | QA Director (Tests, Security, A11y) | On-demand |
+| Rick Rubin | Creative Direction (Brand voice, Essence) | Sub-agent |
+| Jony Ive | Visual Design (UI, Components, Craft) | Sub-agent |
+| Maya Angelou | Copywriting (Landing pages, Emails, Microcopy) | Sub-agent |
+| Sara Blakely | Growth Strategy (GTM, Pricing, Acquisition) | Sub-agent |
+
+## Director Operating Rules
+
+Steve and Elon are DIRECTORS, not individual contributors:
+- Break tasks into sub-tasks
+- Spawn sub-agents (model: haiku) for parallel work
+- Do highest-judgment work themselves
+- Delegate: tests, docs, boilerplate, QA, content to sub-agents
+- Should have 2-3 sub-agents running at all times during BUILD phases
+- Never idle — self-direct when no task is dispatched
+
+## Monitor Tick (every 7 min)
 
 ```
-1. Read STATUS.md for current state
-2. If state == "idle": check prds/ for new PRDs → start project
-3. If state == "debate":
-   - Check current round number
-   - If round < debate_rounds: run next debate round (Steve + Elon)
-   - If round == debate_rounds: transition to "plan" state
-4. If state == "plan":
-   - Steve + Elon define their teams in team/
-   - Write agent definitions
-   - Transition to "build" state
-5. If state == "build":
-   - Dispatch sub-agents based on team/ definitions
-   - Each agent writes output to deliverables/{project}/drafts/
-   - Track completion in STATUS.md
-   - When all agents complete: transition to "review"
-6. If state == "review":
-   - Steve reviews all deliverables for taste/quality
-   - Elon reviews for feasibility/accuracy
-   - If revisions needed: send back to specific agents, stay in "review"
-   - If approved: transition to "ship"
-7. If state == "ship":
-   - Assemble final deliverables
-   - Write joint-summary.md
-   - Update MEMORY.md with learnings
-   - Transition to "idle"
-8. If state == "blocked":
-   - Log blocker to STATUS.md
-   - Work on non-blocked tasks if available
-   - Await human intervention
+1. tmux capture-pane for worker1, worker2 (tail -8)
+2. Count source files in active project
+3. Check recent git commits
+4. Report: file count, agent activity, blockers, new commits
+```
+
+## Organizer Tick (every 19 min)
+
+```
+1. Check if agents are idle (no "esc to interrupt" = idle)
+2. If idle: nudge with proactive tasks across ALL active projects
+   - Include both localgenius (Vercel app) and localgenius-sites (Cloudflare)
+   - Remind to spawn sub-agents (model haiku)
+3. Check MEMORY.md is under 200 lines
+4. Verify STATUS.md reflects reality
 ```
 
 ## Jensen Board Review (every 60 min)
 
 ```
-1. Read STATUS.md — current state
-2. Read latest round file or deliverable drafts
-3. Write board review to rounds/{project}/board-review-{timestamp}.md
-4. If idea spotted: create GitHub issue on sethshoultes/great-minds
-   - Label: board-idea, jensen-review, or strategic
-5. Check /tmp/claude-shared/messages/jensen-request.md for advisory requests
-6. Respond to any pending requests
+1. Read latest commits across all projects
+2. Count source files
+3. Read previous board review to avoid repeating
+4. Write review (under 50 lines) to rounds/{project}/board-review-{N}.md
+5. Create GitHub issues (label: board-idea) only if genuinely new
+6. One specific, actionable recommendation per review
 ```
 
-## Organizer/Dream (every 20 min / 60 min)
+Already covered issues (don't repeat):
+- Data moat architecture
+- Platform partnerships (CUDA playbook)
+- Outcome-based pricing evolution
+- Usage ceiling / AI model degradation
+- AI honesty in system prompts
+- ROI metrics in digest
+- Email data pipeline
+- Focus risk on multi-project
+- Placeholder runtime on Sites
+- CORS on voice endpoint
+- In-memory Map for insight actions
+
+## QA Pipeline (Margaret Hamilton — on demand via /agency-qa)
 
 ```
-Organizer (20 min):
-1. Validate directory structure
-2. Check STATUS.md accuracy
-3. Flag orphaned or missing files
-4. Ensure MEMORY.md index is clean
-
-Dream (60 min):
-1. Orient — scan all memory files
-2. Gather Signal — identify patterns across rounds and projects
-3. Consolidate — merge related entries, remove redundancies
-4. Prune & Index — update MEMORY.md, keep under 200 lines
+Phase 1: npm run build + typecheck + lint
+Phase 2: npm run test (report pass/fail count)
+Phase 3: Live site screenshots (Playwright)
+Phase 4: API smoke test (health, auth, key endpoints)
+Phase 5: Accessibility audit (ARIA, contrast, touch targets)
+Phase 6: Security review (auth, error leaking, CORS, secrets)
+Output: QA report with SHIP / FIX FIRST / BLOCK recommendation
 ```
 
-## Retry Policy
-- If an agent fails: retry once
-- If retry fails: try alternative approach
-- If alternative fails: mark as "blocked", log to STATUS.md, continue other work
-- After 3 total failures on same task: stop and engage human
+## Active Projects
+
+| Project | Location | Live URL | Platform |
+|---------|----------|----------|----------|
+| LocalGenius (app) | /Users/sethshoultes/Local Sites/localgenius/ | localgenius.company | Vercel + Neon |
+| LocalGenius Sites | /Users/sethshoultes/Local Sites/localgenius-sites/ | localgenius-sites.pages.dev | Cloudflare Pages |
+| Great Minds (agency) | /Users/sethshoultes/Local Sites/great-minds/ | github.com/sethshoultes/great-minds | GitHub |
+
+## Hybrid AI Architecture
+
+| Task Type | Model | Platform | Cost |
+|-----------|-------|----------|------|
+| Conversation (complex) | Claude Sonnet | Anthropic API (Vercel) | ~$0.003/msg |
+| Content drafts | Llama 3.1 8B | Cloudflare Workers AI | Free tier |
+| Voice transcription | Whisper | Cloudflare Workers AI | Free tier |
+| Image generation | Stable Diffusion XL | Cloudflare Workers AI | Free tier |
+| Sentiment analysis | DistilBERT | Cloudflare Workers AI | Free tier |
+| Sub-agent work | Claude Haiku | Anthropic API | ~5x cheaper than Sonnet |
 
 ## State Machine
 
@@ -89,3 +119,19 @@ idle → debate → plan → build → review → ship → idle
 
 Any state → blocked → (human resolves) → previous state
 ```
+
+## Retry Policy
+
+- Agent fails → retry once
+- Retry fails → try alternative approach
+- Alternative fails → mark "blocked" in STATUS.md, continue other work
+- 3 total failures on same task → stop and engage human
+- Usage limits hit → wait for reset, organizer nudges when available
+
+## Plugin
+
+Install the full agency on any machine:
+```
+npx plugins add sethshoultes/great-minds-plugin
+```
+Includes: 9 agents, 5 skills (/agency-start, /agency-status, /agency-review, /agency-qa, /agency-debate), hooks, templates.
