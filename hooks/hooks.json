@@ -1,0 +1,17 @@
+{
+  "description": "Great Minds agency automation hooks",
+  "hooks": {
+    "SubagentStop": [
+      {
+        "matcher": ".+",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SubagentStop\",\"additionalContext\":\"[Great Minds] Sub-agent completed. If you are a Director (Steve/Elon), review the output and decide: commit, revise, or spawn next task. Do not go idle — check your task queue.\"}}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
