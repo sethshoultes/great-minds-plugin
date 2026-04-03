@@ -1,7 +1,7 @@
 # Great Minds Agency — Scoreboard
 
 **Session started**: 2026-04-01
-**Last updated**: 2026-04-02 (final)
+**Last updated**: 2026-04-03
 
 ---
 
@@ -9,17 +9,21 @@
 
 | Metric | Count |
 |--------|-------|
-| Source files (LocalGenius) | 258+ |
-| Source files (Sites) | 35 |
-| Source files (GM Website) | 24 |
-| Total commits | 180+ |
-| Test specs | 734 |
-| GitHub repos | 4 |
-| Live deployments | 3 |
-| Agent personas | 9 |
-| Live pages (app) | 19 |
-| Live pages (sites) | 6 |
-| Live pages (GM website) | 7 |
+| Source files (LocalGenius) | 270+ |
+| Source files (GM Website) | 35+ |
+| Total commits | 230+ |
+| Test specs (LocalGenius) | 770+ |
+| Test specs (Sites) | 83 |
+| GitHub repos | 3 (localgenius, great-minds, localgenius-sites) |
+| Live deployments | 3 (localgenius.company, greatminds.company, sites.localgenius.company) |
+| Agent personas | 9 + founder |
+| PRs merged | 17+ |
+| Jensen board reviews | 18 |
+| Margaret QA reports | 80+ |
+| Workshop video | Rendered (2 compositions, MP4) |
+| Blog posts | 6 |
+| Agent personas | 10 + founder |
+| System files | TASKS.md, CRONS.md, SCOREBOARD.md, MEMORY.md, AGENTS.md, STATUS.md |
 
 ## Jensen Huang — Board Reviews
 
@@ -118,8 +122,8 @@
 | Repo | Stars | Status |
 |------|-------|--------|
 | sethshoultes/localgenius | — | Active |
-| sethshoultes/localgenius-sites | — | Active |
-| sethshoultes/greatminds-website | — | Active |
+| sethshoultes/localgenius-sites | — | Archived (consolidated into localgenius) |
+| sethshoultes/greatminds-website | — | Archived (merged into great-minds/website) |
 | sethshoultes/great-minds | — | Active |
 
 ## GitHub Issues

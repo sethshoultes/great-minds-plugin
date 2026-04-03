@@ -92,9 +92,16 @@ Human (Seth)
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/sara-blakely-growth.md
 
+### 10. phil-jackson-orchestrator (Orchestrator)
+- **Role**: System coordinator, cron manager, resource optimizer, waste detector
+- **Owns**: TASKS.md, cron management, agent dispatch, workflow optimization
+- **Schedule**: Cron every 17 min (combined orchestrator + organizer)
+- **Style**: Calm, strategic, sees the whole board — "the system produces the result"
+- **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
+
 ## Orchestration Rules
 
-1. **Moderator drives state**: All phase transitions go through the Moderator.
+1. **Phil Jackson manages dispatch**: Reads TASKS.md and assigns work to idle agents.
 2. **Round protocol**: Steve speaks first, Elon responds. Moderator logs decisions.
 3. **No deference**: Agents must defend positions with reasoning.
 4. **Veto with alternative**: Either director can veto, but must propose a replacement.
