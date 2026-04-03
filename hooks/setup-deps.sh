@@ -1,6 +1,6 @@
 #!/bin/bash
-# Great Minds Plugin — Dependency Setup
-# Runs on SessionStart to ensure claude-swarm and tmux are available
+# Great Minds Plugin — Dependency Setup + Cron Reminder
+# Runs on SessionStart to ensure dependencies and remind about crons
 
 DEPS_OK=true
 MISSING=""
@@ -27,12 +27,20 @@ if ! command -v claude-swarm &>/dev/null; then
   fi
 fi
 
+# Check if swarm is running
+SWARM_RUNNING=false
+if tmux has-session -t claude-swarm 2>/dev/null; then
+  SWARM_RUNNING=true
+fi
+
 # Report status
 if [ "$DEPS_OK" = true ]; then
-  if [ "$INSTALLED_SWARM" = true ]; then
-    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] Auto-installed claude-swarm. All dependencies ready. Use /agency-start to create a project or /agency-status to check a running swarm.\"}}"
+  if [ "$SWARM_RUNNING" = true ]; then
+    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] Swarm is running. IMPORTANT: Run /agency-crons to set up automated monitoring, git sync, organizer nudges, Jensen board reviews, and dream consolidation. Without crons, agents will go idle and PRs will sit unreviewed.\"}}"
+  elif [ "$INSTALLED_SWARM" = true ]; then
+    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] Auto-installed claude-swarm. Use /agency-start to create a project, then run /agency-crons immediately after launching the swarm.\"}}"
   else
-    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] All dependencies ready. Use /agency-start to create a project or /agency-status to check a running swarm.\"}}"
+    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] Ready. Use /agency-start to create a project. After launching the swarm, run /agency-crons to set up automated monitoring and agent management.\"}}"
   fi
 else
   echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Great Minds] Missing dependencies:$MISSING. Install them before using the agency.\"}}"

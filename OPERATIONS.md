@@ -128,7 +128,7 @@ These were learned the hard way. Do them at the START of every project, not afte
 2. **Enforce PR workflow immediately.** No direct pushes to main, ever. Add the rule to worker override prompts.
 3. **Create SCOREBOARD.md at project start.** Track every agent's output from the first commit.
 4. **Set up all 5 crons** — run `/agency-crons` right after launching the swarm.
-5. **Skip the moderator.** Marcus Aurelius sounds good but the crons do everything he does. The human + crons = better orchestrator.
+5. **Skip the moderator for teams under 5 agents.** Marcus Aurelius is available as an agent but the crons (monitor, organizer, git, Jensen, dream) do everything he does. The human + crons = better orchestrator. Only use Marcus for large swarms where coordination overhead justifies a dedicated agent.
 6. **Create a task queue** — a simple list of known work items in STATUS.md that the organizer pulls from when nudging idle agents. Generic "keep improving" nudges waste tokens.
 
 ## Honesty Rules
