@@ -25,7 +25,7 @@ Human (Seth)
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
 - Sub-agents (Rick, Jony, Maya, Sara) use Haiku model to conserve usage limits (~5x savings).
 
-## Active Agents (9)
+## Active Agents (10)
 
 ### 1. marcus-aurelius (Moderator)
 - **Role**: Chief of Staff / Orchestrator (Stoic philosopher-emperor)
@@ -86,22 +86,22 @@ Human (Seth)
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/maya-angelou-writer.md
 
-### 9. sara-blakely (Growth Strategy — Sub-agent)
+### 9. phil-jackson (Orchestrator)
+- **Role**: System coordinator, cron manager, resource optimizer, dispatch
+- **Owns**: Task dispatch, cron scheduling, waste detection, agent lifecycle
+- **Model**: Sonnet
+- **tmux window**: admin (replaces Marcus Aurelius as orchestrator)
+- **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
+
+### 10. sara-blakely (Growth Strategy — Sub-agent)
 - **Role**: Growth strategy, market positioning, customer acquisition
 - **Reports to**: Elon Musk
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/sara-blakely-growth.md
 
-### 10. phil-jackson-orchestrator (Orchestrator)
-- **Role**: System coordinator, cron manager, resource optimizer, waste detector
-- **Owns**: TASKS.md, cron management, agent dispatch, workflow optimization
-- **Schedule**: Cron every 17 min (combined orchestrator + organizer)
-- **Style**: Calm, strategic, sees the whole board — "the system produces the result"
-- **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
-
 ## Orchestration Rules
 
-1. **Phil Jackson manages dispatch**: Reads TASKS.md and assigns work to idle agents.
+1. **Moderator drives state**: All phase transitions go through the Moderator.
 2. **Round protocol**: Steve speaks first, Elon responds. Moderator logs decisions.
 3. **No deference**: Agents must defend positions with reasoning.
 4. **Veto with alternative**: Either director can veto, but must propose a replacement.
