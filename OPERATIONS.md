@@ -131,6 +131,34 @@ These were learned the hard way. Do them at the START of every project, not afte
 5. **Skip the moderator for teams under 5 agents.** Marcus Aurelius is available as an agent but the crons (monitor, organizer, git, Jensen, dream) do everything he does. The human + crons = better orchestrator. Only use Marcus for large swarms where coordination overhead justifies a dedicated agent.
 6. **Create a task queue** — a simple list of known work items in STATUS.md that the organizer pulls from when nudging idle agents. Generic "keep improving" nudges waste tokens.
 
+## Self-Review Before PR
+
+Directors must review their own work before creating a PR. Dispatch persona sub-agents:
+
+**Steve (Design Director):**
+- After visual changes → spawn `jony-ive-designer` (haiku) to check contrast, spacing, images
+- After writing copy → spawn `maya-angelou-writer` (haiku) to check brand voice
+- After building a page → spawn `margaret-hamilton-qa` (haiku) to test it
+
+**Elon (Product Director):**
+- After building an API → spawn `margaret-hamilton-qa` (haiku) to test endpoints
+- After building a page → spawn `jony-ive-designer` (haiku) to check visual quality
+- After UX decisions → spawn `sara-blakely-growth` (haiku) to gut-check from customer perspective
+
+**The pattern:** Build → dispatch reviewer → fix findings → THEN create PR. Not build → PR → wait for someone else to catch problems.
+
+## Event-Driven QA Pipeline
+
+QA triggers on events, not timers:
+
+| Event | What Runs | Who |
+|-------|-----------|-----|
+| PR created | Code QA (tests, build, types) | Margaret |
+| PR merged | Visual QA (screenshots, broken images, contrast) | Jony Ive sub-agent |
+| New page deployed | Full page audit (nav, images, content, mobile) | Margaret + Jony |
+| Feature launched | End-to-end flow test | Playwright |
+| Hourly | Health check (HTTP status only) | Organizer cron |
+
 ## Honesty Rules
 
 These prevent agents from marketing features that don't exist:
