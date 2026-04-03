@@ -12,7 +12,7 @@ npx plugins add sethshoultes/great-minds-plugin
 
 ## What You Get
 
-### 8 Agent Personas
+### 9 Agent Personas
 
 | Agent | Role |
 |-------|------|
@@ -24,14 +24,16 @@ npx plugins add sethshoultes/great-minds-plugin
 | `jony-ive-designer` | Visual Design — spacing, hierarchy, craft, inevitability |
 | `maya-angelou-writer` | Copywriting — warmth, rhythm, dignity, emotional resonance |
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
+| `margaret-hamilton-qa` | QA Director — zero-defect methodology, continuous testing |
 
-### 4 Skills (Slash Commands)
+### 6 Skills (Slash Commands)
 
 | Command | Description |
 |---------|-------------|
 | `/agency-start <name>` | Initialize a new agency project with full system files |
 | `/agency-status` | Check swarm status — what agents are doing, blockers, commits |
 | `/agency-review` | Run a Jensen Huang board review on the current project |
+| `/agency-crons` | Set up all automation crons (monitor, organizer, git, Jensen, dream) |
 | `/agency-debate <topic>` | Run a Steve vs. Elon debate on any topic or PRD |
 
 ### Hooks
