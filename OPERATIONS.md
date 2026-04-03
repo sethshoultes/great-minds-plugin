@@ -87,38 +87,81 @@ Run a dream consolidation periodically to keep these current:
 - MEMORY.md — should capture operational learnings (under 200 lines)
 - SCOREBOARD.md — should track all agent output
 
-## The Pipeline
+## The Pipeline (GSD-Inspired)
 
 ```
-PRD → Debate (2 rounds) → Plan (hire sub-agents) → Build (parallel) → Review → Ship
+PLAN → EXECUTE → VERIFY → SHIP
 ```
 
-### Debate Phase (Rounds 1-2)
-- Steve and Elon stake positions on all deliverable areas
-- Moderator logs decisions
-- Lock strategic decisions before building
+Each phase has a clear entry gate, exit criteria, and context management strategy.
+Inspired by the GSD (Get Shit Done) methodology — structured phases, atomic tasks, fresh context per agent.
 
-### Plan Phase (Round 3)
-- Directors define teams by writing agent definitions in team/
-- Use team/TEMPLATE.md for format
-- Each agent gets specific inputs, outputs, and quality bar
+### Phase 1: PLAN
 
-### Build Phase (Rounds 4-8)
-- Sub-agents execute assignments in parallel
-- Directors supervise, review output
-- Margaret QA runs continuously
-- Jensen reviews hourly
+**Entry:** PRD exists or requirements are gathered
+**Who:** Directors (Steve/Elon) + Debate (2 rounds)
 
-### Review Phase (Round 9)
-- Steve reviews for taste, craft, brand consistency
-- Elon reviews for feasibility, accuracy, market alignment
-- Margaret does final QA pass
+1. **Initialize** — Gather requirements. Spawn haiku research agents in parallel for domain knowledge.
+2. **Debate** — Steve and Elon stake positions. Moderator logs decisions. Lock strategic choices.
+3. **Scope** — Write `.planning/REQUIREMENTS.md` with v1/v2/out-of-scope boundaries.
+4. **Decompose** — Break work into atomic PLAN.md tasks. Group into dependency-ordered waves.
+5. **Staff** — Directors define agent assignments. Each agent gets specific inputs, outputs, and quality bar.
 
-### Ship Phase (Round 10)
-- Final deliverables assembled
-- Joint summary written
-- Learnings saved to memory
-- SCOREBOARD updated
+**Exit gate:** REQUIREMENTS.md, ROADMAP.md, and STATE.md exist. All tasks have owners.
+
+### Phase 2: EXECUTE
+
+**Entry:** Plan phase complete. All PLAN.md files approved.
+**Who:** Sub-agents (haiku) supervised by Directors
+
+1. **Wave execution** — Independent tasks run in parallel. Dependent tasks wait for prior waves.
+2. **Fresh context** — Each sub-agent gets a clean 200k context with only its PLAN.md + relevant code. No accumulated conversation history.
+3. **Atomic commits** — One commit per completed task. Feature branches only.
+4. **Context guard** — `context-guard.sh` runs after every sub-agent completion. Warns when context is heavy.
+5. **Scope check** — Run `/scope-check` periodically. If drift > 30%, pause and re-plan.
+6. **STATE.md updates** — After each wave, update STATE.md with completions and blockers.
+
+**Exit gate:** All planned tasks committed. Drift score < 30%. STATE.md current.
+
+### Phase 3: VERIFY
+
+**Entry:** All execute tasks committed.
+**Who:** Margaret (QA) + automated checks
+
+1. **Code QA** — Tests pass, build succeeds, types check.
+2. **Visual QA** — Screenshots, broken images, contrast checks (Jony Ive sub-agent).
+3. **Scope audit** — Run `/scope-check` final. Confirm no unplanned work shipped.
+4. **Honesty pass** — No fake APIs, no fake stats, no unverified claims.
+5. **Flow test** — End-to-end verification of the user story.
+
+**Exit gate:** QA report clean. All issues filed and addressed.
+
+### Phase 4: SHIP
+
+**Entry:** QA passed. All PRs approved.
+**Who:** Directors + Margaret
+
+1. **PR assembly** — Squash-merge feature branches to main.
+2. **Summary** — Write completion summary with what was built, decisions made, lessons learned.
+3. **State update** — Update STATE.md, SCOREBOARD.md, AGENTS.md.
+4. **Memory capture** — Save operational learnings that apply to future projects.
+5. **Deploy** — Vercel auto-deploys from main. Verify preview URL before promoting.
+
+**Exit gate:** Main branch clean. Live site verified. Learnings saved.
+
+### Context Rot Prevention (GSD Pattern)
+
+The #1 cause of quality degradation is accumulated context. Prevent it:
+
+| Signal | Threshold | Action |
+|--------|-----------|--------|
+| Agent output > 200KB | Warning | Spawn fresh agent |
+| STATE.md > 30min stale | Warning | Update before continuing |
+| Uncommitted diff > 500 lines | Warning | Commit immediately |
+| Drift score > 30% | Pause | Re-plan before building more |
+| 3+ warnings | Critical | Stop. Commit. Update state. Fresh agents for everything. |
+
+The `context-guard.sh` hook monitors these automatically. Directors should also run `/scope-check` after every wave.
 
 ## Day One Checklist (Do These Immediately)
 
