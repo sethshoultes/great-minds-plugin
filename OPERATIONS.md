@@ -159,6 +159,20 @@ QA triggers on events, not timers:
 | Feature launched | End-to-end flow test | Playwright |
 | Hourly | Health check (HTTP status only) | Organizer cron |
 
+## QA Issue Filing
+
+Margaret must convert QA findings into GitHub issues — but consolidated, not one per bug:
+
+1. **Review all recent QA reports** and group related findings by theme
+2. **File ONE issue per theme**, listing all related findings with file paths
+3. **Examples of good consolidation:**
+   - "QA: Visual contrast issues across demo sites" (covers all button/text/hero problems)
+   - "QA: Broken images on demo pages" (covers all missing images)
+   - "QA: Navigation inconsistencies" (covers all nav gaps)
+4. **Max 5-8 consolidated issues** per review cycle, not 70 individual bugs
+5. **Labels:** `bug` for code/visual issues, `docs` for documentation issues
+6. **Repos:** localgenius bugs → `sethshoultes/localgenius`, website/docs bugs → `sethshoultes/great-minds`
+
 ## Honesty Rules
 
 These prevent agents from marketing features that don't exist:
