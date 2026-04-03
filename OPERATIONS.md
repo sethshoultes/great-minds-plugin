@@ -120,6 +120,36 @@ PRD → Debate (2 rounds) → Plan (hire sub-agents) → Build (parallel) → Re
 - Learnings saved to memory
 - SCOREBOARD updated
 
+## Day One Checklist (Do These Immediately)
+
+These were learned the hard way. Do them at the START of every project, not after problems appear.
+
+1. **Launch Margaret (QA) in worker3 from minute one.** Don't wait for the build to be "ready."
+2. **Enforce PR workflow immediately.** No direct pushes to main, ever. Add the rule to worker override prompts.
+3. **Create SCOREBOARD.md at project start.** Track every agent's output from the first commit.
+4. **Set up all 5 crons** — run `/agency-crons` right after launching the swarm.
+5. **Skip the moderator.** Marcus Aurelius sounds good but the crons do everything he does. The human + crons = better orchestrator.
+6. **Create a task queue** — a simple list of known work items in STATUS.md that the organizer pulls from when nudging idle agents. Generic "keep improving" nudges waste tokens.
+
+## Honesty Rules
+
+These prevent agents from marketing features that don't exist:
+
+1. **Never document an API endpoint that doesn't return real data.**
+2. **Never claim a feature works unless Margaret has verified the live URL.**
+3. **Never show fake statistics, user counts, or metrics.**
+4. **If the AI can't verify an action was performed, don't claim it was.**
+5. **Run an honesty pass before any customer-facing deploy.**
+
+## Agent Self-Direction
+
+Agents don't self-direct well. They build until done, then stop. Improve this by:
+
+1. **Maintain a task queue** in STATUS.md — a prioritized list the organizer pulls from.
+2. **Escalating nudges** — after 3 idle checks, give a SPECIFIC task, not "find gaps."
+3. **Each agent should maintain their own "next 3 tasks" list** in their tmux session.
+4. **After completing a PR, agents should immediately check the task queue for the next item.**
+
 ## Common Problems
 
 | Problem | Solution |
