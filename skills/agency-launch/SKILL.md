@@ -26,6 +26,20 @@ which claude || which ~/.claude/bin/claude || which ~/.local/bin/claude
 ```
 If either is missing, tell the user how to install.
 
+**CRITICAL**: Check if running as root:
+```
+whoami
+```
+If root, STOP. Claude Code refuses `--dangerously-skip-permissions` as root. Create a non-root user first:
+```
+useradd -m -s /bin/bash agent
+cp /usr/local/bin/claude /usr/local/bin/claude  # ensure claude is globally accessible
+cp -r ~/.claude /home/agent/.claude
+chown -R agent:agent /home/agent
+su - agent
+```
+Then run the launch as that user.
+
 ### Step 2: Kill existing session if running
 
 ```
