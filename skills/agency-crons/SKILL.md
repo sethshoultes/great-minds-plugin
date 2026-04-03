@@ -1,33 +1,85 @@
 ---
 name: agency-crons
-description: Set up all Great Minds agency cron jobs — monitor, organizer, git monitor, Jensen board review, dream consolidation. Run this after launching the swarm.
-allowed-tools: [Bash, CronCreate, CronList, CronDelete]
+description: Install decoupled cron system — bash scripts for monitoring, haiku for smart dispatch/dream. Crons run independently via crontab, never bottleneck the main agent.
+allowed-tools: [Bash, Read, Write]
 ---
 
-# Great Minds Agency — Set Up Cron Jobs
+# Great Minds Agency — Install Cron System
 
-Set up all recurring agency automation. Use SEPARATE bash calls (no cd && chaining).
+Install the decoupled cron architecture. Crons run via system crontab, write to log files, and NEVER interrupt the main conversation.
 
-## Crons to Create
+## Architecture
 
-### 1. Monitor (every 7 min)
-Check agent status via tmux capture-pane, count source files, check recent commits. Report briefly.
+| Layer | Crons | Model | Cost |
+|-------|-------|-------|------|
+| **Bash (free)** | heartbeat, QA, git monitor, DO check | None | Free |
+| **Haiku (cheap)** | dispatch, dream consolidation | claude --model haiku | ~5x cheaper than Opus |
+| **Main agent** | Reads logs when asked, never runs crons | Opus | Zero cron overhead |
 
-### 2. Git Monitor (every 13 min)
-Check uncommitted work across all repos. Commit and push if dirty. Check open GitHub issues. Verify nothing unpushed.
+## Instructions
 
-### 3. Organizer (every 19 min)
-Check if agents are idle (no "esc to interrupt"). If idle, nudge with tasks. Check live site HTTP status + HTML content. Check MEMORY.md line count.
+### Step 1: Copy cron scripts from plugin
 
-### 4. Jensen Board Review (every 60 min)
-Launch jensen-huang-board agent. Read latest commits, source files, previous review. Write review under 50 lines. File GitHub issues for new findings.
+```bash
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$(dirname $(dirname $0))}"
+PROJECT_DIR="$(pwd)"
+mkdir -p "$PROJECT_DIR/crons"
+cp "$PLUGIN_DIR/crons/"*.sh "$PROJECT_DIR/crons/"
+chmod +x "$PROJECT_DIR/crons/"*.sh
+```
 
-### 5. Dream Consolidation (every 60 min, offset by 30 min from Jensen)
-Check system files (AGENTS.md, STATUS.md, MEMORY.md, SCOREBOARD.md). Update any that are stale. Sync plugin if needed. Commit and push.
+### Step 2: Create log directory
 
-## Important Notes
-- All crons are session-only — they die when the session ends (7-day max)
-- Use SEPARATE bash calls in all cron prompts (no cd && chaining)
-- Jensen and Dream should use different minutes to avoid collision
-- Organizer nudges should remind agents to use feature branches + PRs
-- Organizer nudges should remind agents to use model haiku for sub-agents
+```bash
+mkdir -p /tmp/claude-shared
+touch /tmp/claude-shared/cron-reports.log /tmp/claude-shared/alerts.log
+```
+
+### Step 3: Install crontab
+
+Edit paths in each script to match the project directory, then install:
+
+```bash
+crontab -l 2>/dev/null > /tmp/existing-crons || true
+cat >> /tmp/existing-crons << 'CRON'
+# Great Minds — Decoupled Crons
+*/5 * * * * PROJECT_DIR/crons/heartbeat.sh
+7,36 * * * * PROJECT_DIR/crons/margaret-qa.sh
+*/15 * * * * PROJECT_DIR/crons/git-monitor.sh
+*/10 * * * * PROJECT_DIR/crons/do-check.sh
+3,33 * * * * PROJECT_DIR/crons/haiku-dispatch.sh
+47 * * * * PROJECT_DIR/crons/haiku-dream.sh
+CRON
+sed -i '' "s|PROJECT_DIR|$PROJECT_DIR|g" /tmp/existing-crons
+crontab /tmp/existing-crons
+```
+
+### Step 4: Verify
+
+```bash
+crontab -l
+```
+
+### Step 5: Report
+
+Tell the user:
+```
+Cron system installed!
+
+  Reports:  cat /tmp/claude-shared/cron-reports.log
+  Alerts:   cat /tmp/claude-shared/alerts.log
+  Status:   Ask "what's the status?" — reads log, no interruption
+
+Crons run independently. Main agent is never bottlenecked.
+```
+
+## Included Scripts
+
+| Script | Schedule | What it does |
+|--------|----------|-------------|
+| heartbeat.sh | Every 5 min | File count, site status, memory check |
+| margaret-qa.sh | :07/:36 | Site content verification, image checks, PR detection |
+| git-monitor.sh | Every 15 min | Uncommitted changes across repos |
+| do-check.sh | Every 10 min | SSH health check on remote server |
+| haiku-dispatch.sh | :03/:33 | Read TASKS.md, dispatch idle agents (haiku model) |
+| haiku-dream.sh | :47 | Detect drift in system files (haiku model) |
