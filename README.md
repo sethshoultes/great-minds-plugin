@@ -12,22 +12,25 @@ npx plugins add sethshoultes/great-minds-plugin
 
 ## What You Get
 
-### 10 Agent Personas
+### 13 Agent Personas
 
 | Agent | Role |
 |-------|------|
 | `phil-jackson-orchestrator` | Orchestrator — system coordination, dispatch, resource optimization |
 | `steve-jobs-visionary` | Design & Brand — simplicity, taste, the human experience |
 | `elon-musk-persona` | Product & Growth — first principles, feasibility, scale |
-| `jensen-huang-board` | Board Member — strategic reviews, data moats, platform thinking |
+| `jensen-huang-board` | Board Member — tech strategy, data moats, platform economics |
+| `oprah-winfrey-board` | Board Member — audience connection, storytelling, accessibility |
+| `warren-buffett-board` | Board Member — business model, unit economics, moat durability |
 | `margaret-hamilton-qa` | QA Director — zero-defect methodology, continuous testing |
 | `rick-rubin-creative` | Creative Director — strip to essence, authenticity |
 | `jony-ive-designer` | Visual Design — spacing, hierarchy, craft, inevitability |
 | `maya-angelou-writer` | Copywriting — warmth, rhythm, dignity, emotional resonance |
+| `aaron-sorkin-screenwriter` | Screenwriter — video scripts, demos, tutorials, launch videos |
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
 | `marcus-aurelius-mod` | Moderator — Stoic orchestration, conflict mediation |
 
-### 10 Skills (Slash Commands)
+### 11 Skills (Slash Commands)
 
 | Command | Description |
 |---------|-------------|
@@ -35,6 +38,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `/agency-launch` | Launch the pipeline: debate → plan → execute → verify → ship |
 | `/agency-status` | Check agent status, blockers, commits |
 | `/agency-review` | Run a Jensen Huang board review |
+| `/agency-board-review` | Full board review — Jensen, Oprah, Warren review in parallel, then consolidate |
 | `/agency-crons` | Install decoupled cron system (bash + haiku, no bottleneck) |
 | `/agency-debate <topic>` | Run a Steve vs. Elon debate |
 | `/agency-plan` | GSD-style structured task planning with XML plans |
@@ -71,7 +75,10 @@ Each phase uses the right tool:
 
 ```
 You (Phil Jackson — Orchestrator)
-  ├── Jensen Huang — Board Member (cron reviews, GitHub issues)
+  ├── Board of Directors (parallel via /agency-board-review)
+  │    ├── Jensen Huang — Tech Strategy (cron reviews, GitHub issues)
+  │    ├── Oprah Winfrey — Audience & Accessibility
+  │    └── Warren Buffett — Business & Economics
   ├── Agent tool (worktree) → Steve Jobs — Creative Director
   │    └── Agent tool (haiku) → Jony Ive, Maya Angelou, Rick Rubin
   ├── Agent tool (worktree) → Elon Musk — Product Director

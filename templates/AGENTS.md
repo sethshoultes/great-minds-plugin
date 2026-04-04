@@ -4,7 +4,10 @@
 
 ```
 Human (Seth)
-  ├─ Jensen Huang — Board Member (cron: 60 min, GitHub issues, advisor)
+  ├─ Board of Directors
+  │    ├─ Jensen Huang — Board Member: Tech Strategy (cron: 60 min, GitHub issues)
+  │    ├─ Oprah Winfrey — Board Member: Audience & Accessibility
+  │    └─ Warren Buffett — Board Member: Business & Economics
   └─ Marcus Aurelius — Moderator / Chief of Staff (admin agent)
        ├─ Steve Jobs — Creative Director (worker1)
        │    ├─ Rick Rubin — Creative Director (sub-agent)
@@ -18,7 +21,7 @@ Human (Seth)
 
 ## Communication Rules
 - **Human ↔ Moderator**: Human talks to Moderator. Moderator filters, summarizes, escalates.
-- **Jensen ↔ Anyone**: Board member can advise any agent directly. Creates GitHub issues for new ideas.
+- **Board ↔ Anyone**: Board members (Jensen, Oprah, Warren) can advise any agent directly. Creates GitHub issues for new ideas. Board reviews spawn all three in parallel via `/agency-board-review`.
 - **Moderator ↔ Directors**: Moderator dispatches tasks, mediates conflicts, tracks progress.
 - **Directors ↔ Sub-agents**: Steve/Elon manage their own hires. Sub-agents report to their director.
 - **Margaret ↔ All**: QA Director tests continuously, files reports, blocks ship if P0 open.
@@ -26,7 +29,7 @@ Human (Seth)
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
 - Sub-agents (Rick, Jony, Maya, Sara) use Haiku model to conserve usage limits (~5x savings).
 
-## Active Agents (11)
+## Active Agents (13)
 
 ### 1. marcus-aurelius (Moderator)
 - **Role**: Chief of Staff / Orchestrator (Stoic philosopher-emperor)
@@ -61,46 +64,61 @@ Human (Seth)
 - **tmux window**: worker3
 - **Full spec**: team/margaret-hamilton-qa.md
 
-### 5. jensen-huang (Board Member)
+### 5. jensen-huang (Board Member — Tech Strategy)
 - **Role**: Strategic advisor, idea generator, periodic reviewer
 - **Owns**: Strategic perspective, GitHub issue creation, advisory responses
+- **Focus**: Platform economics, data moats, competitive positioning, technical strategy
 - **Schedule**: cron every 60 min
 - **Creates**: GitHub issues on sethshoultes/great-minds, board review files
 - **Track record**: 13 board reviews, 8 issues filed (3 fixed), highest-ROI agent
 - **Full spec**: team/jensen-huang-board.md
 
-### 6. rick-rubin (Creative Director — Sub-agent)
+### 6. oprah-winfrey (Board Member — Audience & Accessibility)
+- **Role**: Audience advocate, storytelling evaluator, accessibility reviewer
+- **Owns**: Onboarding clarity, messaging, value proposition, emotional resonance
+- **Focus**: "Does this connect with real people? Would someone tell their friend about this?"
+- **Model**: Haiku (conserves usage)
+- **Full spec**: team/oprah-winfrey-board.md
+
+### 7. warren-buffett (Board Member — Business & Economics)
+- **Role**: Business model evaluator, economics reviewer, moat analyst
+- **Owns**: Revenue model, unit economics, pricing, competitive moat, scalability
+- **Focus**: "Is this a business or a hobby? What's the unit economics? Would I put money into this?"
+- **Model**: Haiku (conserves usage)
+- **Full spec**: team/warren-buffett-board.md
+
+### 8. rick-rubin (Creative Director — Sub-agent)
 - **Role**: Creative vision, artistic direction, "reduce to the essential"
 - **Reports to**: Steve Jobs
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/rick-rubin-creative.md
 
-### 7. jony-ive (Visual Design — Sub-agent)
+### 9. jony-ive (Visual Design — Sub-agent)
 - **Role**: Visual design, UI/UX, design system, component library
 - **Reports to**: Steve Jobs
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/jony-ive-designer.md
 
-### 8. maya-angelou (Copywriter — Sub-agent)
+### 10. maya-angelou (Copywriter — Sub-agent)
 - **Role**: Copy, messaging, brand voice, content strategy
 - **Reports to**: Steve Jobs
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/maya-angelou-writer.md
 
-### 9. aaron-sorkin (Screenwriter — Sub-agent)
+### 11. aaron-sorkin (Screenwriter — Sub-agent)
 - **Role**: Video scripts, demo walkthroughs, tutorial content, launch videos, workshop materials
 - **Reports to**: Steve Jobs
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/aaron-sorkin-screenwriter.md
 
-### 11. phil-jackson (Orchestrator)
+### 12. phil-jackson (Orchestrator)
 - **Role**: System coordinator, cron manager, resource optimizer, dispatch
 - **Owns**: Task dispatch, cron scheduling, waste detection, agent lifecycle
 - **Model**: Sonnet
 - **tmux window**: admin (replaces Marcus Aurelius as orchestrator)
 - **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
 
-### 12. sara-blakely (Growth Strategy — Sub-agent)
+### 13. sara-blakely (Growth Strategy — Sub-agent)
 - **Role**: Growth strategy, market positioning, customer acquisition
 - **Reports to**: Elon Musk
 - **Model**: Haiku (conserves usage)
