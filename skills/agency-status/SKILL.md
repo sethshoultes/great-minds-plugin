@@ -1,27 +1,24 @@
 ---
 name: agency-status
-description: Check the status of the Great Minds agency swarm — what agents are doing, file counts, recent commits, blockers.
+description: Check agency status — read cron logs, STATUS.md, recent commits, open PRs. No tmux dependency.
 allowed-tools: [Bash, Read, Glob]
 ---
 
 # Great Minds Agency — Status Check
 
-Check the swarm status:
+Check the agency status. Uses cron logs (not tmux).
 
-1. Check if tmux session exists: `tmux list-sessions 2>/dev/null | grep claude-swarm`
-2. If running, capture each agent's state:
-   - `tmux capture-pane -t claude-swarm:admin -p | tail -10`
-   - `tmux capture-pane -t claude-swarm:worker1 -p | tail -10`
-   - `tmux capture-pane -t claude-swarm:worker2 -p | tail -10`
-3. Count source files in the active project
-4. Read STATUS.md for current state
-5. Check recent git commits: `git log --oneline -5`
+1. Read cron report log: `tail -20 /tmp/claude-shared/cron-reports.log`
+2. Read alerts: `cat /tmp/claude-shared/alerts.log | tail -5`
+3. Read STATUS.md for current project state
+4. Check recent git commits: `git log --oneline -5 --all`
+5. Check open PRs: `gh pr list --repo {repo} --json number,title`
+6. Check open issues: `gh issue list --repo {repo}`
 
 Report format — keep it SHORT:
 - Current phase (from STATUS.md)
-- File count
-- What each agent is doing (1 line each)
-- Any blockers
-- Whether they committed anything new
-
-If any agent is idle, nudge them with a task.
+- File count + site status (from cron log)
+- Recent commits
+- Open PRs / issues
+- Any alerts
+- DO server health (from cron log)

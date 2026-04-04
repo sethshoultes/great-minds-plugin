@@ -8,21 +8,17 @@ How to run the agency successfully. Read this before your first session.
 # Install the plugin
 npx plugins add sethshoultes/great-minds-plugin
 
-# Install claude-swarm (auto-installed by plugin hook, or manually)
-mkdir -p ~/.local/bin
-curl -sL -o ~/.local/bin/claude-swarm https://raw.githubusercontent.com/sethshoultes/claude-swarm/main/claude-swarm
-chmod +x ~/.local/bin/claude-swarm
-export PATH="$HOME/.local/bin:$PATH"
-
 # Create a project
 /agency-start my-project
 
 # Drop a PRD
 # Edit prds/my-project.md
 
-# Launch the swarm
-./launch.sh my-project
+# Launch the pipeline
+/agency-launch
 ```
+
+No tmux, no claude-swarm, no external dependencies. Just Claude Code + git.
 
 ## Cron Jobs to Set Up
 
@@ -66,12 +62,12 @@ Never push directly to main. Always:
 Vercel auto-generates preview URLs for every PR — use those for staging.
 
 ### QA Must Run Continuously
-Margaret Hamilton (QA Director) should run in her own tmux window (worker3) with a continuous loop:
+Margaret Hamilton (QA Director) should run as an Agent tool sub-agent during VERIFY phase:
 - Check live site HTML content (not just status codes)
 - Run tests and build
 - Verify forms actually work (POST to endpoints)
 - Write QA reports
-- Flag bugs to Steve/Elon via tmux send-keys
+- Flag bugs to Steve/Elon via GitHub issues or PR comments
 
 ### Honesty Pass
 Before shipping anything customer-facing:
@@ -232,20 +228,20 @@ Agents don't self-direct well. They build until done, then stop. Improve this by
 
 1. **Maintain a task queue** in STATUS.md — a prioritized list the organizer pulls from.
 2. **Escalating nudges** — after 3 idle checks, give a SPECIFIC task, not "find gaps."
-3. **Each agent should maintain their own "next 3 tasks" list** in their tmux session.
+3. **Each agent should maintain their own "next 3 tasks" list** in their worktree.
 4. **After completing a PR, agents should immediately check the task queue for the next item.**
 
 ## Common Problems
 
 | Problem | Solution |
 |---------|----------|
-| Agents idle | Organizer cron nudges them. Or send manual task via tmux send-keys |
+| Agents idle | Haiku dispatch cron assigns next task. Or spawn fresh Agent tool. |
 | Usage limits hit | Wait for reset. Use Haiku for sub-agents. Stagger work. |
 | Agents push to main | Remind them: feature branches + PRs only |
 | Pages return 200 but show "Not Found" | Margaret must check HTML content, not just status codes |
 | System files stale | Run dream consolidation |
 | Plugin out of date | Sync files and push to plugin repo |
-| Agent lost persona after restart | Send override prompt from /tmp/claude-shared/prompts/ |
+| Agent lost persona after restart | Spawn fresh Agent tool with persona prompt |
 
 ## Infrastructure Options
 
@@ -257,4 +253,4 @@ Agents don't self-direct well. They build until done, then stop. Improve this by
 | Stripe | Billing | Test mode free, live mode per-transaction |
 | Resend | Email | Free tier (100 emails/day) |
 | GitHub | Repos, issues, PRs | Free |
-| tmux | Agent orchestration | Free (local) |
+| Agent tool | Worktree-isolated agent dispatch | Built into Claude Code |
