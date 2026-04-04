@@ -52,32 +52,56 @@ Read the project's system files to understand current state:
 - TASKS.md — current task board
 - STATUS.md — current state
 
-### Step 4: Dispatch work using Agent tool
+### Step 4: Pipeline — Debate → Plan → Execute → Verify → Ship
 
-For each task that needs doing, spawn an Agent with worktree isolation:
+The agency follows a structured pipeline. GSD skills are called automatically at each phase transition.
 
+#### Phase 1: DEBATE (Rounds 1-2)
+Spawn Steve and Elon in parallel via Agent tool with worktree isolation:
 ```
-Agent tool call:
-  subagent_type: "general-purpose" (or persona agent if available)
-  isolation: "worktree"
-  prompt: "You are [PERSONA]. Your task: [TASK].
-           Read [relevant files] for context.
-           Create a feature branch, do the work, commit, push, create a PR.
-           Use haiku sub-agents for parallel work."
+Agent(isolation: "worktree", subagent_type: "steve-jobs-visionary", run_in_background: true,
+  prompt: "Read the PRD. Stake positions on design, naming, UX. Write to rounds/{project}/round-1-steve.md")
+Agent(isolation: "worktree", subagent_type: "elon-musk-persona", run_in_background: true,
+  prompt: "Read the PRD. Stake positions on architecture, performance, distribution. Write to rounds/{project}/round-1-elon.md")
 ```
+After Round 1, dispatch Round 2 (each reads the other's positions and challenges).
+Then consolidate decisions into `rounds/{project}/decisions.md`.
 
-**Key rules:**
-- Each Agent gets its own worktree — no merge conflicts
-- Each Agent creates a branch, does work, commits, pushes, creates a PR
-- Launch multiple Agents in parallel when tasks are independent
-- Use `run_in_background: true` for non-blocking dispatch
+#### Phase 2: PLAN (GSD-style)
+**Call `/agency-plan`** — this creates structured XML task plans from the debate decisions:
+- Breaks work into atomic tasks with clear inputs/outputs
+- Groups tasks into waves (independent tasks run in parallel)
+- Verifies plan coverage against PRD requirements
+- Outputs to `.planning/` directory
+
+#### Phase 3: EXECUTE (GSD-style)
+**Call `/agency-execute`** — wave-based parallel execution:
+- Each task spawns a fresh Agent with worktree isolation
+- Independent tasks in the same wave run simultaneously
+- Each agent gets only its task plan (no context rot)
+- Atomic git commit per completed task
+- Failed tasks don't block other tasks
+
+#### Phase 4: VERIFY (GSD-style)
+**Call `/agency-verify`** — automated UAT:
+- Spawns Margaret Hamilton agent for QA
+- Runs build, lint, tests
+- Checks deliverables against PRD requirements
+- Debug agents for any failures
+- Blocks ship if P0 issues found
+
+#### Phase 5: SHIP
+- Merge all feature branches to main
+- Update STATUS.md, SCOREBOARD.md
+- Clean up branches
+- Memory update (what worked, what didn't)
 
 ### Step 5: Monitor progress
 
 Check on spawned agents. When they complete:
 - Review their PRs
 - Merge if quality passes
-- Dispatch next tasks
+- Advance to next phase
 
 ### Step 6: Install crons (optional)
 
