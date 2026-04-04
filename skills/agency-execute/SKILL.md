@@ -172,6 +172,7 @@ Write an execution report to `engineering/phase-{N}-execution.md`:
 3. **Atomic commits enable atomic reverts** — one task breaks? Revert one commit
 4. **Build gates between waves** — never compound broken state
 5. **Fail forward** — one task failure doesn't stop the whole phase
+6. **Every Agent tool sub-agent MUST create a PR before completing. No exceptions. The PR title should include the task name.**
 
 ## Agent Model Guidelines
 

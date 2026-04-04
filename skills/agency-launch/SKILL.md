@@ -52,7 +52,7 @@ Read the project's system files to understand current state:
 - TASKS.md — current task board
 - STATUS.md — current state
 
-### Step 4: Pipeline — Debate → Plan → Execute → Verify → Ship
+### Step 4: Pipeline — PRD → Debate → /agency-plan → /agency-execute → /agency-verify → /agency-ship
 
 The agency follows a structured pipeline. GSD skills are called automatically at each phase transition.
 
@@ -90,11 +90,15 @@ Then consolidate decisions into `rounds/{project}/decisions.md`.
 - Debug agents for any failures
 - Blocks ship if P0 issues found
 
-#### Phase 5: SHIP
-- Merge all feature branches to main
-- Update STATUS.md, SCOREBOARD.md
-- Clean up branches
-- Memory update (what worked, what didn't)
+#### Phase 5: SHIP (GSD-style)
+**Call `/agency-ship`** — merge, report, and clean up:
+- Squash merge all feature branches to main
+- Update STATUS.md (set state to shipped, update metrics)
+- Update SCOREBOARD.md (increment counts)
+- Write completion summary to deliverables/{project}/ship-report.md
+- Save operational learnings to memory
+- Clean up merged feature branches
+- Verify deploy (curl the live URL if applicable)
 
 ### Step 5: Monitor progress
 
