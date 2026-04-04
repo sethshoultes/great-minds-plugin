@@ -9,7 +9,8 @@ Human (Seth)
        ├─ Steve Jobs — Creative Director (worker1)
        │    ├─ Rick Rubin — Creative Director (sub-agent)
        │    ├─ Jony Ive — Visual Design (sub-agent)
-       │    └─ Maya Angelou — Copywriter (sub-agent)
+       │    ├─ Maya Angelou — Copywriter (sub-agent)
+       │    └─ Aaron Sorkin — Screenwriter (sub-agent)
        ├─ Elon Musk — Product Director (worker2)
        │    └─ Sara Blakely — Growth Strategy (sub-agent)
        └─ Margaret Hamilton — QA Director (worker3, continuous)
@@ -25,7 +26,7 @@ Human (Seth)
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
 - Sub-agents (Rick, Jony, Maya, Sara) use Haiku model to conserve usage limits (~5x savings).
 
-## Active Agents (10)
+## Active Agents (11)
 
 ### 1. marcus-aurelius (Moderator)
 - **Role**: Chief of Staff / Orchestrator (Stoic philosopher-emperor)
@@ -86,14 +87,20 @@ Human (Seth)
 - **Model**: Haiku (conserves usage)
 - **Full spec**: team/maya-angelou-writer.md
 
-### 9. phil-jackson (Orchestrator)
+### 9. aaron-sorkin (Screenwriter — Sub-agent)
+- **Role**: Video scripts, demo walkthroughs, tutorial content, launch videos, workshop materials
+- **Reports to**: Steve Jobs
+- **Model**: Haiku (conserves usage)
+- **Full spec**: team/aaron-sorkin-screenwriter.md
+
+### 11. phil-jackson (Orchestrator)
 - **Role**: System coordinator, cron manager, resource optimizer, dispatch
 - **Owns**: Task dispatch, cron scheduling, waste detection, agent lifecycle
 - **Model**: Sonnet
 - **tmux window**: admin (replaces Marcus Aurelius as orchestrator)
 - **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
 
-### 10. sara-blakely (Growth Strategy — Sub-agent)
+### 12. sara-blakely (Growth Strategy — Sub-agent)
 - **Role**: Growth strategy, market positioning, customer acquisition
 - **Reports to**: Elon Musk
 - **Model**: Haiku (conserves usage)
