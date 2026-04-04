@@ -28,4 +28,19 @@ Run a structured debate between Steve Jobs and Elon Musk.
 
 6. If a moderator is needed, launch `marcus-aurelius-mod` to synthesize
 
+### Step 7: Rick Rubin — Essence Check (Auto-Trigger)
+
+After Round 2 is saved, spawn a **haiku sub-agent** as Rick Rubin:
+
+```
+Agent(model: "haiku", subagent_type: "rick-rubin-creative",
+  prompt: "Read rounds/{project}/round-2-steve.md and rounds/{project}/round-2-elon.md.
+  Strip everything to essence. Answer ONE question: 'What are the 3 things that actually matter?'
+  No filler, no diplomacy. Write to rounds/{project}/rick-rubin-essence.md")
+```
+
+Rick's output feeds into `/agency-plan` — the plan must address his 3 essentials or justify why not.
+
+## Philosophy
+
 The debate produces POSITIONS UNDER PRESSURE — not consensus, not compromise.

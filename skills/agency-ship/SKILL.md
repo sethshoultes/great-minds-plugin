@@ -141,6 +141,39 @@ Write a completion summary to `deliverables/{project}/ship-report.md`:
 {3-5 bullet points on what worked well and what to improve next time}
 ```
 
+### Step 5b: Phil Jackson — Consolidate All Agent Outputs (Auto-Trigger)
+
+Before final ship, Phil Jackson (the orchestrator / main session) consolidates all agent outputs from the project into SCOREBOARD.md:
+
+1. Read all files in `rounds/{project}/` — debate rounds, Rick Rubin essence, board reviews, Jony/Maya reviews, Sorkin demo scripts
+2. Read `.planning/sara-blakely-review.md`
+3. Read `engineering/phase-{N}-verification.md`
+4. Update SCOREBOARD.md with:
+   - Agent participation counts (who contributed, how many reviews)
+   - Quality gate results (Jony pass/fail, Maya pass/fail)
+   - Board verdict summary
+   - Key quotes from each agent's output
+
+This is Phil's job as orchestrator — he sees the full picture and makes sure nothing falls through the cracks.
+
+### Step 5c: Marcus Aurelius — Retrospective (Auto-Trigger)
+
+After Phil consolidates, spawn a **haiku sub-agent** as Marcus Aurelius:
+
+```
+Agent(model: "haiku", subagent_type: "marcus-aurelius-mod",
+  prompt: "Read all project outputs: rounds/{project}/, engineering/phase-{N}-*.md, deliverables/{project}/.
+  Write a Stoic retrospective:
+  - What worked and why (with specific examples)
+  - What didn't work and what we'd do differently
+  - What we learned about our process
+  - One principle to carry forward
+  Be honest, not kind. The goal is growth, not comfort.
+  Write to memory/{project}-retrospective.md")
+```
+
+The retrospective feeds into the agency's long-term memory for future projects.
+
 ### Step 6: Save Operational Learnings to Memory
 
 Write learnings to `memory/` for future projects:

@@ -143,6 +143,22 @@ tasks_complete: 0
 - **Marcus Aurelius**: Validates task ordering and resource allocation
 - **Haiku sub-agents**: Do the research and verification grunt work
 
+### Step 7: Sara Blakely — Customer Gut-Check (Auto-Trigger)
+
+After the phase plan is written, spawn a **haiku sub-agent** as Sara Blakely:
+
+```
+Agent(model: "haiku", subagent_type: "sara-blakely-growth",
+  prompt: "Read engineering/phase-{N}-plan.md and the original PRD.
+  Gut-check from a real customer's perspective. Answer honestly:
+  - Would a real customer pay for this?
+  - What would make them say 'shut up and take my money'?
+  - What feels like engineering vanity vs. customer value?
+  Write to .planning/sara-blakely-review.md")
+```
+
+If Sara flags major customer-value gaps, the orchestrator should review the plan before proceeding to `/agency-execute`.
+
 ## Key Principles
 
 1. **Plans are disposable** — regenerate if requirements change

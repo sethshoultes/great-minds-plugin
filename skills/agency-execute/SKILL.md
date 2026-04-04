@@ -165,6 +165,40 @@ Write an execution report to `engineering/phase-{N}-execution.md`:
 - {Any manual steps needed}
 ```
 
+### Pre-PR Quality Gates (Auto-Trigger)
+
+Before any PR is created from a task execution, run these conditional reviews:
+
+#### Jony Ive — Visual Review (UI/Frontend Tasks Only)
+
+If the task involves UI, frontend, CSS, components, or design:
+
+```
+Agent(model: "haiku", subagent_type: "jony-ive-designer",
+  prompt: "Review the changes in this branch for visual quality.
+  Read the changed files. Evaluate:
+  - Is every element intentional? Remove anything that doesn't need to be there.
+  - Does spacing, alignment, and typography feel considered?
+  - Would this embarrass us on a stage demo?
+  Write a brief visual review (pass/fail with notes) to rounds/{project}/jony-ive-review-{task-id}.md")
+```
+
+#### Maya Angelou — Copy Review (Text/Messaging Tasks Only)
+
+If the task involves copy, messaging, landing pages, emails, or user-facing text:
+
+```
+Agent(model: "haiku", subagent_type: "maya-angelou-writer",
+  prompt: "Review the user-facing text in this branch.
+  Read the changed files. Evaluate:
+  - Does every word earn its place?
+  - Is the tone consistent and human?
+  - Will people FEEL something, or just read something?
+  Write a brief copy review (pass/fail with notes) to rounds/{project}/maya-angelou-review-{task-id}.md")
+```
+
+If either reviewer returns FAIL, the task agent must address the feedback before creating the PR.
+
 ## Key Principles
 
 1. **Fresh context destroys context rot** — sub-agents start clean every time

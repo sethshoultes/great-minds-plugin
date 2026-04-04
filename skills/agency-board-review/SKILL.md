@@ -72,6 +72,22 @@ Spawn board members in parallel to review a topic, file, or deliverable from dif
 [ PROCEED | PROCEED WITH CHANGES | HOLD — NEEDS WORK | REJECT ]
 ```
 
-6. **GitHub issue (optional).** Only file a GitHub issue if the board surfaces a genuinely new strategic finding not already tracked. Label: `board-review`. Do not create duplicate issues.
+6. **Shonda Rhimes — Season 2 Retention Roadmap (Auto-Trigger)**
 
-7. **Commit** the individual reviews and verdict, then report the verdict summary to the user.
+   After the board verdict is written, spawn Shonda Rhimes separately as a **haiku sub-agent** for a deeper retention analysis:
+
+   ```
+   Agent(model: "haiku", subagent_type: "shonda-rhimes-board",
+     prompt: "You already wrote your board review. Now go deeper.
+     Read the board verdict and all four individual reviews.
+     Write a 'Season 2 Roadmap' — what features and experiences would keep users coming back?
+     Think like a showrunner: What's the cliffhanger? What makes them need episode 2?
+     Structure: 3-5 retention hooks, each with a one-line pitch and why it works.
+     Write to rounds/{project}/shonda-retention-roadmap.md")
+   ```
+
+   Shonda's retention roadmap becomes input for future PRD planning.
+
+7. **GitHub issue (optional).** Only file a GitHub issue if the board surfaces a genuinely new strategic finding not already tracked. Label: `board-review`. Do not create duplicate issues.
+
+8. **Commit** the individual reviews and verdict, then report the verdict summary to the user.

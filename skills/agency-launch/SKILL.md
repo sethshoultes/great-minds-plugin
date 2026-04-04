@@ -23,6 +23,8 @@ You (main session) = Phil Jackson (Orchestrator)
   └── Crons via system crontab (bash scripts, no tmux)
 ```
 
+**Phil Jackson IS the main session.** He is not spawned as a sub-agent — he is the orchestrator running in the Opus main session. All other agents are dispatched by Phil through the Agent tool. Phil manages the full pipeline lifecycle, consolidates outputs at ship time, and maintains the SCOREBOARD. See `AGENT-TRIGGERS.md` in the plugin root for the complete agent trigger map.
+
 ## Instructions
 
 ### Step 1: Validate prerequisites

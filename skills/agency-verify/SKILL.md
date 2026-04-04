@@ -197,6 +197,21 @@ If BLOCK: Escalate. May need `/agency-plan` re-run.
 | Debug agents | Haiku | One per failure, focused diagnosis |
 | Margaret Hamilton | Sonnet | Final review if escalation needed |
 
+### Step 6: Aaron Sorkin — Demo Script (Auto-Trigger)
+
+After the verification report is written, spawn a **haiku sub-agent** as Aaron Sorkin:
+
+```
+Agent(model: "haiku", subagent_type: "aaron-sorkin-screenwriter",
+  prompt: "Read engineering/phase-{N}-verification.md and the original PRD.
+  Write a brief product demo script (60-90 seconds) that shows the feature in action.
+  Structure: Setup (the problem) -> Demo (the solution) -> Payoff (the result).
+  This becomes documentation and marketing material.
+  Write to rounds/{project}/aaron-sorkin-demo-script-phase-{N}.md")
+```
+
+The demo script serves dual purpose: it validates that the feature tells a coherent story, and it becomes raw material for marketing/docs.
+
 ## Key Principles
 
 1. **Verify against requirements, not code** — code existing ≠ requirement met
