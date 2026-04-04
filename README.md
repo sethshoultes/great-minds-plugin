@@ -12,7 +12,7 @@ npx plugins add sethshoultes/great-minds-plugin
 
 ## What You Get
 
-### 13 Agent Personas
+### 14 Agent Personas
 
 | Agent | Role |
 |-------|------|
@@ -22,6 +22,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `jensen-huang-board` | Board Member — tech strategy, data moats, platform economics |
 | `oprah-winfrey-board` | Board Member — audience connection, storytelling, accessibility |
 | `warren-buffett-board` | Board Member — business model, unit economics, moat durability |
+| `shonda-rhimes-board` | Board Member — narrative & engagement, retention loops, cliffhangers |
 | `margaret-hamilton-qa` | QA Director — zero-defect methodology, continuous testing |
 | `rick-rubin-creative` | Creative Director — strip to essence, authenticity |
 | `jony-ive-designer` | Visual Design — spacing, hierarchy, craft, inevitability |
@@ -38,7 +39,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `/agency-launch` | Launch the pipeline: debate → plan → execute → verify → ship |
 | `/agency-status` | Check agent status, blockers, commits |
 | `/agency-review` | Run a Jensen Huang board review |
-| `/agency-board-review` | Full board review — Jensen, Oprah, Warren review in parallel, then consolidate |
+| `/agency-board-review` | Full board review — Jensen, Oprah, Warren, Shonda review in parallel, then consolidate |
 | `/agency-crons` | Install decoupled cron system (bash + haiku, no bottleneck) |
 | `/agency-debate <topic>` | Run a Steve vs. Elon debate |
 | `/agency-plan` | GSD-style structured task planning with XML plans |
@@ -78,7 +79,8 @@ You (Phil Jackson — Orchestrator)
   ├── Board of Directors (parallel via /agency-board-review)
   │    ├── Jensen Huang — Tech Strategy (cron reviews, GitHub issues)
   │    ├── Oprah Winfrey — Audience & Accessibility
-  │    └── Warren Buffett — Business & Economics
+  │    ├── Warren Buffett — Business & Economics
+  │    └── Shonda Rhimes — Narrative & Engagement
   ├── Agent tool (worktree) → Steve Jobs — Creative Director
   │    └── Agent tool (haiku) → Jony Ive, Maya Angelou, Rick Rubin
   ├── Agent tool (worktree) → Elon Musk — Product Director
