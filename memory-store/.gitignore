@@ -1,0 +1,7 @@
+node_modules/
+dist/
+memory.db-wal
+memory.db-shm
+*.db-journal
+# NOTE: memory.db is intentionally NOT gitignored — it travels with the repo
+# so the DO server and worktree agents get the full memory store
