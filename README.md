@@ -31,7 +31,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
 | `marcus-aurelius-mod` | Moderator — Stoic orchestration, conflict mediation |
 
-### 14 Skills (Slash Commands)
+### 15 Skills (Slash Commands)
 
 | Command | Description |
 |---------|-------------|
@@ -48,6 +48,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `/agency-memory` | Memory operations — store, recall, consolidate learnings |
 | `/agency-publish` | Publish deliverables to external platforms |
 | `/agency-video` | Generate video scripts and storyboards |
+| `/agency-daemon` | Long-running Agent SDK daemon -- continuous orchestration, replaces cron pipeline |
 | `/scope-check` | Detect scope creep against original plan |
 
 ### Hooks
@@ -99,9 +100,13 @@ You (Phil Jackson — Orchestrator)
 - Cron dispatch via tmux — can't reliably send commands to other terminals
 - In-conversation crons — bottleneck the main agent
 
-### Decoupled Cron System
+### Daemon (Primary Orchestration)
 
-Crons run via system crontab, write to log files, never interrupt the main agent:
+The daemon (`/agency-daemon`) is an Agent SDK-based long-running process that replaces the cron pipeline. It handles dispatch, health checks, dream consolidation, and memory maintenance in a single persistent process.
+
+### Legacy Cron System (Fallback)
+
+Crons are still available via `/agency-crons` for environments where the daemon cannot run:
 
 | Cron | Model | Cost |
 |------|-------|------|
@@ -129,8 +134,11 @@ npx plugins add sethshoultes/great-minds-plugin
 
 # Drop a PRD in prds/my-product.md
 
-# Launch the pipeline
+# Launch the pipeline (one-shot)
 /agency-launch
+
+# Or run the daemon for continuous orchestration (recommended)
+/agency-daemon
 
 # Check status anytime
 /agency-status
