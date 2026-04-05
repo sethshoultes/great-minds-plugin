@@ -1,6 +1,6 @@
 ---
 name: agency-video
-description: Create product videos using Aaron Sorkin (script), Jony Ive (visual review), Remotion (React video framework), and OpenAI TTS (voiceover). Full pipeline from concept to rendered MP4.
+description: Create product videos using Aaron Sorkin (script), Shonda Rhimes (narrative review), Jony Ive (visual review), Remotion (React video framework), and OpenAI TTS (voiceover). Full pipeline from concept to rendered MP4.
 argument-hint: <project-name> <duration-seconds>
 allowed-tools: [Read, Write, Bash, Agent, Glob, Grep, Edit]
 ---
@@ -22,7 +22,19 @@ Agent(subagent_type: "general-purpose", isolation: "worktree", run_in_background
            Write to deliverables/[project]-video/script.md")
 ```
 
-### Phase 2: Visual Review (Jony Ive)
+### Phase 2: Narrative Review (Shonda Rhimes)
+After script is ready, spawn Shonda to review the narrative arc:
+```
+Agent(model: "haiku", run_in_background: true,
+  prompt: "You are Shonda Rhimes. Review the video script at deliverables/[project]-video/script.md.
+           Check: Does it hook in the first 10 seconds? Is there tension that pulls the viewer through?
+           Does it build to a satisfying resolution? Would someone share this?
+           Write feedback to deliverables/[project]-video/shonda-review.md
+           If changes are needed, apply them directly to the script.")
+```
+
+### Phase 3: Visual Review (Jony Ive)
+
 After script is ready, spawn Jony Ive to review visual directions:
 ```
 Agent(model: "haiku", run_in_background: true,
