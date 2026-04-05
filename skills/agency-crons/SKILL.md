@@ -1,48 +1,65 @@
 ---
 name: agency-crons
-description: Install decoupled cron system — bash scripts for monitoring, haiku for smart dispatch/dream. Crons run independently via crontab, never bottleneck the main agent.
+description: Install the autonomous cron system — pipeline runner, heartbeat, QA, git monitor, dispatch, dream. The pipeline runner IS the autonomous loop — Claude agents don't loop, the cron does.
 allowed-tools: [Bash, Read, Write]
 ---
 
 # Great Minds Agency — Install Cron System
 
-Install the decoupled cron architecture. Crons run via system crontab, write to log files, and NEVER interrupt the main conversation.
+Install the autonomous pipeline and monitoring crons.
+
+**Key insight:** Claude Code agents complete a task and stop. They don't loop. The `pipeline-runner.sh` cron IS the loop — it reads STATUS.md, detects the current phase, and dispatches `claude -p` with the right prompt to advance to the next phase.
 
 ## Architecture
 
-| Layer | Crons | Model | Cost |
-|-------|-------|-------|------|
-| **Bash (free)** | heartbeat, QA, git monitor, DO check | None | Free |
-| **Haiku (cheap)** | dispatch, dream consolidation | claude --model haiku | ~5x cheaper than Opus |
-| **Main agent** | Reads logs when asked, never runs crons | Opus | Zero cron overhead |
+```
+pipeline-runner.sh (every 15 min)
+  ├── Reads STATUS.md → determines current phase
+  ├── idle: scans prds/ for new PRDs → starts DEBATE
+  ├── debate: checks for decisions.md → starts PLAN
+  ├── plan: checks for .planning/ files → starts BUILD
+  ├── build: checks open PRs → starts VERIFY
+  ├── verify: checks QA report → starts BOARD REVIEW
+  ├── review: checks board reviews → starts SHIP
+  └── ship: merges, updates docs → sets idle
+```
 
-## Instructions
+Each phase dispatches `claude -p "prompt" --dangerously-skip-permissions` which:
+- Spawns sub-agents via Agent tool with worktree isolation
+- Creates branches, builds, commits, pushes, creates PRs
+- Updates STATUS.md when phase completes
 
-### Step 1: Copy cron scripts from plugin
+## Cron Table
 
+| Script | Schedule | Model | Purpose |
+|--------|----------|-------|---------|
+| pipeline-runner.sh | */15 min | Opus (claude -p) | **THE LOOP** — auto-advance pipeline phases |
+| heartbeat.sh | */5 min | Bash + Haiku on error | Health monitoring, issue pickup |
+| margaret-qa.sh | :07/:36 | Bash | Site content verification |
+| git-monitor.sh | */15 min | Bash | Uncommitted changes, open PRs |
+| do-check.sh | */10 min | Bash | SSH health check on remote server |
+| haiku-dispatch.sh | :03/:33 | Haiku | Read TASKS.md, assign idle agents |
+| haiku-dream.sh | :47 | Haiku | Detect drift in system files |
+
+## Installation
+
+### Step 1: Copy cron scripts
 ```bash
-PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT:-$(dirname $(dirname $0))}"
-PROJECT_DIR="$(pwd)"
-mkdir -p "$PROJECT_DIR/crons"
-cp "$PLUGIN_DIR/crons/"*.sh "$PROJECT_DIR/crons/"
-chmod +x "$PROJECT_DIR/crons/"*.sh
+cp $CLAUDE_PLUGIN_ROOT/crons/*.sh ./crons/
+chmod +x ./crons/*.sh
 ```
 
 ### Step 2: Create log directory
-
 ```bash
 mkdir -p /tmp/claude-shared
-touch /tmp/claude-shared/cron-reports.log /tmp/claude-shared/alerts.log
+touch /tmp/claude-shared/cron-reports.log /tmp/claude-shared/alerts.log /tmp/claude-shared/pipeline.log
 ```
 
 ### Step 3: Install crontab
-
-Edit paths in each script to match the project directory, then install:
-
 ```bash
-crontab -l 2>/dev/null > /tmp/existing-crons || true
-cat >> /tmp/existing-crons << 'CRON'
-# Great Minds — Decoupled Crons
+(crontab -l 2>/dev/null; cat << 'CRON'
+# Great Minds — Autonomous Pipeline + Monitoring
+*/15 * * * * cd PROJECT_DIR && PROJECT_DIR/crons/pipeline-runner.sh
 */5 * * * * PROJECT_DIR/crons/heartbeat.sh
 7,36 * * * * PROJECT_DIR/crons/margaret-qa.sh
 */15 * * * * PROJECT_DIR/crons/git-monitor.sh
@@ -50,36 +67,17 @@ cat >> /tmp/existing-crons << 'CRON'
 3,33 * * * * PROJECT_DIR/crons/haiku-dispatch.sh
 47 * * * * PROJECT_DIR/crons/haiku-dream.sh
 CRON
-sed -i '' "s|PROJECT_DIR|$PROJECT_DIR|g" /tmp/existing-crons
-crontab /tmp/existing-crons
+) | sed "s|PROJECT_DIR|$(pwd)|g" | crontab -
 ```
 
-### Step 4: Verify
+### Step 4: Start a project
+Drop a PRD in `prds/` and the pipeline-runner will detect it on the next run and start the full pipeline automatically.
 
-```bash
-crontab -l
-```
+## How to use
 
-### Step 5: Report
-
-Tell the user:
-```
-Cron system installed!
-
-  Reports:  cat /tmp/claude-shared/cron-reports.log
-  Alerts:   cat /tmp/claude-shared/alerts.log
-  Status:   Ask "what's the status?" — reads log, no interruption
-
-Crons run independently. Main agent is never bottlenecked.
-```
-
-## Included Scripts
-
-| Script | Schedule | What it does |
-|--------|----------|-------------|
-| heartbeat.sh | Every 5 min | File count, site status, memory check |
-| margaret-qa.sh | :07/:36 | Site content verification, image checks, PR detection |
-| git-monitor.sh | Every 15 min | Uncommitted changes across repos |
-| do-check.sh | Every 10 min | SSH health check on remote server |
-| haiku-dispatch.sh | :03/:33 | Read TASKS.md, dispatch idle agents (haiku model) |
-| haiku-dream.sh | :47 | Detect drift in system files (haiku model) |
+1. Write a PRD → save to `prds/my-project.md`
+2. Walk away
+3. The pipeline runner detects it, starts debate, advances through all phases
+4. Check `cat /tmp/claude-shared/pipeline.log` for progress
+5. Check `cat /tmp/claude-shared/alerts.log` for problems
+6. Product ships to main when complete
