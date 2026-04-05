@@ -212,6 +212,46 @@ Agent(model: "haiku", subagent_type: "aaron-sorkin-screenwriter",
 
 The demo script serves dual purpose: it validates that the feature tells a coherent story, and it becomes raw material for marketing/docs.
 
+## QA Pipeline Checks (merged from /agency-qa)
+
+In addition to the requirements-based UAT above, run these QA checks as part of Step 2:
+
+#### Agent 6: Live Site Verification (if deployed)
+- Use Puppeteer or curl to check the live URL
+- Check key pages: /, /welcome, /app (or whatever the app defines)
+- Verify design tokens are rendering (colors, typography, spacing)
+- Check mobile viewport (390x844)
+- Screenshot critical pages for the report
+
+#### Agent 7: API Smoke Test
+```bash
+curl -s {base-url}/api/health | jq .
+curl -s -X POST {base-url}/api/auth/register -H 'Content-Type: application/json' -d '{"test": true}' | head -5
+```
+Report: list each endpoint, HTTP status, response shape.
+
+#### Agent 8: Accessibility
+- Check for ARIA roles on interactive elements
+- Verify color contrast meets WCAG AA
+- Check touch target sizes (44px minimum)
+- Verify keyboard navigation on critical flows
+
+#### Agent 9: Security Review
+- Check API routes don't leak error details in production
+- Verify auth middleware on protected routes
+- Check for hardcoded secrets in source (`grep -r "sk-" "AKIA" "password="`)
+- Verify CORS configuration
+
+Add these categories to the verification report table:
+```markdown
+| Live Site | PASS/FAIL/SKIP | ... |
+| API Smoke | PASS/FAIL/SKIP | ... |
+| A11y | PASS/FAIL/SKIP | ... |
+| Security | PASS/FAIL/SKIP | ... |
+```
+
+If the project has no live deployment, mark Live Site and API Smoke as SKIP.
+
 ## Key Principles
 
 1. **Verify against requirements, not code** — code existing ≠ requirement met

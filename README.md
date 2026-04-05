@@ -31,20 +31,23 @@ npx plugins add sethshoultes/great-minds-plugin
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
 | `marcus-aurelius-mod` | Moderator — Stoic orchestration, conflict mediation |
 
-### 11 Skills (Slash Commands)
+### 14 Skills (Slash Commands)
 
 | Command | Description |
 |---------|-------------|
-| `/agency-start <name>` | Initialize a new agency project with full system files |
+| `/agency-start <name>` | Initialize a new agency project with full system files, dirs, memory, and crons |
 | `/agency-launch` | Launch the pipeline: debate → plan → execute → verify → ship |
-| `/agency-status` | Check agent status, blockers, commits |
-| `/agency-review` | Run a Jensen Huang board review |
-| `/agency-board-review` | Full board review — Jensen, Oprah, Warren, Shonda review in parallel, then consolidate |
-| `/agency-crons` | Install decoupled cron system (bash + haiku, no bottleneck) |
-| `/agency-debate <topic>` | Run a Steve vs. Elon debate |
+| `/agency-status` | Comprehensive health check — pipeline, crons, memory, server, GitHub, commits |
+| `/agency-debate <topic>` | Structured 2-round Steve vs. Elon debate with Rick Rubin essence check |
 | `/agency-plan` | GSD-style structured task planning with XML plans |
 | `/agency-execute` | Wave-based parallel execution with fresh context per task |
-| `/agency-verify` | Automated UAT verification with debug agents |
+| `/agency-verify` | Automated UAT verification + QA pipeline (build, a11y, security, live site) |
+| `/agency-board-review` | Full board review — Jensen, Oprah, Warren, Shonda review in parallel, then consolidate |
+| `/agency-ship` | Ship phase — merge, deploy, retrospective, scoreboard update |
+| `/agency-crons` | Install decoupled cron system (bash + haiku, no bottleneck) |
+| `/agency-memory` | Memory operations — store, recall, consolidate learnings |
+| `/agency-publish` | Publish deliverables to external platforms |
+| `/agency-video` | Generate video scripts and storyboards |
 | `/scope-check` | Detect scope creep against original plan |
 
 ### Hooks
