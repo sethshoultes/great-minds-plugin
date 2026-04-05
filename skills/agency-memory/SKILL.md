@@ -80,10 +80,55 @@ Show memory store statistics:
 cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory stats
 ```
 
+## Maintenance
+
+### Prune
+
+Remove duplicate memories (cosine similarity > 0.92) and low-value entries (e.g., "all green" board reviews, "PASS" QA findings):
+
+```bash
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory prune
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory prune --threshold 0.85
+```
+
+### Consolidate
+
+Find clusters of similar memories (similarity > 0.75) and merge them into single stronger entries:
+
+```bash
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory consolidate
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory consolidate --threshold 0.80
+```
+
+### Optimize
+
+Score all memories by recency, uniqueness, and richness. Remove the bottom 10% by score:
+
+```bash
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory optimize
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory optimize --percentile 20
+```
+
+### Maintain
+
+Run the full maintenance cycle (prune + consolidate + optimize) in sequence. This is what the dream cron calls automatically:
+
+```bash
+cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory maintain
+```
+
 ## Environment
 
 - `OPENAI_API_KEY` — enables neural embeddings (text-embedding-3-small). Falls back to TF-IDF when absent.
 - `MEMORY_DB` — custom path to SQLite database. Defaults to `memory-store/memory.db`.
+
+## Bundled Store
+
+The memory store also ships with this plugin at `memory-store/`. Any installation gets a fresh copy. Install dependencies before first use:
+
+```bash
+cd "/path/to/great-minds-plugin/memory-store" && npm install
+```
 
 ## Design
 
