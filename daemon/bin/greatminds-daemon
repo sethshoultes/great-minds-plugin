@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Great Minds Daemon — Launch script
+# Usage: ./bin/greatminds-daemon
+
+set -euo pipefail
+
+DAEMON_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
+echo "Great Minds Daemon v1.0"
+echo "Directory: $DAEMON_DIR"
+echo ""
+
+# Ensure dependencies are installed
+if [ ! -d "$DAEMON_DIR/node_modules" ]; then
+  echo "Installing dependencies..."
+  cd "$DAEMON_DIR" && npm install
+  echo ""
+fi
+
+# Start the daemon
+cd "$DAEMON_DIR" && exec npx tsx src/daemon.ts

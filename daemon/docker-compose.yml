@@ -1,0 +1,63 @@
+# Great Minds Daemon — Docker Compose
+#
+# Usage:
+#   1. Copy .env.example to .env and fill in your credentials
+#   2. docker compose up -d
+#   3. Drop PRDs in ./prds/ — the daemon builds them automatically
+#   4. docker compose logs -f   to watch progress
+#
+# The daemon runs the full GSD pipeline:
+#   PRD → Debate (Steve vs Elon) → Plan → Build → QA x2 → Board Review → Ship
+#   When idle: featureDream invents new products
+
+services:
+  daemon:
+    build:
+      context: .
+      args:
+        REPO_URL: ${REPO_URL:-https://github.com/sethshoultes/great-minds.git}
+    container_name: great-minds-daemon
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      # Mount PRDs directory — drop a .md file here to trigger a build
+      - ./prds:/home/agent/great-minds/prds
+      # Mount deliverables — built products appear here
+      - ./deliverables:/home/agent/great-minds/deliverables
+      # Mount rounds — debate transcripts, QA reports, board reviews
+      - ./rounds:/home/agent/great-minds/rounds
+      # Mount dreams — featureDream output
+      - ./dreams:/home/agent/great-minds/dreams
+      # Mount memory store — persistent across restarts
+      - ./memory-store/memory.db:/home/agent/great-minds/memory-store/memory.db
+      # Claude auth — mount your credentials
+      - ${CLAUDE_CONFIG_DIR:-~/.claude}:/home/agent/.claude:ro
+      # Git config for commits
+      - ${GIT_CONFIG:-~/.gitconfig}:/home/agent/.gitconfig:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: run the daemon for Shipyard AI separately
+  shipyard-daemon:
+    build:
+      context: .
+      args:
+        REPO_URL: https://github.com/sethshoultes/shipyard-ai.git
+    container_name: shipyard-daemon
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - PIPELINE_REPO=/home/agent/shipyard-ai
+    volumes:
+      - ${CLAUDE_CONFIG_DIR:-~/.claude}:/home/agent/.claude:ro
+      - ${GIT_CONFIG:-~/.gitconfig}:/home/agent/.gitconfig:ro
+    profiles:
+      - shipyard  # Only starts with: docker compose --profile shipyard up -d
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

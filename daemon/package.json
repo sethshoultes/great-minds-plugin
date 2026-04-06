@@ -1,0 +1,22 @@
+{
+  "name": "greatminds-daemon",
+  "version": "1.0.0",
+  "description": "Great Minds Agency — Autonomous agent daemon replacing all cron scripts",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/daemon.ts",
+    "dev": "tsx watch src/daemon.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.1.0",
+    "chokidar": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
