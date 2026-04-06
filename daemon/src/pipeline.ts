@@ -57,23 +57,32 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
   let inputTokens = 0;
   let outputTokens = 0;
 
-  for await (const message of query({
-    prompt,
-    options: {
-      maxTurns,
-      allowedTools: ALLOWED_TOOLS,
-      permissionMode: "bypassPermissions" as const,
-    },
-  })) {
-    if (message.type === "result") {
-      result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
-      const msg = message as any;
-      if (msg.inputTokens) inputTokens = msg.inputTokens;
-      if (msg.outputTokens) outputTokens = msg.outputTokens;
-      if (msg.usage) {
-        inputTokens = msg.usage.input_tokens || msg.usage.inputTokens || inputTokens;
-        outputTokens = msg.usage.output_tokens || msg.usage.outputTokens || outputTokens;
+  try {
+    for await (const message of query({
+      prompt,
+      options: {
+        maxTurns,
+        allowedTools: ALLOWED_TOOLS,
+        permissionMode: "bypassPermissions" as const,
+      },
+    })) {
+      if (message.type === "result") {
+        result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
+        const msg = message as any;
+        if (msg.inputTokens) inputTokens = msg.inputTokens;
+        if (msg.outputTokens) outputTokens = msg.outputTokens;
+        if (msg.usage) {
+          inputTokens = msg.usage.input_tokens || msg.usage.inputTokens || inputTokens;
+          outputTokens = msg.usage.output_tokens || msg.usage.outputTokens || outputTokens;
+        }
       }
+    }
+  } catch (err) {
+    // SDK throws exit code 1 after successful completion — ignore if we got a result
+    if (result) {
+      log(`AGENT NOTE: ${name} — process exited with error after returning result (ignored)`);
+    } else {
+      throw err;
     }
   }
 
