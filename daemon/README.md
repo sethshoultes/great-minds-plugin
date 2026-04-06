@@ -47,8 +47,9 @@ daemon/
     agents.ts              Prompt templates for all 14 personas
     dream.ts               featureDream cycle (IMPROVE / DREAM)
     health.ts              Heartbeat, git monitor, memory maintenance
-    config.ts              Paths, intervals, repo list
+    config.ts              Paths, intervals, repo list, timeouts
     logger.ts              Console + file logging
+    telegram.ts            Telegram Bot API notifications
 ```
 
 ## Configuration
@@ -59,6 +60,59 @@ Edit `src/config.ts` to change:
 - Sites to health-check
 - Polling intervals
 - Dream/maintenance intervals
+
+## Telegram Notifications
+
+The daemon can send real-time status updates to a Telegram chat. To enable:
+
+1. Create a bot via [@BotFather](https://t.me/BotFather) on Telegram.
+2. Send a message to your bot, then call `https://api.telegram.org/bot<TOKEN>/getUpdates` to get your `chat_id`.
+3. Set the environment variables:
+   ```bash
+   export TELEGRAM_BOT_TOKEN="123456:ABC-DEF..."
+   export TELEGRAM_CHAT_ID="123456789"
+   ```
+
+The daemon notifies on:
+- Pipeline start (new PRD detected)
+- Each phase transition (debate, plan, build, QA, creative review, board review, ship)
+- QA verdicts (PASS / BLOCK)
+- Pipeline completion or failure
+- Agent crashes (after retry exhaustion)
+- Hung agent / pipeline watchdog triggers
+- Daemon startup
+
+If no token is configured, notifications are silently skipped (no errors).
+
+The module also supports **inline keyboard buttons** (`notifyWithButtons`) and **polling for button responses** (`pollForResponse`) for future interactive workflows.
+
+## Crash Recovery
+
+Agent calls are wrapped with automatic retry:
+
+- Each agent gets **2 attempts** by default.
+- On failure, the daemon waits with **exponential backoff** (5s, 10s, ...) before retrying.
+- After all retries are exhausted, the error is logged, a Telegram notification is sent, and the agent failure propagates up.
+- If an entire pipeline fails, the daemon **does not crash**. Instead it:
+  1. Logs the error
+  2. Sends a Telegram notification
+  3. Archives the failed PRD to `prds/failed/`
+  4. Continues watching for new work
+
+## Hung Agent Detection
+
+Two layers of timeout protection:
+
+### Agent Timeout (`AGENT_TIMEOUT_MS`)
+- Default: **10 minutes** (600,000 ms)
+- If a single agent call exceeds this limit, it is aborted and retried.
+- Set via environment variable: `AGENT_TIMEOUT_MS=600000`
+
+### Pipeline Watchdog (`PIPELINE_TIMEOUT_MS`)
+- Default: **60 minutes** (3,600,000 ms)
+- The daemon checks on every tick whether the current pipeline has been running too long.
+- If exceeded, the pipeline is force-skipped and the daemon moves to the next PRD.
+- Set via environment variable: `PIPELINE_TIMEOUT_MS=3600000`
 
 ## Logs
 

@@ -12,16 +12,18 @@
 import { watch } from "chokidar";
 import { basename, resolve } from "path";
 import { readdir, stat } from "fs/promises";
-import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH } from "./config.js";
+import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH, AGENT_TIMEOUT_MS, PIPELINE_TIMEOUT_MS } from "./config.js";
 import { runPipeline } from "./pipeline.js";
 import { runFeatureDream } from "./dream.js";
 import { runHeartbeat, pollGitHubIssues, runMemoryMaintenance, gitAutoCommit } from "./health.js";
 import { log, logError, trimLog } from "./logger.js";
+import { notify } from "./telegram.js";
 
 // ─── State ──────────────────────────────────────────────────
 
 let pipelineRunning = false;
 let shuttingDown = false;
+let pipelineStartTime = 0; // for watchdog
 
 // Track last-run timestamps
 let lastHeartbeat = 0;
@@ -97,13 +99,52 @@ async function processNextPrd(): Promise<void> {
 
   const project = prdQueue.shift()!;
   pipelineRunning = true;
+  pipelineStartTime = Date.now();
 
   try {
     await runPipeline(`${project}.md`, project);
   } catch (err) {
     logError(`Pipeline failed for "${project}"`, err);
+
+    // Notify via Telegram
+    await notify(
+      `Pipeline crashed for *${project}*:\n\`${err}\`\nArchiving failed PRD and continuing.`,
+      "critical",
+    ).catch(() => {});
+
+    // Archive the failed PRD so the daemon doesn't retry it endlessly
+    try {
+      const { mkdir: mkdirAsync, rename } = await import("fs/promises");
+      const failedDir = resolve(PRDS_DIR, "failed");
+      await mkdirAsync(failedDir, { recursive: true });
+      const prdPath = resolve(PRDS_DIR, `${project}.md`);
+      await rename(prdPath, resolve(failedDir, `${project}.md`)).catch(() => {});
+      log(`ARCHIVE: Moved failed PRD ${project}.md to prds/failed/`);
+    } catch (archiveErr) {
+      logError("Failed to archive failed PRD", archiveErr);
+    }
   } finally {
     pipelineRunning = false;
+    pipelineStartTime = 0;
+  }
+}
+
+// ─── Pipeline Watchdog ─────────────────────────────────────
+
+async function checkPipelineWatchdog(): Promise<void> {
+  if (!pipelineRunning || pipelineStartTime === 0) return;
+
+  const elapsed = Date.now() - pipelineStartTime;
+  if (elapsed > PIPELINE_TIMEOUT_MS) {
+    const minutes = (elapsed / 60_000).toFixed(1);
+    const msg = `WATCHDOG: Pipeline has been running for ${minutes} minutes (limit: ${PIPELINE_TIMEOUT_MS / 60_000} min) — force-skipping`;
+    log(msg);
+    await notify(msg, "critical").catch(() => {});
+
+    // Force-reset pipeline state so the daemon picks up the next PRD
+    // The currently running agent will finish its turn but no new phases will start
+    pipelineRunning = false;
+    pipelineStartTime = 0;
   }
 }
 
@@ -167,6 +208,9 @@ async function runPeriodicTasks(): Promise<void> {
     }
   }
 
+  // Pipeline watchdog — detect hung pipelines
+  await checkPipelineWatchdog();
+
   // Trim log file periodically
   trimLog(500);
 }
@@ -202,7 +246,7 @@ function setupShutdown(): void {
 
 async function main(): Promise<void> {
   log("══════════════════════════════════════════════════");
-  log("GREAT MINDS DAEMON v1.0 — Starting");
+  log("GREAT MINDS DAEMON v1.1 — Starting");
   log(`REPO: ${REPO_PATH}`);
   log(`PRDs: ${PRDS_DIR}`);
   log(`Loop tick: ${INTERVALS.LOOP_TICK_MS / 1000}s`);
@@ -210,7 +254,12 @@ async function main(): Promise<void> {
   log(`GitHub poll: every ${INTERVALS.GITHUB_POLL_MS / 60_000} min`);
   log(`Dream: every ${INTERVALS.DREAM_MS / 3_600_000} hours`);
   log(`Memory: every ${INTERVALS.MEMORY_MAINTAIN_MS / 3_600_000} hours`);
+  log(`Agent timeout: ${AGENT_TIMEOUT_MS / 60_000} min`);
+  log(`Pipeline timeout: ${PIPELINE_TIMEOUT_MS / 60_000} min`);
   log("══════════════════════════════════════════════════");
+
+  // Notify Telegram that the daemon is starting
+  await notify("Daemon *started* and watching for work.", "info").catch(() => {});
 
   setupShutdown();
   startPrdWatcher();

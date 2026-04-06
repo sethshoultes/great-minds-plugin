@@ -55,6 +55,12 @@ export const INTERVALS = {
 /** Default maxTurns for agent calls */
 export const DEFAULT_MAX_TURNS = 30;
 
+/** Timeout for a single agent call (default 10 minutes) */
+export const AGENT_TIMEOUT_MS = Number(process.env.AGENT_TIMEOUT_MS) || 10 * 60 * 1000;
+
+/** Timeout for an entire pipeline run (default 60 minutes) */
+export const PIPELINE_TIMEOUT_MS = Number(process.env.PIPELINE_TIMEOUT_MS) || 60 * 60 * 1000;
+
 /** Shared log directory */
 export const LOG_DIR = "/tmp/claude-shared";
 

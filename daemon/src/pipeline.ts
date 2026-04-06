@@ -6,8 +6,9 @@ import { resolve } from "path";
 import { mkdir } from "fs/promises";
 import {
   REPO_PATH, PLUGIN_PATH, PRDS_DIR, ROUNDS_DIR, DELIVERABLES_DIR,
-  SKILLS_DIR, DEFAULT_MAX_TURNS,
+  SKILLS_DIR, DEFAULT_MAX_TURNS, AGENT_TIMEOUT_MS,
 } from "./config.js";
+import { notify, notifyPhase } from "./telegram.js";
 import {
   steveJobsDebateR1, elonMuskDebateR1,
   steveJobsDebateR2, elonMuskDebateR2,
@@ -43,7 +44,12 @@ export function setCurrentProject(project: string): void {
 
 const ALLOWED_TOOLS = ["Read", "Write", "Edit", "Bash", "Agent", "Glob", "Grep"];
 
-async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
+/**
+ * Core agent call — runs a single query() invocation with token tracking.
+ * This is the inner function; use runAgentWithRetry() or runAgentWithTimeout()
+ * as the public entry points.
+ */
+async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
   log(`AGENT START: ${name}`);
   const startTime = Date.now();
 
@@ -61,7 +67,6 @@ async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TUR
   })) {
     if (message.type === "result") {
       result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
-      // Extract token usage from SDK result if available
       const msg = message as any;
       if (msg.inputTokens) inputTokens = msg.inputTokens;
       if (msg.outputTokens) outputTokens = msg.outputTokens;
@@ -99,6 +104,85 @@ async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TUR
   }
 
   return result;
+}
+
+// ─── Crash Recovery with Retry ─────────────────────────────
+
+/**
+ * Wraps runAgentCore with automatic retry on failure.
+ * Uses exponential backoff (5s, 10s, ...) between attempts.
+ */
+async function runAgentWithRetry(
+  name: string,
+  prompt: string,
+  maxTurns = DEFAULT_MAX_TURNS,
+  maxRetries = 2,
+  phase = "",
+): Promise<string> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await runAgentCore(name, prompt, maxTurns, phase);
+    } catch (err) {
+      log(`AGENT FAILED: ${name} attempt ${attempt}/${maxRetries} — ${err}`);
+      if (attempt === maxRetries) {
+        await notify(
+          `Agent *${name}* failed after ${maxRetries} attempts:\n\`${err}\``,
+          "critical",
+        );
+        throw err;
+      }
+      // Exponential backoff
+      const delay = attempt * 5000;
+      log(`AGENT RETRY: ${name} attempt ${attempt + 1} in ${delay / 1000}s`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  // Unreachable, but TypeScript needs it
+  throw new Error(`runAgentWithRetry: exhausted retries for ${name}`);
+}
+
+// ─── Hung Agent Detection ──────────────────────────────────
+
+/**
+ * Wraps runAgentWithRetry with a hard timeout.
+ * If the agent exceeds timeoutMs, the promise rejects (triggering retry).
+ */
+async function runAgentWithTimeout(
+  name: string,
+  prompt: string,
+  maxTurns = DEFAULT_MAX_TURNS,
+  timeoutMs = AGENT_TIMEOUT_MS,
+  maxRetries = 2,
+  phase = "",
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      const msg = `AGENT HUNG: ${name} exceeded ${timeoutMs / 1000}s — aborting`;
+      log(msg);
+      notify(msg, "warning").catch(() => {});
+      reject(new Error(msg));
+    }, timeoutMs);
+
+    runAgentWithRetry(name, prompt, maxTurns, maxRetries, phase)
+      .then((result) => {
+        clearTimeout(timer);
+        resolve(result);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+}
+
+// ─── Public runAgent (drop-in replacement) ─────────────────
+
+/**
+ * Run an agent with timeout protection and automatic retry.
+ * This is the function all pipeline phases should call.
+ */
+async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
+  return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 2, phase);
 }
 
 // ─── Pipeline Phases ────────────────────────────────────────
@@ -278,41 +362,71 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
   log(`═══════════════════════════════════════════════════`);
   const startTime = Date.now();
 
+  await notify(`Pipeline *started* for project *${project}*\nPRD: \`${prdFile}\``, "info");
+
   try {
+    await notifyPhase(project, "debate", "start");
     await runDebate(prdFile, project);
+    await notifyPhase(project, "debate", "done");
+
+    await notifyPhase(project, "plan", "start");
     await runPlan(project);
+    await notifyPhase(project, "plan", "done");
+
+    await notifyPhase(project, "build", "start");
     await runBuild(project);
+    await notifyPhase(project, "build", "done");
 
     // QA pass 1
+    await notifyPhase(project, "qa-1", "start");
     const qa1 = await runQA(project, 1);
+    await notify(`*${project}* | QA-1 verdict: *${qa1}*`, qa1 === "PASS" ? "info" : "warning");
+
     // QA pass 2 (even if pass 1 blocked and we auto-fixed)
-    await runQA(project, 2);
+    await notifyPhase(project, "qa-2", "start");
+    const qa2 = await runQA(project, 2);
+    await notify(`*${project}* | QA-2 verdict: *${qa2}*`, qa2 === "PASS" ? "info" : "warning");
 
     // Creative review (Jony Ive, Maya Angelou, Aaron Sorkin)
+    await notifyPhase(project, "creative-review", "start");
     await runCreativeReview(project);
+    await notifyPhase(project, "creative-review", "done");
 
     // Board review
+    await notifyPhase(project, "board-review", "start");
     await runBoardReview(project);
+    await notifyPhase(project, "board-review", "done");
 
     // Ship
+    await notifyPhase(project, "ship", "start");
     await runShip(project);
+    await notifyPhase(project, "ship", "done");
 
     // Archive completed PRD so daemon doesn't rebuild it
-    const prdPath = resolve(PRDS_DIR, prd);
+    const prdPath = resolve(PRDS_DIR, prdFile);
     const archiveDir = resolve(PRDS_DIR, "completed");
     await mkdir(archiveDir, { recursive: true });
-    const archivePath = resolve(archiveDir, prd);
+    const archivePath = resolve(archiveDir, prdFile);
     const { rename } = await import("fs/promises");
     await rename(prdPath, archivePath).catch(() => {});
-    log(`ARCHIVE: Moved ${prd} to prds/completed/`);
+    log(`ARCHIVE: Moved ${prdFile} to prds/completed/`);
 
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`═══════════════════════════════════════════════════`);
     log(`PIPELINE COMPLETE: ${project} in ${elapsed} minutes`);
     log(`═══════════════════════════════════════════════════`);
+
+    await notify(
+      `Pipeline *SHIPPED* for *${project}* in ${elapsed} minutes`,
+      "info",
+    );
   } catch (err) {
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`PIPELINE FAILED: ${project} after ${elapsed} minutes — ${err}`);
+    await notify(
+      `Pipeline *FAILED* for *${project}* after ${elapsed} minutes\n\`${err}\``,
+      "critical",
+    );
     throw err;
   }
 }

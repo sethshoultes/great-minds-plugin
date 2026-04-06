@@ -61,6 +61,19 @@ Press Ctrl+C. The daemon finishes the current agent call and exits gracefully.
 
 Console output + `/tmp/claude-shared/daemon.log`
 
+## Resilience Features
+
+### Telegram Notifications
+Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` env vars to receive real-time pipeline updates on Telegram. Covers: pipeline start/complete/fail, phase transitions, QA verdicts, agent crashes, hung agent alerts, and daemon startup. Silently skipped if not configured.
+
+### Crash Recovery with Retry
+Agent calls automatically retry up to 2 times with exponential backoff. If a pipeline fails entirely, the daemon archives the failed PRD to `prds/failed/`, sends a Telegram alert, and continues watching for new work (no crash).
+
+### Hung Agent Detection
+- **Agent timeout** (`AGENT_TIMEOUT_MS`, default 10 min): kills and retries individual agent calls that exceed the limit.
+- **Pipeline watchdog** (`PIPELINE_TIMEOUT_MS`, default 60 min): force-skips entire pipelines that run too long.
+
 ## Configuration
 
 Edit `daemon/src/config.ts` to change intervals, repos, sites, and paths.
+Set `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `AGENT_TIMEOUT_MS`, `PIPELINE_TIMEOUT_MS` via environment variables (see `daemon/.env.example`).
