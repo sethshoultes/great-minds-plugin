@@ -31,7 +31,7 @@ npx plugins add sethshoultes/great-minds-plugin
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
 | `marcus-aurelius-mod` | Moderator — Stoic orchestration, conflict mediation |
 
-### 15 Skills (Slash Commands)
+### 17 Skills (Slash Commands)
 
 | Command | Description |
 |---------|-------------|
@@ -49,6 +49,8 @@ npx plugins add sethshoultes/great-minds-plugin
 | `/agency-publish` | Publish deliverables to external platforms |
 | `/agency-video` | Generate video scripts and storyboards |
 | `/agency-daemon` | Long-running Agent SDK daemon -- continuous orchestration, replaces cron pipeline |
+| `/agency-anatomy` | File anatomy -- token estimates per file for context budgeting |
+| `/agency-tokens` | Token ledger -- cost tracking per agent across pipeline runs |
 | `/scope-check` | Detect scope creep against original plan |
 
 ### Hooks
@@ -103,6 +105,34 @@ You (Phil Jackson — Orchestrator)
 ### Daemon (Primary Orchestration)
 
 The daemon (`/agency-daemon`) is an Agent SDK-based long-running process that replaces the cron pipeline. It handles dispatch, health checks, dream consolidation, and memory maintenance in a single persistent process.
+
+### Daemon Resilience
+
+The daemon includes production-grade resilience features:
+
+- **Telegram Notifications** — Real-time alerts for pipeline starts, completions, failures, and hung agents. Requires `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` environment variables.
+- **Crash Recovery** — Failed pipeline phases retry up to 2 times with exponential backoff. If all retries fail, the PRD is archived to `prds/failed/` so it does not block the queue.
+- **Hung Agent Detection** — Individual agents timeout after 10 minutes (`AGENT_TIMEOUT_MS`). The entire pipeline timeout is 60 minutes (`PIPELINE_TIMEOUT_MS`). Hung agents are killed and the phase is retried or skipped.
+
+#### Telegram Setup
+
+1. Message [@BotFather](https://t.me/BotFather) on Telegram and create a new bot (`/newbot`)
+2. Copy the bot token
+3. Send a message to your bot, then fetch your chat ID via `https://api.telegram.org/bot<TOKEN>/getUpdates`
+4. Set environment variables:
+   ```bash
+   export TELEGRAM_BOT_TOKEN="your-bot-token"
+   export TELEGRAM_CHAT_ID="your-chat-id"
+   ```
+
+### Developer Intelligence
+
+Inspired by [OpenWolf](https://github.com/open-wolf), the daemon includes developer intelligence features:
+
+- **File Anatomy** (`/agency-anatomy`) — Token estimates per file, helping agents budget context windows and avoid loading oversized files.
+- **Token Ledger** (`/agency-tokens`) — Tracks token usage and cost per agent across pipeline runs. Shows which agents are expensive and where to optimize.
+- **Bug Memory** — 8 known bugs stored in a searchable buglog (`daemon/buglog.json`). Agents query this before debugging to avoid re-investigating known issues.
+- **Do-Not-Repeat List** — A list of past mistakes and anti-patterns (`daemon/do-not-repeat.json`) injected into every agent session to prevent regression.
 
 ### Legacy Cron System (Fallback)
 
