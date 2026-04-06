@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { MEMORY_TYPES, type MemoryType, MemoryStore } from './store.js';
 import { importAll, exportToMarkdown } from './import.js';
+import { BugLog, seedKnownBugs } from './buglog.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -405,6 +406,111 @@ program
       console.log(`\nMaintenance complete: ${before} → ${after} memories (${before - after} removed)`);
     } finally {
       store.close();
+    }
+  });
+
+// ── bug-add ──────────────────────────────────────────────────────────────
+
+program
+  .command('bug-add')
+  .description('Add a bug to the buglog')
+  .requiredOption('-b, --bug <text>', 'What broke')
+  .option('-c, --cause <text>', 'Root cause', '')
+  .option('-f, --fix <text>', 'Exact fix applied', '')
+  .option('--file <path>', 'File that was fixed', '')
+  .option('--platform <platform>', 'macOS, Linux, or both', 'both')
+  .option('-d, --discovered-by <name>', 'Who discovered it', 'manual')
+  .option('-p, --project <project>', 'Project name', '')
+  .action(async (opts) => {
+    const buglog = new BugLog(resolveDbPath());
+    try {
+      const id = buglog.addBug({
+        bug: opts.bug,
+        cause: opts.cause,
+        fix: opts.fix,
+        file: opts.file,
+        platform: opts.platform,
+        discoveredBy: opts.discoveredBy,
+        project: opts.project,
+      });
+      console.log(`Added bug #${id}: ${opts.bug}`);
+    } finally {
+      buglog.close();
+    }
+  });
+
+// ── bug-search ───────────────────────────────────────────────────────────
+
+program
+  .command('bug-search <query>')
+  .description('Search the buglog for known bugs')
+  .action(async (query) => {
+    const buglog = new BugLog(resolveDbPath());
+    try {
+      const results = buglog.searchBugs(query);
+
+      if (results.length === 0) {
+        console.log('No matching bugs found.');
+        return;
+      }
+
+      for (const bug of results) {
+        console.log(`\n--- Bug #${bug.id} [${bug.platform}] ---`);
+        console.log(`  Bug: ${bug.bug}`);
+        if (bug.cause) console.log(`  Cause: ${bug.cause}`);
+        if (bug.fix) console.log(`  Fix: ${bug.fix}`);
+        if (bug.file) console.log(`  File: ${bug.file}`);
+        console.log(`  Discovered by: ${bug.discoveredBy}`);
+        if (bug.project) console.log(`  Project: ${bug.project}`);
+        console.log(`  When: ${bug.timestamp}`);
+      }
+      console.log(`\n${results.length} bug(s) found.`);
+    } finally {
+      buglog.close();
+    }
+  });
+
+// ── bug-check ────────────────────────────────────────────────────────────
+
+program
+  .command('bug-check')
+  .description('Check if files being modified have known bugs')
+  .argument('<files...>', 'File paths to check')
+  .action(async (files: string[]) => {
+    const buglog = new BugLog(resolveDbPath());
+    try {
+      const results = buglog.checkBeforeBuild(files);
+
+      if (results.length === 0) {
+        console.log('No known bugs for these files. Safe to proceed.');
+        return;
+      }
+
+      console.log(`WARNING: ${results.length} known bug(s) for these files:\n`);
+      for (const bug of results) {
+        console.log(`  Bug #${bug.id}: ${bug.bug}`);
+        console.log(`    File: ${bug.file}`);
+        console.log(`    Fix: ${bug.fix}`);
+        console.log('');
+      }
+    } finally {
+      buglog.close();
+    }
+  });
+
+// ── bug-seed ─────────────────────────────────────────────────────────────
+
+program
+  .command('bug-seed')
+  .description('Pre-populate the buglog with known bugs from this project')
+  .action(async () => {
+    const buglog = new BugLog(resolveDbPath());
+    try {
+      const added = seedKnownBugs(buglog);
+      const total = buglog.count();
+      console.log(`Seeded ${added} new bug(s). Total bugs in log: ${total}`);
+    } finally {
+      buglog.close();
     }
   });
 

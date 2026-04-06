@@ -20,16 +20,37 @@ import {
   marcusAureliusRetrospective,
 } from "./agents.js";
 import { log } from "./logger.js";
+import { TokenLedger, estimateCost } from "./token-ledger.js";
+
+// ─── Token Ledger ───────────────────────────────────────────
+
+let ledger: TokenLedger | null = null;
+let currentProject = "";
+
+function getLedger(): TokenLedger {
+  if (!ledger) {
+    const dbPath = process.env.MEMORY_DB || resolve(REPO_PATH, "memory-store/memory.db");
+    ledger = new TokenLedger(dbPath);
+  }
+  return ledger;
+}
+
+export function setCurrentProject(project: string): void {
+  currentProject = project;
+}
 
 // ─── Agent Runner ───────────────────────────────────────────
 
 const ALLOWED_TOOLS = ["Read", "Write", "Edit", "Bash", "Agent", "Glob", "Grep"];
 
-async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS): Promise<string> {
+async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
   log(`AGENT START: ${name}`);
   const startTime = Date.now();
 
   let result = "";
+  let inputTokens = 0;
+  let outputTokens = 0;
+
   for await (const message of query({
     prompt,
     options: {
@@ -40,17 +61,50 @@ async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TUR
   })) {
     if (message.type === "result") {
       result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
+      // Extract token usage from SDK result if available
+      const msg = message as any;
+      if (msg.inputTokens) inputTokens = msg.inputTokens;
+      if (msg.outputTokens) outputTokens = msg.outputTokens;
+      if (msg.usage) {
+        inputTokens = msg.usage.input_tokens || msg.usage.inputTokens || inputTokens;
+        outputTokens = msg.usage.output_tokens || msg.usage.outputTokens || outputTokens;
+      }
     }
   }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   log(`AGENT DONE: ${name} (${elapsed}s)`);
+
+  // Estimate tokens from prompt/result length if SDK didn't provide them
+  if (inputTokens === 0) {
+    inputTokens = Math.ceil(prompt.length / 4);
+  }
+  if (outputTokens === 0) {
+    outputTokens = Math.ceil(result.length / 4);
+  }
+
+  // Log to token ledger
+  try {
+    getLedger().logUsage({
+      timestamp: new Date().toISOString(),
+      agent: name,
+      project: currentProject,
+      phase: phase || name.split('-')[0],
+      inputTokens,
+      outputTokens,
+      estimatedCost: estimateCost(inputTokens, outputTokens),
+    });
+  } catch (err) {
+    log(`LEDGER WARN: Failed to log token usage for ${name}: ${err}`);
+  }
+
   return result;
 }
 
 // ─── Pipeline Phases ────────────────────────────────────────
 
 export async function runDebate(prdPath: string, project: string): Promise<void> {
+  setCurrentProject(project);
   log(`PHASE: debate — project=${project}`);
   const roundsDir = resolve(ROUNDS_DIR, project);
   await mkdir(roundsDir, { recursive: true });

@@ -9,6 +9,16 @@
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/setup-deps.sh\"",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "PROJECT_DIR=\"${PROJECT_DIR:-$(pwd)}\" bash \"${CLAUDE_PLUGIN_ROOT}/hooks/anatomy-hook.sh\"",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/do-not-repeat-hook.sh\"",
+            "timeout": 5
           }
         ]
       }
