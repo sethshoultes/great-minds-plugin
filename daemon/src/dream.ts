@@ -22,6 +22,7 @@ async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TUR
       maxTurns,
       allowedTools: ALLOWED_TOOLS,
       permissionMode: "bypassPermissions" as const,
+      cwd: REPO_PATH,
     },
   })) {
     if (message.type === "result") {
