@@ -6,9 +6,32 @@ Drop in a PRD. The agents debate strategy, plan in waves, build in parallel with
 
 ## Install
 
+### One-liner (recommended)
+
 ```bash
-npx plugins add sethshoultes/great-minds-plugin
+bash <(curl -fsSL https://raw.githubusercontent.com/sethshoultes/great-minds-plugin/main/install.sh)
 ```
+
+### Manual install
+
+```bash
+# 1. Clone the repo into the Claude Code plugin cache
+git clone https://github.com/sethshoultes/great-minds-plugin.git \
+  ~/.cache/plugins/github.com-sethshoultes-great-minds-plugin
+
+# 2. Run the install script to register the plugin
+~/.cache/plugins/github.com-sethshoultes-great-minds-plugin/install.sh
+
+# 3. Restart Claude Code to load the plugin
+```
+
+### Update
+
+```bash
+cd ~/.cache/plugins/github.com-sethshoultes-great-minds-plugin && git pull
+```
+
+Then restart Claude Code.
 
 ## What You Get
 
@@ -156,8 +179,8 @@ That's it. No tmux, no claude-swarm, no external dependencies.
 ## Quick Start
 
 ```bash
-# Install the plugin
-npx plugins add sethshoultes/great-minds-plugin
+# Install the plugin (see Install section above)
+bash <(curl -fsSL https://raw.githubusercontent.com/sethshoultes/great-minds-plugin/main/install.sh)
 
 # Start a new project
 /agency-start my-product
