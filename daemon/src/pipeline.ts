@@ -81,10 +81,23 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
   } catch (err) {
     // SDK throws exit code 1 after successful completion — ignore if we got a result
     if (result) {
+      // Check if the "result" is actually an auth error
+      if (result.includes("401") || result.includes("authentication_error") || result.includes("Invalid authentication")) {
+        log(`AGENT AUTH FAILED: ${name} — Claude credentials expired. Run 'claude' on the server to re-authenticate.`);
+        await notify(`AUTH EXPIRED: Agent ${name} got 401. Run 'claude' on the server to re-authenticate.`, "critical");
+        throw new Error("Authentication expired — re-run 'claude' on the server to login");
+      }
       log(`AGENT NOTE: ${name} — process exited with error after returning result (ignored)`);
     } else {
       throw err;
     }
+  }
+
+  // Double-check result isn't an auth error masquerading as success
+  if (result.includes("401") || result.includes("authentication_error") || result.includes("/login")) {
+    log(`AGENT AUTH FAILED: ${name} — result contains auth error`);
+    await notify(`AUTH EXPIRED: Agent ${name} returned auth error. Re-authenticate on server.`, "critical");
+    throw new Error("Authentication expired — re-run 'claude' on the server to login");
   }
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
