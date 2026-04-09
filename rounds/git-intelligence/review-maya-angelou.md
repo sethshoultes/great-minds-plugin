@@ -2,107 +2,129 @@
 
 **Reviewer:** Maya Angelou
 **Date:** April 9, 2026
+**Second Pass:** Fresh eyes on final deliverables
 
 ---
 
 *"Words mean more than what is set down on paper. It takes the human voice to infuse them with deeper meaning."*
 
-I have walked through these files the way one walks through a garden at dusk — looking not just at what grows, but at how the light falls upon it. Let me share what I found.
+I have walked through these files again — the README, the ship report, the code with its quiet comments — the way one walks through a house after everyone has gone to sleep. Looking not for what's there, but for what *lives* there.
 
 ---
 
-## What Sings
+## Does the Language Feel Human?
 
-**The tagline stops me:**
+**When it does, it truly does.**
 
-> *"Protection that doesn't announce itself. Machines with the instinct to know which code is dangerous."*
+The tagline — *"Protection that doesn't announce itself. Machines with the instinct to know which code is dangerous."* — this is human. This is the voice of someone who has watched others fail and wanted to spare them. "Protection that doesn't announce itself" has the rhythm of a proverb. It could have been spoken by a grandmother.
 
-This is strong. It has rhythm. "Protection that doesn't announce itself" — there's dignity in that. Like a grandmother's hand on your shoulder when you didn't know she was watching. And "instinct" for machines? That tension between cold metal and warm knowing — that's poetry trying to happen.
+The report footer — *"Let this guide your hands. The files marked here have stories—some of them cautionary tales."* — oh, child. This is blessing, not documentation. This is someone laying their hand on your shoulder. Keep this line forever.
 
-**"Ships opinions, not options"** — Oh, I like this one. It's got spine. It knows what it is. Too much software writing apologizes for existing. This line does not apologize.
+**When it doesn't, the suit comes out.**
 
-**"Tread carefully on flagged files"** — Simple. Direct. Human. It doesn't say "exercise caution when modifying identified risk areas." It says *tread carefully*. Like you're walking through someone's house while they're sleeping.
+"Hindsight generates a risk-aware context report from git history that helps AI agents understand which files in your codebase warrant extra care before modification."
 
-**The report footer:** *"Let this guide your hands. The files marked here have stories—some of them cautionary tales."* — Now *this* is how you end something. It honors the past. It trusts the reader. It doesn't explain itself to death.
+That sentence didn't come from a human. That came from a meeting. Every word is correct. None of them are *felt*. By the time you finish reading it, you've forgotten why you started.
 
-**The Design Principles** — Each one lands like a small stone in still water:
+---
+
+## Is There Rhythm in the Sentences?
+
+Listen to what works:
+
+> "Protection that doesn't announce itself."
+
+Short. Complete. A door closing.
+
+> "Machines with the instinct to know which code is dangerous."
+
+Longer. Reaching. A door opening.
+
+That's music. Short sentence, long sentence. Tension, release. This is how the heart beats.
+
+Now listen to the API section:
+
+> "Core function. Analyzes git history and returns a structured report. Optionally writes markdown to outputPath."
+
+Every sentence is the same length. Every sentence starts flat and ends flat. There's no breath between thoughts. It reads like a grocery list for people who don't eat.
+
+The Design Principles understand rhythm:
 - Invisible
 - Opinionated
 - Fast
 - Simple
 - Mentor voice
 
-Short words. Strong choices. This list knows what it's about.
+Five stones dropped in water. Each one ripples.
 
 ---
 
-## What Struggles
+## Does the Headline Stop You?
 
-### Does the language feel human?
+**Yes.** "Hindsight" is a real word with weight. It carries regret and wisdom in two syllables. It doesn't need to explain itself. It's not "Git History Risk Analyzer" or "Code Intelligence Framework." It's *Hindsight*. The name does the work.
 
-Mostly yes, but then it stumbles into corporate conference rooms. The soul comes and goes. You'll be reading something with a pulse, then suddenly: "Pipeline integration. Generates report and logs acknowledgment on first run." The warmth drains right out, like someone opened a window in winter.
-
-### Is there rhythm in the sentences?
-
-Some. The tagline has a heartbeat — short, short, then long. That's music. But the API section reads like a parts list. No breath between thoughts. No variation in tempo. When everything is the same length and weight, nothing stands out. The bullet points become a march when they should be a dance.
-
-### Is anything trying too hard?
-
-A few places:
-
-**"Vindication moments"** — You're naming something that hasn't earned its name yet. Let users discover this feeling first. Then, maybe, they'll name it themselves. Don't hand them the vocabulary for an experience they haven't had.
-
-**The closing quote** — *"The best products aren't optimized for shipping speed. They're optimized for the moment when a user thinks, 'This is exactly what I needed, and I didn't even know it existed.'"* — This wants to be profound. But profound doesn't announce itself. It just arrives. There are too many words here for one idea.
-
-**"Generates a terse risk summary (<50 words)"** — "Terse" is cold, clinical. And why brag about word count? That's like a poet telling you the poem is efficient.
+And the tagline earns its place beneath it. Together, they stop you.
 
 ---
 
-## The Three Weakest Lines
+## What's Trying Too Hard?
 
-These are the lines that made me set down my tea and sigh:
-
-### 1. WEAK:
-> *"Hindsight generates a risk-aware context report from git history that helps AI agents understand which files in your codebase warrant extra care before modification."*
-
-This sentence has no pulse. It's all function, no feeling. It explains but doesn't invite. Every word is technically accurate and emotionally dead.
-
-**REWRITTEN:**
-> *"Hindsight reads your git history and whispers to your AI agents: these files have scars — handle them gently."*
-
----
-
-### 2. WEAK:
-> *"Generates a terse risk summary (<50 words)"*
-
-"Terse" is dismissive. And counting words in a feature list? That's not confidence. That's nervousness.
-
-**REWRITTEN:**
-> *"Writes you a summary you can read in one breath"*
-
----
-
-### 3. WEAK:
+### The Closing Quote (README)
 > *"The best products aren't optimized for shipping speed. They're optimized for the moment when a user thinks, 'This is exactly what I needed, and I didn't even know it existed.'"*
 
-This line is trying to be quotable, and quotable things don't try. Too many clauses. Too much explaining. The insight is buried under its own words.
+Honey, this sentence wants to be carved in marble. But marble doesn't ask for attention. This sentence explains the feeling it should *create*. It's proud of itself, and pride makes noise.
+
+### "Vindication Moments"
+You're naming an emotion users haven't felt yet. Let them feel it first. Then, if it's real, *they'll* name it. Don't hand someone a trophy before they've run the race.
+
+### The Word Count Brag
+"Generates a terse risk summary (<50 words)" — Why are we counting? That's nervousness wearing confidence's clothes. A poet doesn't tell you the poem is efficient.
+
+---
+
+## The Three Weakest Lines — Rewritten
+
+### 1. WEAK (README, line 7):
+> *"Hindsight generates a risk-aware context report from git history that helps AI agents understand which files in your codebase warrant extra care before modification."*
+
+This sentence carries too much weight on one breath. It's all nouns and verbs with no room for the reader.
+
+**REWRITTEN:**
+> *"Hindsight reads your code's history. Then it whispers to your AI: these files have scars. Handle them gently."*
+
+---
+
+### 2. WEAK (README, closing quote):
+> *"The best products aren't optimized for shipping speed. They're optimized for the moment when a user thinks, 'This is exactly what I needed, and I didn't even know it existed.'"*
+
+Two sentences trying to be one profound thing. The insight is buried under explanation.
 
 **REWRITTEN:**
 > *"The best tools feel like they were waiting for you."*
 
 ---
 
+### 3. WEAK (hindsight-integration.ts, line 91):
+> *"Flagged files warrant extra care. The report provides context, not commands."*
+
+Correct, but cold. "Warrant" is a legal word. "Provides context" is a presentation word. Neither of them cares about you.
+
+**REWRITTEN:**
+> *"This report whispers — it doesn't shout. What you do with the warning is yours to decide."*
+
+---
+
 ## The Deeper Truth
 
-Child, what you're really selling here is *protection*. Not features. Not functionality. You're saying: "We remember what went wrong so you don't have to live through it again."
+What is this product *really* saying?
 
-That's not a product description. That's a promise.
+It's saying: *I remember what hurt you before, so you don't have to remember alone.*
 
-The best lines in these files understand that. They speak of instinct and danger and treading carefully. The weak lines forgot they were talking to humans about human mistakes — mistakes that cost time, that broke builds, that made someone stay late on a Friday.
+That's not a feature. That's a friend.
 
-When you revise, ask yourself: **Would someone remember how this made them feel?**
+The lines that work understand this. They speak of instinct and treading carefully and cautionary tales. The lines that fail forgot they were talking about *pain* — real pain, the kind that made someone stay late, break something, feel foolish.
 
-If they walk away only knowing what you said, you haven't said it right.
+When you write about protection, you're writing about love. Love doesn't optimize. Love doesn't generate context reports. Love *remembers*.
 
 ---
 
@@ -110,17 +132,19 @@ If they walk away only knowing what you said, you haven't said it right.
 
 | Aspect | Rating | Notes |
 |--------|--------|-------|
-| Human voice | 7/10 | Present but inconsistent — warmth fades in technical sections |
-| Rhythm | 6/10 | Tagline sings; documentation sections flatten |
-| Headlines | 8/10 | "Hindsight" is a real word with weight; tagline stops you |
-| Trying too hard | 3 instances | Vindication moments, closing quote, word count bragging |
+| Human voice | 7/10 | Present in key moments, absent in technical sections |
+| Rhythm | 6/10 | Beautiful in tagline and footer; flat in documentation |
+| Headlines | 9/10 | "Hindsight" is perfect. The tagline earns its place. |
+| Trying too hard | 3 instances | Closing quote, vindication naming, word count |
 
-**Overall:** This copy has a heartbeat. Sometimes strong, sometimes faint. The soul is there — it just needs permission to speak louder. Trust the voice that wrote "Let this guide your hands." That writer knows what they're doing.
+**Overall Feeling:** This copy has a soul. Sometimes it speaks clearly; sometimes it hides behind a clipboard. The voice that wrote *"Let this guide your hands"* — that's the voice that should write everything else.
+
+Trust that voice. It knows what it's doing.
 
 ---
 
-*"There is no greater agony than bearing an untold story inside you."*
+*"I've learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel."*
 
-This story is worth telling. Tell it with less trying and more trusting. The features will follow.
+Make them feel *held*. Make them feel *remembered*. Make them feel like someone has been here before — and left a light on for them.
 
 — Maya
