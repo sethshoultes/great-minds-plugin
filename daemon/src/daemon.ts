@@ -15,7 +15,7 @@ import { readdir, stat } from "fs/promises";
 import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH, AGENT_TIMEOUT_MS, PIPELINE_TIMEOUT_MS } from "./config.js";
 import { runPipeline } from "./pipeline.js";
 import { runFeatureDream } from "./dream.js";
-import { runHeartbeat, pollGitHubIssues, runMemoryMaintenance, gitAutoCommit } from "./health.js";
+import { runHeartbeat, pollGitHubIssues, runMemoryMaintenance, gitAutoCommit, processIntake } from "./health.js";
 import { log, logError, trimLog } from "./logger.js";
 import { notify } from "./telegram.js";
 
@@ -150,16 +150,13 @@ async function checkPipelineWatchdog(): Promise<void> {
 
 // ─── Check GitHub issues ────────────────────────────────────
 
-function checkGitHubIssues(): void {
+async function checkGitHubIssues(): Promise<void> {
   if (pipelineRunning) return;
 
-  const issues = pollGitHubIssues(10);
-  if (issues.length > 0) {
-    log(`GITHUB: ${issues.length} new issue(s)`);
-    for (const issue of issues) {
-      log(`  #${issue.number} [${issue.repo}] ${issue.title}`);
-    }
-    // For now, log them. Could auto-create PRDs from issues in the future.
+  try {
+    await processIntake();
+  } catch (err) {
+    logError("Intake processing failed", err);
   }
 }
 
@@ -182,7 +179,7 @@ async function runPeriodicTasks(): Promise<void> {
   if (now - lastGitHubPoll >= INTERVALS.GITHUB_POLL_MS) {
     lastGitHubPoll = now;
     try {
-      checkGitHubIssues();
+      await checkGitHubIssues();
     } catch (err) {
       logError("GitHub poll failed", err);
     }
