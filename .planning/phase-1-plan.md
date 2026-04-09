@@ -1,13 +1,13 @@
-# Phase 1 Plan — GitHub Intake (Intake) MVP
+# Phase 1 Plan — Mirror v1 (Daemon Sync Tool)
 
 **Generated**: 2025-04-09
 **Requirements**: `.planning/REQUIREMENTS.md`
-**Total Tasks**: 7
+**Total Tasks**: 6
 **Waves**: 3
 
-**Product Name**: Intake
-**Core Promise**: File an issue, walk away, it ships.
-**Build Target**: ~80 lines of new code in `health.ts`, 4 hours
+**Product Name**: Mirror
+**Core Promise**: Plugin is truth. Repo is reflection.
+**Build Target**: ~100 lines of new code in `scripts/mirror.ts`, 2 hours
 
 ---
 
@@ -15,484 +15,501 @@
 
 | Requirement | Task(s) | Wave |
 |-------------|---------|------|
-| REQ-001: Add Intake Logic to health.ts | phase-1-task-1 | 1 |
-| REQ-002: Poll GitHub Issues in Parallel | phase-1-task-2 | 1 |
-| REQ-003: Filter Issues by p0/p1 Labels Only | phase-1-task-2 | 1 |
-| REQ-004: Track Converted Issues in JSON State File | phase-1-task-3 | 1 |
-| REQ-005: Skip Already-Converted Issues | phase-1-task-3 | 1 |
-| REQ-006: Convert Issue to PRD File | phase-1-task-4 | 1 |
-| REQ-007: Zero Configuration | All tasks (implicit) | 1 |
-| REQ-008: Poll Only Open Issues | phase-1-task-2 | 1 |
-| REQ-009: Integrate into Daemon Event Loop | phase-1-task-5 | 2 |
-| REQ-010: Loud Auth Failure | phase-1-task-2 | 1 |
-| REQ-017: Use Project Logger | All tasks (implicit) | 1 |
-| REQ-018: Avoid Banned Patterns | All tasks (implicit) | 1 |
-| REQ-019: Sanitize Repo Names for Filenames | phase-1-task-4 | 1 |
-| REQ-020: Integration Test | phase-1-task-6, phase-1-task-7 | 3 |
+| REQ-001: Copy daemon source files | phase-1-task-1 | 1 |
+| REQ-002: Copy daemon config files | phase-1-task-1 | 1 |
+| REQ-005: Run npm install | phase-1-task-3 | 2 |
+| REQ-006: Git commit changes | phase-1-task-4 | 2 |
+| REQ-007: Git push to origin | phase-1-task-4 | 2 |
+| REQ-008: Quiet, declarative output | phase-1-task-1, phase-1-task-2 | 1 |
+| REQ-009: Zero confirmation dialogs | phase-1-task-2 | 1 |
+| REQ-010: Human-initiated trigger | phase-1-task-5 | 3 |
+| REQ-012: Fail fast on uncommitted changes | phase-1-task-2 | 1 |
+| REQ-013: Error handling for npm install | phase-1-task-3 | 2 |
+| REQ-014: Error handling for git push | phase-1-task-4 | 2 |
+| REQ-015: Create mirror.ts script | phase-1-task-1, phase-1-task-2 | 1 |
 
 ---
 
 ## Wave Execution Order
 
-### Wave 1 (Parallel — Core Functions)
+### Wave 1 (Parallel — Core Script)
 
-These tasks create the core intake functions in `health.ts`. They are independent and can execute in parallel.
+These tasks create the mirror script structure. They can execute in parallel.
 
 ```xml
 <task-plan id="phase-1-task-1" wave="1">
-  <title>Add intake interfaces and constants to health.ts</title>
-  <requirement>REQ-001: Add Intake Logic to health.ts</requirement>
-  <description>Add TypeScript interfaces for intake issues and state, plus helper functions for repo slug sanitization. This establishes the type foundation for all other intake functions.</description>
+  <title>Create mirror.ts with file copy logic</title>
+  <requirement>REQ-001, REQ-002, REQ-008, REQ-015: Copy daemon files with quiet output</requirement>
+  <description>Create the main mirror.ts script in scripts/ that copies the 6 daemon files from plugin to great-minds repo. Implements quiet, past-tense output style per Decision 7.</description>
 
   <context>
-    <file path="daemon/src/health.ts" reason="Target file for all intake code per Decision 1" />
-    <file path="daemon/src/config.ts" reason="Imports GITHUB_REPOS, PRDS_DIR, REPO_PATH" />
-    <file path="daemon/src/logger.ts" reason="Import log() function pattern" />
-    <file path=".planning/REQUIREMENTS.md" reason="REQ-006 defines PRD filename format, REQ-019 defines sanitization rules" />
+    <file path="daemon/src/pipeline.ts" reason="Source file to copy (483 lines, core GSD pipeline)" />
+    <file path="daemon/src/agents.ts" reason="Source file to copy (282 lines, 14 persona prompts)" />
+    <file path="daemon/src/config.ts" reason="Source file to copy (89 lines, paths and timeouts)" />
+    <file path="daemon/src/daemon.ts" reason="Source file to copy (305 lines, main event loop)" />
+    <file path="daemon/package.json" reason="Source file to copy (has better-sqlite3 dependency)" />
+    <file path="daemon/README.md" reason="Source file to copy (209 lines, daemon docs)" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Decision 7 specifies output format" />
+    <file path="prds/sync-great-minds.md" reason="PRD file list is authoritative" />
   </context>
 
   <steps>
-    <step order="1">Read daemon/src/health.ts to understand existing structure and imports</step>
-    <step order="2">Add new import: import { writeFileSync, readFileSync, existsSync } from "fs"</step>
-    <step order="3">Add import for PRDS_DIR from config.ts if not already imported</step>
-    <step order="4">Add IntakeIssue interface after existing GitHubIssue interface (around line 101):
+    <step order="1">Create scripts/ directory if it doesn't exist: mkdir -p scripts</step>
+    <step order="2">Create scripts/mirror.ts with imports:
       ```typescript
-      interface IntakeIssue {
-        repo: string;
-        number: number;
-        title: string;
-        body: string;
-        labels: string[];
-        author: string;
-        createdAt: string;
-        url: string;
-      }
+      #!/usr/bin/env npx tsx
+      /**
+       * Mirror — Sync daemon files from great-minds-plugin to great-minds
+       *
+       * Usage: npx tsx scripts/mirror.ts
+       *
+       * Per decisions.md Decision 7: Output is quiet, declarative, past-tense.
+       * Per decisions.md Decision 3: Zero confirmation dialogs.
+       */
 
-      interface IntakeState {
-        convertedIssues: string[];  // Format: "{repo}#{number}"
+      import { copyFileSync, existsSync, mkdirSync } from "fs";
+      import { execSync } from "child_process";
+      import { resolve, dirname, basename } from "path";
+      ```
+    </step>
+    <step order="3">Add configuration constants (no hardcoded /Users/ paths per BANNED-PATTERNS.md):
+      ```typescript
+      // Paths relative to this script's location
+      const SCRIPT_DIR = dirname(new URL(import.meta.url).pathname);
+      const PLUGIN_ROOT = resolve(SCRIPT_DIR, "..");
+      const DEST_ROOT = resolve(PLUGIN_ROOT, "..", "great-minds");
+
+      // File manifest per PRD (NOT decisions.md hypothetical list)
+      const FILES_TO_MIRROR = [
+        { src: "daemon/src/pipeline.ts", desc: "Core GSD pipeline" },
+        { src: "daemon/src/agents.ts", desc: "14 persona prompts" },
+        { src: "daemon/src/config.ts", desc: "Paths and timeouts" },
+        { src: "daemon/src/daemon.ts", desc: "Main event loop" },
+        { src: "daemon/package.json", desc: "Dependencies" },
+        { src: "daemon/README.md", desc: "Daemon documentation" },
+      ];
+      ```
+    </step>
+    <step order="4">Add quiet output helper:
+      ```typescript
+      function log(message: string): void {
+        console.log(message);
       }
       ```
     </step>
-    <step order="5">Add helper function to sanitize repo names for filenames:
+    <step order="5">Add copyFiles function with quiet output:
       ```typescript
-      function sanitizeRepoSlug(repo: string): string {
-        return repo.replace(/[^a-zA-Z0-9-]/g, "-");
+      function copyFiles(): void {
+        for (const file of FILES_TO_MIRROR) {
+          const srcPath = resolve(PLUGIN_ROOT, file.src);
+          const destPath = resolve(DEST_ROOT, file.src);
+
+          if (!existsSync(srcPath)) {
+            throw new Error(`Source not found: ${srcPath}`);
+          }
+
+          // Ensure destination directory exists
+          const destDir = dirname(destPath);
+          if (!existsSync(destDir)) {
+            mkdirSync(destDir, { recursive: true });
+          }
+
+          copyFileSync(srcPath, destPath);
+          log(`Mirrored ${basename(file.src)}`);
+        }
       }
       ```
     </step>
-    <step order="6">Add constant for state file path:
-      ```typescript
-      const INTAKE_STATE_FILE = resolve(REPO_PATH, ".github-intake-state.json");
-      ```
-    </step>
+    <step order="6">Verify file manifest matches PRD (not decisions.md hypothetical list)</step>
   </steps>
 
   <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">Verify health.ts has IntakeIssue interface and sanitizeRepoSlug function</check>
+    <check type="build">npx tsx --version</check>
+    <check type="manual">Verify scripts/mirror.ts exists and has copyFiles function</check>
+    <check type="manual">Verify file manifest has 6 files: pipeline.ts, agents.ts, config.ts, daemon.ts, package.json, README.md</check>
   </verification>
 
   <dependencies>
-    <!-- No dependencies - this is foundational -->
+    <!-- No dependencies - foundational task -->
   </dependencies>
 
-  <commit-message>feat(intake): add TypeScript interfaces and helpers for GitHub intake</commit-message>
+  <commit-message>feat(mirror): create mirror.ts with file copy logic
+
+- Add 6-file manifest per PRD (not decisions.md hypothetical list)
+- Implement quiet, past-tense output per Decision 7
+- Use relative paths (no hardcoded /Users/ per BANNED-PATTERNS.md)</commit-message>
 </task-plan>
 ```
 
 ```xml
 <task-plan id="phase-1-task-2" wave="1">
-  <title>Implement pollGitHubIssuesWithLabels function</title>
-  <requirement>REQ-002: Poll GitHub Issues in Parallel, REQ-003: Filter by p0/p1, REQ-008: Open Issues Only, REQ-010: Loud Auth Failure</requirement>
-  <description>Create the main polling function that fetches issues from all configured repos in parallel, filters for p0/p1 labels, and returns only open issues. Must fail loudly if gh CLI is not authenticated.</description>
+  <title>Add pre-flight checks and main execution</title>
+  <requirement>REQ-009, REQ-012, REQ-015: Zero confirmation, fail fast on uncommitted changes</requirement>
+  <description>Add pre-flight validation that checks destination repo status before any operations. Implements fail-fast behavior per Decision Risk Register.</description>
 
   <context>
-    <file path="daemon/src/health.ts" reason="Existing pollGitHubIssues() at line 103 as pattern reference" />
-    <file path="daemon/src/config.ts" reason="GITHUB_REPOS array at line 15-22 is source of truth" />
-    <file path="rounds/github-intake/decisions.md" reason="Decision 5 specifies Promise.all() for parallel polling" />
+    <file path="scripts/mirror.ts" reason="Target file from task-1" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Risk Register specifies fail-fast on uncommitted changes" />
+    <file path="BANNED-PATTERNS.md" reason="No hardcoded paths, use relative or env vars" />
   </context>
 
   <steps>
-    <step order="1">Read existing pollGitHubIssues() function (lines 103-128) for pattern reference</step>
-    <step order="2">Add new async function pollGitHubIssuesWithLabels() after existing poll function:
+    <step order="1">Add checkDestinationClean function:
       ```typescript
-      export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
-        log("INTAKE: Polling GitHub for p0/p1 issues");
+      function checkDestinationClean(): void {
+        // Check if destination repo exists
+        if (!existsSync(DEST_ROOT)) {
+          throw new Error(`Destination repo not found: ${DEST_ROOT}`);
+        }
 
-        const fetchRepo = async (repo: string): Promise<IntakeIssue[]> => {
-          try {
-            // Note: gh CLI --label uses OR logic by default when multiple labels specified
-            const output = execSync(
-              `gh issue list --repo "${repo}" --state open --label p0,p1 --json number,title,body,labels,author,createdAt,url 2>&1`,
-              { encoding: "utf-8", timeout: 15_000 }
+        // Check for uncommitted changes (fail fast per Risk Register)
+        try {
+          const status = execSync(`git -C "${DEST_ROOT}" status --porcelain`, {
+            encoding: "utf-8",
+          }).trim();
+
+          if (status) {
+            throw new Error(
+              "Error: Destination has uncommitted changes. Commit or stash first."
             );
-            const parsed = JSON.parse(output || "[]");
-            return parsed.map((issue: any) => ({
-              repo,
-              number: issue.number,
-              title: issue.title,
-              body: issue.body || "",
-              labels: issue.labels?.map((l: any) => l.name) || [],
-              author: issue.author?.login || "unknown",
-              createdAt: issue.createdAt,
-              url: issue.url,
-            }));
-          } catch (err) {
-            const errMsg = String(err);
-            if (errMsg.includes("auth") || errMsg.includes("login") || errMsg.includes("401")) {
-              log("INTAKE ERROR: gh CLI not authenticated. Run 'gh auth login' to configure.");
-              throw new Error("gh CLI not authenticated");
-            }
-            log(`INTAKE: Error fetching ${repo}: ${errMsg}`);
-            return [];
-          }
-        };
-
-        const results = await Promise.all(GITHUB_REPOS.map(fetchRepo));
-        const issues = results.flat();
-        log(`INTAKE: Found ${issues.length} p0/p1 issue(s) across ${GITHUB_REPOS.length} repos`);
-        return issues;
-      }
-      ```
-    </step>
-    <step order="3">Verify the function uses Promise.all() for parallel execution per Decision 5</step>
-    <step order="4">Verify timeout is 15 seconds per existing pattern</step>
-  </steps>
-
-  <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">Test manually: npx tsx -e "import { pollGitHubIssuesWithLabels } from './daemon/src/health.js'; pollGitHubIssuesWithLabels().then(console.log)"</check>
-  </verification>
-
-  <dependencies>
-    <!-- No hard dependency on task-1 - can develop in parallel -->
-  </dependencies>
-
-  <commit-message>feat(intake): add parallel p0/p1 issue polling with loud auth errors</commit-message>
-</task-plan>
-```
-
-```xml
-<task-plan id="phase-1-task-3" wave="1">
-  <title>Implement state management functions</title>
-  <requirement>REQ-004: Track Converted Issues in JSON State File, REQ-005: Skip Already-Converted Issues</requirement>
-  <description>Create functions to load, save, and query the intake state file that tracks which issues have been converted to PRDs.</description>
-
-  <context>
-    <file path="daemon/src/health.ts" reason="Target file for state functions" />
-    <file path="rounds/github-intake/decisions.md" reason="Decision 3 specifies JSON file at repo root, committed to git" />
-  </context>
-
-  <steps>
-    <step order="1">Add loadIntakeState function:
-      ```typescript
-      function loadIntakeState(): IntakeState {
-        try {
-          if (existsSync(INTAKE_STATE_FILE)) {
-            const content = readFileSync(INTAKE_STATE_FILE, "utf-8");
-            return JSON.parse(content);
           }
         } catch (err) {
-          log(`INTAKE: Error loading state file, starting fresh: ${err}`);
-        }
-        return { convertedIssues: [] };
-      }
-      ```
-    </step>
-    <step order="2">Add saveIntakeState function:
-      ```typescript
-      function saveIntakeState(state: IntakeState): void {
-        try {
-          writeFileSync(INTAKE_STATE_FILE, JSON.stringify(state, null, 2));
-        } catch (err) {
-          log(`INTAKE ERROR: Failed to save state file: ${err}`);
+          if (err instanceof Error && err.message.includes("uncommitted")) {
+            throw err;
+          }
+          throw new Error(`Error checking destination git status: ${err}`);
         }
       }
       ```
     </step>
-    <step order="3">Add isIssueAlreadyConverted function:
+    <step order="2">Add main execution function (no confirmation per Decision 3):
       ```typescript
-      function isIssueAlreadyConverted(state: IntakeState, repo: string, number: number): boolean {
-        const key = `${repo}#${number}`;
-        return state.convertedIssues.includes(key);
+      async function main(): Promise<void> {
+        // No confirmation dialogs per Decision 3
+        // Execution begins immediately
+
+        // Pre-flight checks
+        checkDestinationClean();
+
+        // Copy files
+        copyFiles();
+
+        // npm install (added in task-3)
+        // runNpmInstall();
+
+        // Git commit + push (added in task-4)
+        // commitAndPush();
       }
+
+      // Run immediately
+      main().catch((err) => {
+        console.error(err.message);
+        process.exit(1);
+      });
       ```
     </step>
-    <step order="4">Add markIssueConverted function:
-      ```typescript
-      function markIssueConverted(state: IntakeState, repo: string, number: number): void {
-        const key = `${repo}#${number}`;
-        if (!state.convertedIssues.includes(key)) {
-          state.convertedIssues.push(key);
-        }
-      }
-      ```
-    </step>
+    <step order="3">Verify no confirmation prompts exist in the code</step>
+    <step order="4">Verify error messages are clear and actionable</step>
   </steps>
 
   <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">Verify state functions compile without errors</check>
+    <check type="build">npx tsx scripts/mirror.ts --help || true</check>
+    <check type="manual">Verify script fails with clear error if destination has uncommitted changes</check>
+    <check type="manual">Verify no confirmation dialogs or prompts</check>
   </verification>
 
   <dependencies>
-    <!-- No hard dependency - can develop in parallel -->
+    <!-- Can run in parallel with task-1, both build the same file -->
   </dependencies>
 
-  <commit-message>feat(intake): add JSON state management for tracking converted issues</commit-message>
-</task-plan>
-```
+  <commit-message>feat(mirror): add pre-flight checks and zero-confirmation execution
 
-```xml
-<task-plan id="phase-1-task-4" wave="1">
-  <title>Implement convertIssueToPRD function</title>
-  <requirement>REQ-006: Convert Issue to PRD File, REQ-019: Sanitize Repo Names for Filenames</requirement>
-  <description>Create the function that transforms a GitHub issue into a PRD markdown file with the structured format specified in Decision 7.</description>
-
-  <context>
-    <file path="daemon/src/health.ts" reason="Target file" />
-    <file path="daemon/src/config.ts" reason="PRDS_DIR constant for output path" />
-    <file path="rounds/github-intake/decisions.md" reason="Decision 7 specifies PRD format as structured header + body" />
-    <file path=".planning/REQUIREMENTS.md" reason="REQ-006 has exact PRD format template" />
-  </context>
-
-  <steps>
-    <step order="1">Verify PRDS_DIR is imported from config.ts</step>
-    <step order="2">Add convertIssueToPRD function:
-      ```typescript
-      function convertIssueToPRD(issue: IntakeIssue): string {
-        const repoSlug = sanitizeRepoSlug(issue.repo);
-        const filename = `github-issue-${repoSlug}-${issue.number}.md`;
-        const filepath = resolve(PRDS_DIR, filename);
-
-        const prdContent = `# PRD: ${issue.title}
-
-> Auto-generated from GitHub issue ${issue.repo}#${issue.number}
-> ${issue.url}
-
-## Metadata
-- **Repo:** ${issue.repo}
-- **Issue:** #${issue.number}
-- **Author:** ${issue.author}
-- **Labels:** ${issue.labels.join(", ")}
-- **Created:** ${issue.createdAt}
-
-## Problem
-${issue.body}
-
-## Success Criteria
-- Issue ${issue.repo}#${issue.number} requirements are met
-- All tests pass
-`;
-
-        writeFileSync(filepath, prdContent);
-        log(`INTAKE: Created PRD ${filename}`);
-        return filename;
-      }
-      ```
-    </step>
-    <step order="3">Verify filename uses sanitizeRepoSlug() for safe filenames</step>
-    <step order="4">Verify PRD format matches REQ-006 specification</step>
-  </steps>
-
-  <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">Verify sanitizeRepoSlug converts "sethshoultes/great-minds-plugin" to "sethshoultes-great-minds-plugin"</check>
-  </verification>
-
-  <dependencies>
-    <!-- Uses sanitizeRepoSlug from task-1, but can be developed in parallel -->
-  </dependencies>
-
-  <commit-message>feat(intake): add issue-to-PRD converter with structured format</commit-message>
+- Check destination repo exists
+- Fail fast if uncommitted changes (per Risk Register)
+- Zero confirmation dialogs (per Decision 3)</commit-message>
 </task-plan>
 ```
 
 ---
 
-### Wave 2 (After Wave 1 — Integration)
+### Wave 2 (After Wave 1 — Operations)
 
-These tasks integrate the core functions into the daemon event loop. They depend on Wave 1 tasks.
+These tasks add npm install and git operations. They depend on Wave 1.
 
 ```xml
-<task-plan id="phase-1-task-5" wave="2">
-  <title>Integrate intake into daemon event loop</title>
-  <requirement>REQ-009: Integrate into Daemon Event Loop</requirement>
-  <description>Create the main processIntake() orchestration function and integrate it into daemon.ts to run on the existing 5-minute GitHub poll interval.</description>
+<task-plan id="phase-1-task-3" wave="2">
+  <title>Add npm install with error handling</title>
+  <requirement>REQ-005, REQ-013: Run npm install, handle failures</requirement>
+  <description>Add npm install step that runs in destination daemon directory after files are copied. Stops execution if npm install fails.</description>
 
   <context>
-    <file path="daemon/src/health.ts" reason="Add main processIntake() function" />
-    <file path="daemon/src/daemon.ts" reason="Modify checkGitHubIssues() at line 153 to call intake processing" />
-    <file path="rounds/github-intake/decisions.md" reason="Decision 1 - integrate into existing health.ts/daemon.ts" />
+    <file path="scripts/mirror.ts" reason="Target file" />
+    <file path="daemon/package.json" reason="Has better-sqlite3 dependency that requires install" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Operation 2: npm install, Risk: don't commit if install fails" />
   </context>
 
   <steps>
-    <step order="1">Add main processIntake() export function to health.ts:
+    <step order="1">Add runNpmInstall function:
       ```typescript
-      export async function processIntake(): Promise<number> {
-        log("INTAKE: Starting intake processing");
-        const state = loadIntakeState();
+      function runNpmInstall(): void {
+        const daemonPath = resolve(DEST_ROOT, "daemon");
 
-        let issues: IntakeIssue[];
         try {
-          issues = await pollGitHubIssuesWithLabels();
+          execSync(`cd "${daemonPath}" && npm install`, {
+            encoding: "utf-8",
+            stdio: "pipe", // Capture output, don't print npm spam
+            timeout: 120_000, // 2 minute timeout
+          });
+          log("Installed dependencies");
         } catch (err) {
-          log(`INTAKE ERROR: Failed to poll issues: ${err}`);
-          return 0;
+          // Per REQ-013: Stop immediately if npm install fails
+          const errMsg = err instanceof Error ? err.message : String(err);
+          throw new Error(`npm install failed: ${errMsg}`);
         }
+      }
+      ```
+    </step>
+    <step order="2">Uncomment runNpmInstall() call in main():
+      ```typescript
+      // Copy files
+      copyFiles();
 
-        let convertedCount = 0;
-        for (const issue of issues) {
-          if (isIssueAlreadyConverted(state, issue.repo, issue.number)) {
-            log(`INTAKE: Skipping already-converted issue ${issue.repo}#${issue.number}`);
-            continue;
+      // npm install
+      runNpmInstall();
+      ```
+    </step>
+    <step order="3">Verify error handling stops execution on failure</step>
+    <step order="4">Verify output is quiet ("Installed dependencies" only)</step>
+  </steps>
+
+  <verification>
+    <check type="build">cd daemon && npm run build</check>
+    <check type="manual">Verify npm install runs in destination daemon directory</check>
+    <check type="manual">Verify failure stops execution with clear error</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-1" reason="Needs copyFiles to exist" />
+    <depends-on task-id="phase-1-task-2" reason="Needs main() function structure" />
+  </dependencies>
+
+  <commit-message>feat(mirror): add npm install with error handling
+
+- Run npm install in destination daemon directory
+- Quiet output: "Installed dependencies"
+- Stop execution if npm install fails (per REQ-013)</commit-message>
+</task-plan>
+```
+
+```xml
+<task-plan id="phase-1-task-4" wave="2">
+  <title>Add git commit and push with error handling</title>
+  <requirement>REQ-006, REQ-007, REQ-014: Git commit + push, handle push failures</requirement>
+  <description>Add atomic git commit and push operations. Commit message follows Decision 7 format. Push failures don't rollback commit.</description>
+
+  <context>
+    <file path="scripts/mirror.ts" reason="Target file" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Operation 3: git commit + push, Decision 7: output format" />
+  </context>
+
+  <steps>
+    <step order="1">Add commitAndPush function:
+      ```typescript
+      function commitAndPush(): void {
+        const commitMessage = "Mirror sync from plugin";
+
+        try {
+          // Stage all changes
+          execSync(`git -C "${DEST_ROOT}" add -A`, { encoding: "utf-8" });
+
+          // Check if there are changes to commit
+          const status = execSync(`git -C "${DEST_ROOT}" status --porcelain`, {
+            encoding: "utf-8",
+          }).trim();
+
+          if (!status) {
+            log("No changes to commit");
+            return;
           }
 
+          // Commit
+          execSync(`git -C "${DEST_ROOT}" commit -m "${commitMessage}"`, {
+            encoding: "utf-8",
+          });
+          log(`Committed: "${commitMessage}"`);
+
+          // Push (per REQ-014: don't rollback on failure)
           try {
-            convertIssueToPRD(issue);
-            markIssueConverted(state, issue.repo, issue.number);
-            convertedCount++;
-          } catch (err) {
-            log(`INTAKE ERROR: Failed to convert ${issue.repo}#${issue.number}: ${err}`);
+            execSync(`git -C "${DEST_ROOT}" push`, { encoding: "utf-8" });
+            log("Pushed to origin");
+          } catch (pushErr) {
+            const errMsg = pushErr instanceof Error ? pushErr.message : String(pushErr);
+            console.error(`Push failed: ${errMsg}`);
+            console.error("Commit was successful. Resolve push issues and run: git -C great-minds push");
+            process.exit(1);
           }
-        }
-
-        if (convertedCount > 0) {
-          saveIntakeState(state);
-          log(`INTAKE: Converted ${convertedCount} issue(s) to PRDs`);
-        } else {
-          log("INTAKE: No new issues to convert");
-        }
-
-        return convertedCount;
-      }
-      ```
-    </step>
-    <step order="2">Read daemon/src/daemon.ts and locate checkGitHubIssues() function (line 153)</step>
-    <step order="3">Modify checkGitHubIssues() in daemon.ts to call processIntake():
-      ```typescript
-      import { ..., processIntake } from "./health.js";
-
-      // Replace the function body:
-      async function checkGitHubIssues(): Promise<void> {
-        if (pipelineRunning) return;
-
-        try {
-          await processIntake();
         } catch (err) {
-          logError("Intake processing failed", err);
+          const errMsg = err instanceof Error ? err.message : String(err);
+          throw new Error(`Git operation failed: ${errMsg}`);
         }
       }
       ```
     </step>
-    <step order="4">Make checkGitHubIssues async if it isn't already</step>
-    <step order="5">Update the call site in runPeriodicTasks() to use await if needed</step>
+    <step order="2">Uncomment commitAndPush() call in main():
+      ```typescript
+      // npm install
+      runNpmInstall();
+
+      // Git commit + push
+      commitAndPush();
+      ```
+    </step>
+    <step order="3">Verify commit message matches Decision 7 format</step>
+    <step order="4">Verify push failure doesn't rollback commit</step>
+    <step order="5">Verify output format: `Committed: "..."`, `Pushed to origin`</step>
   </steps>
 
   <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">Run daemon and verify "INTAKE: Starting intake processing" appears in logs every 5 minutes</check>
+    <check type="build">npx tsx scripts/mirror.ts || true</check>
+    <check type="manual">Verify commit message is "Mirror sync from plugin"</check>
+    <check type="manual">Verify push failure leaves commit intact</check>
+    <check type="manual">Verify output matches Decision 7 format</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-1" reason="Needs IntakeIssue interface" />
-    <depends-on task-id="phase-1-task-2" reason="Needs pollGitHubIssuesWithLabels()" />
-    <depends-on task-id="phase-1-task-3" reason="Needs state management functions" />
-    <depends-on task-id="phase-1-task-4" reason="Needs convertIssueToPRD()" />
+    <depends-on task-id="phase-1-task-3" reason="Must run after npm install" />
   </dependencies>
 
-  <commit-message>feat(intake): integrate intake processing into daemon event loop</commit-message>
+  <commit-message>feat(mirror): add git commit and push with error handling
+
+- Atomic commit with message "Mirror sync from plugin"
+- Push to origin, don't rollback on push failure (per REQ-014)
+- Output format per Decision 7: `Committed: "..."`, `Pushed to origin`</commit-message>
 </task-plan>
 ```
 
 ---
 
-### Wave 3 (After Wave 2 — Verification)
+### Wave 3 (After Wave 2 — Verification & Documentation)
 
-Final verification and testing tasks.
+Final verification and documentation tasks.
+
+```xml
+<task-plan id="phase-1-task-5" wave="3">
+  <title>Add npm script and usage documentation</title>
+  <requirement>REQ-010: Human-initiated trigger with clear invocation</requirement>
+  <description>Add npm script to root package.json for easy invocation and document usage in README or inline comments.</description>
+
+  <context>
+    <file path="scripts/mirror.ts" reason="Script to document" />
+    <file path="package.json" reason="Add npm script (if exists at root)" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Decision 4: human-initiated trigger" />
+  </context>
+
+  <steps>
+    <step order="1">Check if root package.json exists. If not, document CLI usage only.</step>
+    <step order="2">If package.json exists, add mirror script:
+      ```json
+      {
+        "scripts": {
+          "mirror": "npx tsx scripts/mirror.ts"
+        }
+      }
+      ```
+    </step>
+    <step order="3">Update scripts/mirror.ts header comment with usage:
+      ```typescript
+      /**
+       * Mirror — Sync daemon files from great-minds-plugin to great-minds
+       *
+       * Usage:
+       *   npx tsx scripts/mirror.ts
+       *   # or if npm script added:
+       *   npm run mirror
+       *
+       * Operations (per decisions.md):
+       *   1. Copy 6 daemon files
+       *   2. Run npm install
+       *   3. Git commit + push
+       *
+       * Exit codes:
+       *   0 - Success
+       *   1 - Error (uncommitted changes, npm install failed, git push failed)
+       */
+      ```
+    </step>
+    <step order="4">Verify human must explicitly run command (no git hooks)</step>
+  </steps>
+
+  <verification>
+    <check type="manual">Verify usage documentation in script header</check>
+    <check type="manual">Verify npm run mirror works (if package.json exists)</check>
+    <check type="manual">Verify no git hooks installed</check>
+  </verification>
+
+  <dependencies>
+    <depends-on task-id="phase-1-task-4" reason="Script must be complete first" />
+  </dependencies>
+
+  <commit-message>docs(mirror): add usage documentation and npm script
+
+- Document CLI usage in script header
+- Add `npm run mirror` script (if package.json exists)
+- No git hooks (v1.1 feature per Decision 4)</commit-message>
+</task-plan>
+```
 
 ```xml
 <task-plan id="phase-1-task-6" wave="3">
-  <title>Manual integration test</title>
-  <requirement>REQ-020: Integration Test</requirement>
-  <description>Manually test the complete intake flow by creating a test issue, verifying PRD generation, and confirming state tracking.</description>
+  <title>End-to-end verification test</title>
+  <requirement>All requirements: Verify complete Mirror flow works</requirement>
+  <description>Run Mirror end-to-end and verify all operations complete successfully. Verify output format matches Decision 7.</description>
 
   <context>
-    <file path="daemon/src/health.ts" reason="Contains all intake functions to test" />
-    <file path="daemon/src/daemon.ts" reason="Event loop integration to verify" />
-    <file path="prds/" reason="PRD output directory to check" />
-    <file path=".github-intake-state.json" reason="State file to verify" />
+    <file path="scripts/mirror.ts" reason="Script to test" />
+    <file path="rounds/sync-great-minds/decisions.md" reason="Expected output format from Decision 7" />
   </context>
 
   <steps>
-    <step order="1">Build the daemon: cd daemon && npm run build</step>
-    <step order="2">Create a test issue on one of the configured repos with label p0 or p1</step>
-    <step order="3">Run the intake manually: npx tsx -e "import { processIntake } from './daemon/dist/health.js'; processIntake().then(console.log)"</step>
-    <step order="4">Verify PRD file created in prds/github-issue-{repo-slug}-{number}.md</step>
-    <step order="5">Verify .github-intake-state.json contains the issue key</step>
-    <step order="6">Run intake again and verify issue is skipped (not re-converted)</step>
-    <step order="7">Verify daemon watcher detects the new PRD (check logs)</step>
+    <step order="1">Ensure destination repo exists: ls -la ../great-minds/daemon/</step>
+    <step order="2">Ensure destination repo is clean: git -C ../great-minds status</step>
+    <step order="3">Run mirror: npx tsx scripts/mirror.ts</step>
+    <step order="4">Verify output format matches Decision 7:
+      ```
+      Mirrored pipeline.ts
+      Mirrored agents.ts
+      Mirrored config.ts
+      Mirrored daemon.ts
+      Mirrored package.json
+      Mirrored README.md
+      Installed dependencies
+      Committed: "Mirror sync from plugin"
+      Pushed to origin
+      ```
+    </step>
+    <step order="5">Verify files were copied: diff daemon/src/pipeline.ts ../great-minds/daemon/src/pipeline.ts</step>
+    <step order="6">Verify commit exists: git -C ../great-minds log -1 --oneline</step>
+    <step order="7">Verify push succeeded: git -C ../great-minds status (should say "up to date")</step>
   </steps>
 
   <verification>
-    <check type="manual">PRD file exists with correct format</check>
-    <check type="manual">State file tracks the converted issue</check>
-    <check type="manual">Re-running intake skips already-converted issues</check>
-    <check type="manual">Daemon watcher logs "New PRD detected"</check>
+    <check type="manual">Output matches Decision 7 format (quiet, past-tense)</check>
+    <check type="manual">All 6 files copied successfully</check>
+    <check type="manual">npm install ran without errors</check>
+    <check type="manual">Commit created with correct message</check>
+    <check type="manual">Push succeeded to origin</check>
   </verification>
 
   <dependencies>
-    <depends-on task-id="phase-1-task-5" reason="Needs complete integration" />
+    <depends-on task-id="phase-1-task-5" reason="Script must be fully documented" />
   </dependencies>
 
-  <commit-message>test(intake): manual verification of end-to-end intake flow</commit-message>
-</task-plan>
-```
+  <commit-message>test(mirror): verify end-to-end Mirror flow
 
-```xml
-<task-plan id="phase-1-task-7" wave="3">
-  <title>Code quality check and final commit</title>
-  <requirement>REQ-017: Use Project Logger, REQ-018: Avoid Banned Patterns</requirement>
-  <description>Verify code follows daemon conventions, no banned patterns, and prepare final commit.</description>
-
-  <context>
-    <file path="daemon/src/health.ts" reason="Review all new intake code" />
-    <file path="daemon/src/daemon.ts" reason="Review integration changes" />
-    <file path="BANNED-PATTERNS.md" reason="Check for banned patterns if exists" />
-  </context>
-
-  <steps>
-    <step order="1">Grep for console.log in new code: grep -n "console.log" daemon/src/health.ts daemon/src/daemon.ts</step>
-    <step order="2">Grep for hardcoded /Users/ paths: grep -n "/Users/" daemon/src/health.ts daemon/src/daemon.ts</step>
-    <step order="3">Verify all log statements use log() from logger.js with "INTAKE:" prefix</step>
-    <step order="4">Verify all paths use REPO_PATH or PRDS_DIR from config.ts</step>
-    <step order="5">Run TypeScript build to ensure no type errors: cd daemon && npm run build</step>
-    <step order="6">Run linter if configured: cd daemon && npm run lint || true</step>
-    <step order="7">Create final commit with all intake code</step>
-  </steps>
-
-  <verification>
-    <check type="build">cd daemon && npm run build</check>
-    <check type="manual">No console.log statements in daemon code</check>
-    <check type="manual">No hardcoded paths</check>
-    <check type="manual">All log statements use INTAKE: prefix</check>
-  </verification>
-
-  <dependencies>
-    <depends-on task-id="phase-1-task-6" reason="Verify after integration test" />
-  </dependencies>
-
-  <commit-message>feat(intake): GitHub Intake v1.0 - poll p0/p1 issues, convert to PRDs
-
-- Add IntakeIssue interface and state management
-- Parallel repo polling with Promise.all() (Decision 5)
-- Filter for p0/p1 labels only (Decision 4)
-- Track converted issues in .github-intake-state.json (Decision 3)
-- Integrate into daemon 5-minute poll interval (Decision 1)
-- PRD format with structured header (Decision 7)
-- Loud auth errors for gh CLI (Open Question 6)
-
-Closes: github-intake MVP</commit-message>
+- All 6 files copied
+- npm install succeeded
+- Commit created and pushed
+- Output format matches Decision 7</commit-message>
 </task-plan>
 ```
 
@@ -501,9 +518,9 @@ Closes: github-intake MVP</commit-message>
 ## Wave Summary
 
 ```
-Wave 1: [task-1, task-2, task-3, task-4]  ← parallel, core functions
-Wave 2: [task-5]                          ← integration, after wave 1
-Wave 3: [task-6, task-7]                  ← verification, after wave 2
+Wave 1: [task-1, task-2]    <- parallel, core script structure
+Wave 2: [task-3, task-4]    <- sequential, operations (npm install, then git)
+Wave 3: [task-5, task-6]    <- documentation and verification
 ```
 
 ---
@@ -512,44 +529,31 @@ Wave 3: [task-6, task-7]                  ← verification, after wave 2
 
 | Risk | Mitigation |
 |------|------------|
-| **gh CLI authentication** | Task-2 implements loud error with clear instructions. Test on fresh system. |
-| **Parallel polling timeout** | Using 15-second timeout per repo (existing pattern). Promise.all fails fast on auth errors. |
-| **State file corruption** | Task-3 implements try-catch with fallback to empty state. Idempotent recovery. |
-| **Repo name with special chars** | Task-1 implements sanitizeRepoSlug(). Test with `dash-command-bar` repo. |
-| **Pipeline queue saturation** | V1 accepts this risk per Decision 2. Batching deferred to v1.1. |
-
----
-
-## Estimated Line Count
-
-| Function | Est. Lines |
-|----------|-----------|
-| Interfaces + constants | 15 |
-| sanitizeRepoSlug | 3 |
-| pollGitHubIssuesWithLabels | 25 |
-| loadIntakeState | 10 |
-| saveIntakeState | 6 |
-| isIssueAlreadyConverted | 4 |
-| markIssueConverted | 5 |
-| convertIssueToPRD | 20 |
-| processIntake (orchestrator) | 25 |
-| **Total new lines in health.ts** | **~113** |
-| daemon.ts changes | ~10 |
-
-**Note:** Slightly over the 80-line target from decisions.md, but Decision 1 allows extraction at 200+ lines. We're well under that threshold.
+| **Destination repo doesn't exist** | Task-2 adds pre-flight check with clear error |
+| **Uncommitted changes in destination** | Task-2 implements fail-fast per Risk Register |
+| **npm install fails** | Task-3 stops execution, doesn't proceed to commit |
+| **git push fails (auth/network)** | Task-4 keeps commit, instructs user to retry manually |
+| **Wrong files copied** | Task-1 uses PRD file list, not decisions.md hypothetical list |
+| **Hardcoded paths** | All tasks use relative paths per BANNED-PATTERNS.md |
 
 ---
 
 ## What Gets Built (File Structure)
 
 ```
-daemon/src/
-  health.ts          # Extended with ~113 new lines of intake logic
+great-minds-plugin/
+  scripts/
+    mirror.ts          # ~100 lines, main sync script
 
-prds/
-  github-issue-{repo-slug}-{number}.md   # Generated PRDs (one per issue)
-
-/.github-intake-state.json               # State: converted issue numbers (committed)
+great-minds/ (DESTINATION)
+  daemon/
+    src/
+      pipeline.ts      # [MIRRORED]
+      agents.ts        # [MIRRORED]
+      config.ts        # [MIRRORED]
+      daemon.ts        # [MIRRORED]
+    package.json       # [MIRRORED]
+    README.md          # [MIRRORED]
 ```
 
 ---
@@ -558,15 +562,84 @@ prds/
 
 Per locked decisions, these are explicitly excluded from v1:
 
-1. **Status updates to GitHub** — No comments, no auto-close
-2. **Edit detection** — Hash issue body for change detection
-3. **Module extraction** — Move to `github-intake.ts` when >200 lines
-4. **Complex label filtering** — No exclude logic, no configuration
-5. **Dashboard/UI** — No monitoring interface
-6. **Notifications** — No Slack/email
+1. **Git hook automation** — v1.1 will add pre-commit or post-commit trigger
+2. **Documentation sync** — BANNED-PATTERNS.md, DO-NOT-REPEAT.md, CLAUDE.md updates
+3. **Dry-run mode** — "Erodes confidence" per Steve Jobs (Decision 3)
+4. **npm package extraction** — Long-term architecture, post-stabilization
+5. **Bidirectional sync** — Plugin is truth, repo is reflection (Decision 2)
 
 ---
 
-*"The strength of the team is each individual member. The strength of each member is the team."* — Phil Jackson
+## Expected Output (Decision 7)
 
-Steve brought the soul. Elon brought the knife. Together: a product that ships.
+```
+Mirrored pipeline.ts
+Mirrored agents.ts
+Mirrored config.ts
+Mirrored daemon.ts
+Mirrored package.json
+Mirrored README.md
+Installed dependencies
+Committed: "Mirror sync from plugin"
+Pushed to origin
+```
+
+---
+
+## Codebase Research Summary
+
+From the research agents:
+
+### Codebase Scout Findings
+- **Source files exist**: All 6 files in PRD are present and accounted for
+- **Destination may exist**: `/Users/sethshoultes/Local Sites/great-minds/daemon/` was confirmed to exist
+- **Pattern reference**: `health.ts` uses `execSync` for git operations — same pattern for mirror.ts
+- **Config pattern**: Use relative paths, `resolve(__dirname, "..")` for location-independent paths
+
+### Requirements Analyst Findings
+- **PRD vs Decisions discrepancy**: File list in decisions.md is hypothetical (errors.ts, types.ts, etc. don't exist)
+- **Authoritative file list**: PRD specifies pipeline.ts, agents.ts, config.ts, daemon.ts, package.json, README.md
+- **Documentation sync deferred**: Decisions explicitly excludes BANNED-PATTERNS.md, DO-NOT-REPEAT.md, CLAUDE.md
+
+### Risk Scanner Findings
+- **No hardcoded paths**: grep found no `/Users/` in daemon source
+- **Token ledger CWD issue**: Already fixed with explicit dbPath
+- **PRD watcher race condition**: Already fixed with awaitWriteFinish
+- **Destination repo exists**: Confirmed at local path
+
+---
+
+## Technical Notes
+
+### Why PRD File List (Not Decisions)
+
+The decisions.md file list (lines 119-130) appears to be a placeholder/example:
+- `errors.ts` — Does not exist
+- `types.ts` — Does not exist
+- `utils.ts` — Does not exist
+- `index.ts` — Does not exist
+
+Actual daemon files (from `ls daemon/src/`):
+- pipeline.ts, agents.ts, config.ts, daemon.ts, dream.ts, health.ts, logger.ts, telegram.ts, token-ledger.ts
+
+The PRD selects the 4 core orchestration files (pipeline, agents, config, daemon) plus package.json and README.md. This is the correct manifest.
+
+### Path Strategy (BANNED-PATTERNS.md Compliance)
+
+Per BANNED-PATTERNS.md cross-project patterns:
+> `/Users/sethshoultes/` (or any absolute home path) — Hardcoded paths break on other machines.
+
+Solution: Use relative paths from script location:
+```typescript
+const SCRIPT_DIR = dirname(new URL(import.meta.url).pathname);
+const PLUGIN_ROOT = resolve(SCRIPT_DIR, "..");
+const DEST_ROOT = resolve(PLUGIN_ROOT, "..", "great-minds");
+```
+
+This works regardless of where the user runs the script from.
+
+---
+
+*"Before enlightenment, chop wood, carry water. After enlightenment, chop wood, carry water. Before Mirror, copy files. After Mirror, trust the reflection."*
+
+— Phil Jackson, The Zen Master
