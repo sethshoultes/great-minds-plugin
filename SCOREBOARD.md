@@ -9,7 +9,7 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 6 |
+| Projects Shipped | 7 |
 | Total Commits | 15+ |
 | PRs Merged | 4 |
 | Test Specs Added | 0 |
@@ -26,6 +26,7 @@
 
 | Project | Date | Score | Key Achievement |
 |---------|------|-------|-----------------|
+| **emdash-marketplace** | 2026-04-09 | 6/10 | Document transformation CLI, 5 design themes, dialectic process, board review |
 | **promptforge-prd** | 2026-04-09 | 5/10 | PRD tracking initialization, process infrastructure |
 | **workshop-tutorial** | 2026-04-09 | N/A | Ship pipeline tutorial, process demonstration |
 | **Pulse (localgenius-benchmark-engine)** | 2026-04-09 | N/A | 4,447 LOC benchmarking system, clean architecture |

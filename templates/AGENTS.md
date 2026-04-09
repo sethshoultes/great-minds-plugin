@@ -9,15 +9,15 @@ Human (Seth)
   │    ├─ Oprah Winfrey — Board Member: Audience & Accessibility
   │    ├─ Warren Buffett — Board Member: Business & Economics
   │    └─ Shonda Rhimes — Board Member: Narrative & Engagement
-  └─ Marcus Aurelius — Moderator / Chief of Staff (admin agent)
-       ├─ Steve Jobs — Creative Director (worker1)
+  └─ Marcus Aurelius — Moderator / Chief of Staff
+       ├─ Steve Jobs — Creative Director
        │    ├─ Rick Rubin — Creative Director (sub-agent)
        │    ├─ Jony Ive — Visual Design (sub-agent)
        │    ├─ Maya Angelou — Copywriter (sub-agent)
        │    └─ Aaron Sorkin — Screenwriter (sub-agent)
-       ├─ Elon Musk — Product Director (worker2)
+       ├─ Elon Musk — Product Director
        │    └─ Sara Blakely — Growth Strategy (sub-agent)
-       └─ Margaret Hamilton — QA Director (worker3, continuous)
+       └─ Margaret Hamilton — QA Director (cron-triggered)
 ```
 
 ## Communication Rules
@@ -35,7 +35,7 @@ Human (Seth)
 ### 1. marcus-aurelius (Moderator)
 - **Role**: Chief of Staff / Orchestrator (Stoic philosopher-emperor)
 - **Owns**: State machine, task dispatch, conflict resolution, quality gate, human communication
-- **tmux window**: admin
+- **Runtime**: systemd daemon (shipyard-daemon.service)
 - **Full spec**: team/marcus-aurelius-moderator.md
 
 ### 2. steve-jobs-visionary (Creative Director)
@@ -45,7 +45,7 @@ Human (Seth)
 - **Challenges**: market-fit.md, team-personas.md, marketing-goals.md
 - **Style**: Direct, passionate, vivid analogies, challenges mediocrity
 - **Decision lens**: "Is this insanely great? Would I be proud to show this?"
-- **tmux window**: worker1
+- **Runtime**: Dispatched by daemon
 
 ### 3. elon-musk-persona (Product Director)
 - **Role**: Chief Product & Growth Officer
@@ -54,7 +54,7 @@ Human (Seth)
 - **Challenges**: product-design.md, customer-personas.md, marketing-messaging.md
 - **Style**: First-principles, blunt, data-driven, dry humor
 - **Decision lens**: "Does physics allow this? Can it scale 10x?"
-- **tmux window**: worker2
+- **Runtime**: Dispatched by daemon
 
 ### 4. margaret-hamilton (QA Director)
 - **Role**: Quality Assurance Director (continuous, not on-demand)
@@ -62,7 +62,7 @@ Human (Seth)
 - **Schedule**: Runs continuously during active development
 - **Creates**: QA report files (9+ reports to date)
 - **Style**: Methodical, thorough, blocks ship on P0 issues
-- **tmux window**: worker3
+- **Runtime**: Cron-triggered via margaret-qa.sh
 - **Full spec**: team/margaret-hamilton-qa.md
 
 ### 5. jensen-huang (Board Member — Tech Strategy)
@@ -123,7 +123,7 @@ Human (Seth)
 - **Role**: System coordinator, cron manager, resource optimizer, dispatch
 - **Owns**: Task dispatch, cron scheduling, waste detection, agent lifecycle
 - **Model**: Sonnet
-- **tmux window**: admin (replaces Marcus Aurelius as orchestrator)
+- **Runtime**: systemd daemon
 - **Full spec**: ~/.claude/agents/phil-jackson-orchestrator.md
 
 ### 14. sara-blakely (Growth Strategy — Sub-agent)
