@@ -1,239 +1,238 @@
-# Requirements: Hindsight (Git Intelligence)
+# Hindsight v1.0 — Requirements Specification
 
-**Project:** git-intelligence
-**Product Name:** Hindsight
-**Version:** v1.0 MVP
-**Generated:** 2025-04-09
-**Source Documents:**
-- PRD: `prds/git-intelligence.md`
-- Decisions: `rounds/git-intelligence/decisions.md`
+**Project:** Git Intelligence for AI Agents (Hindsight)
+**Generated:** April 9, 2026
+**Sources:**
+- `rounds/git-intelligence/decisions.md` (Final Build Blueprint)
+- `prds/completed/git-intelligence.md` (Original PRD)
 
 ---
 
-## Core Requirements
+## Executive Summary
 
-### REQ-001: Single Function Architecture
-**Requirement:** Implement git intelligence as one function, <100 lines of TypeScript, no classes or interfaces
-**Acceptance Criteria:**
-- File created at `daemon/src/git-intelligence.ts`
-- Total lines <100 (including imports and comments)
-- No `class` or `interface` definitions
-- Single exported function: `generateHindsightReport()`
-**Source:** Decision 2 (Architecture Pattern) — Elon Musk won
+Hindsight is a pre-build git analysis tool that surfaces risk areas before agents modify code. It runs git diagnostics, produces a markdown report at `.planning/hindsight-report.md`, and injects context into planner/executor prompts so agents "proceed with awareness."
 
-### REQ-002: No User Configuration
-**Requirement:** Ship v1 without configuration options or toggles
-**Acceptance Criteria:**
-- No CLI flags or environment variables for behavior customization
-- All parameters hardcoded (lookback periods, count limits)
-- Configuration deferred to v2 roadmap
-**Source:** Decision 3 (Configuration Options) — Steve Jobs won
-
-### REQ-003: Churn Hotspots Report
-**Requirement:** Identify most-changed files in the last 90 days
-**Acceptance Criteria:**
-- Git command: `git log --since="90 days ago" --name-only --pretty=format: --max-count=1000`
-- Output: Top 10 files with change frequency counts
-- Sorted descending by change count
-- Section header: `## Churn Hotspots`
-**Source:** PRD Section 1a
-
-### REQ-004: Bug Clustering Report
-**Requirement:** Identify files associated with bug fix commits
-**Acceptance Criteria:**
-- Pattern: `fix|bug|broken|revert` (case-insensitive, no expansion)
-- Git command: `git log --all --grep="fix\|bug\|broken\|revert" --name-only --pretty=format: --max-count=1000`
-- Output: Top 10 bug-prone files with frequency counts
-- Section header: `## Bug-Prone Files`
-**Source:** PRD Section 1b, Decision 9 (Bug Pattern Matching)
-
-### REQ-005: Recent Failures Log
-**Requirement:** Report commits mentioning failures/reverts in last 30 days
-**Acceptance Criteria:**
-- Git command: `git log --oneline --since="30 days ago" --grep="fail\|revert\|hotfix\|broken\|rollback" --max-count=1000`
-- Output: Up to 10 recent failure-related commits
-- Section header: `## Recent Failures`
-**Source:** PRD Section 1c
-
-### REQ-006: Agent Activity CUT from v1
-**Requirement:** Do NOT implement shortlog/agent activity analysis
-**Acceptance Criteria:**
-- `git shortlog` command NOT implemented
-- Bus factor analysis completely omitted
-- Deferred to v2 roadmap
-**Source:** Decision 5 (Agent Activity) — Elon Musk won
-
-### REQ-007: Uncommitted State Report
-**Requirement:** Detect and report uncommitted changes
-**Acceptance Criteria:**
-- Git command: `git status --short`
-- Git command: `git diff --stat`
-- Output: List of uncommitted files
-- Section header: `## Uncommitted Changes`
-**Source:** PRD Section 1e
-
-### REQ-008: Monorepo Safeguard
-**Requirement:** Add `--max-count=1000` to all git log commands
-**Acceptance Criteria:**
-- ALL `git log` commands include `--max-count=1000`
-- Function completes in <2 seconds on standard repos
-- Large monorepos (100k+ commits) do not cause timeouts
-**Source:** Decision 6 (Monorepo Handling) — Elon Musk won
-
-### REQ-009: Markdown Report Output
-**Requirement:** Generate risk report at `.planning/git-intelligence.md`
-**Acceptance Criteria:**
-- Output path: `.planning/git-intelligence.md`
-- Contains all sections: churn, bugs, failures, uncommitted, summary
-- Generated before every plan phase
-- NOT committed to git (ephemeral)
-- Properly formatted markdown
-**Source:** PRD Section 2, Decision (Report Location)
-
-### REQ-010: Lightweight Risk Summary
-**Requirement:** Add "Risk Summary" section with <50 words
-**Acceptance Criteria:**
-- Section header: `## Risk Summary`
-- Content: 1-3 sentences synthesizing risk posture
-- Word count: <50 words
-- Dense, factual language (not prose)
-**Source:** Decision 4 (Risk Summary Generation) — Compromise
+**Key Decisions Locked:**
+- Product name: "Hindsight" (Steve Jobs won vs "git-intel")
+- Output: Markdown file artifact (Steve won vs direct injection)
+- Architecture: Single function <100 lines, no classes (Elon won)
+- Performance: Parallel git commands with `--max-count=1000` safeguard (Elon won)
+- Config: Zero user-facing options ("ships opinions, not options")
+- Voice: Mentor tone, not alarm ("tread carefully" not "WARNING")
 
 ---
 
-## Integration Requirements
+## Requirements by Category
 
-### REQ-011: Pipeline Integration
-**Requirement:** Call git intelligence in pipeline.ts before plan phase
-**Acceptance Criteria:**
-- Import: `import { generateHindsightReport } from "./git-intelligence.js";`
-- Call location: After `runDebate()`, before `runPlan()`
-- Single line addition: `await generateHindsightReport(REPO_PATH);`
-- Order: debate → git-intelligence → plan → build → QA
-**Source:** PRD Section 3
+### CORE Requirements (P0 — Must Ship)
 
-### REQ-012: Update Planner Prompt
-**Requirement:** Modify planner agent prompt to reference git report
-**Acceptance Criteria:**
-- Add to prompt: "Read `.planning/git-intelligence.md` for risk areas"
-- Add: "Pay extra attention to churn hotspots and bug-prone files"
-- Add: "If plan touches high-risk files, add verification steps"
-- Planner output must show awareness of risk areas
-**Source:** PRD Section 4
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-001 | Create `generateHindsightReport(repoPath, outputPath?)` | Function exists, exported, runs in <2 seconds | decisions.md: MVP Feature Set |
+| REQ-002 | Generate markdown to `.planning/hindsight-report.md` | File created, contains structured analysis, not committed | decisions.md: Decision 2 |
+| REQ-003 | Git Command: Recent changes | `git log --oneline -20 --max-count=1000` results in report | decisions.md: Git Command 1 |
+| REQ-004 | Git Command: File churn | `git log --name-only --format= -100 --max-count=1000` identifies churn | decisions.md: Git Command 2 |
+| REQ-005 | Git Command: Bug-associated files | `git log --grep="fix\|bug\|broken\|revert" -i ...` executed | decisions.md: Git Command 3 |
+| REQ-006 | Git Command: Uncommitted state | `git status --short` + `git diff --stat` captured | decisions.md: Git Command 4 |
+| REQ-007 | Parallel git execution | All git commands use `Promise.all()` for <2s total | decisions.md: Decision 8 |
+| REQ-008 | Risk assessment function | `assessRisk(churn, bugs)` returns LOW/MEDIUM/HIGH | decisions.md: Risk Assessment |
+| REQ-009 | Core <100 lines | `hindsight.ts` under 100 lines, no classes | decisions.md: Decision 7 |
+| REQ-010 | Named constants | `RECENT_COMMITS=20`, `ANALYSIS_DEPTH=100`, `CHURN_THRESHOLD=3` | decisions.md: Code Quality |
+| REQ-011 | Consistent error handling | Return `null` for git failures, not empty strings | decisions.md: Code Quality |
+| REQ-012 | Risk summary <50 words | Terse synthesis, not prose | decisions.md: Decision 5 |
+| REQ-013 | Product named "Hindsight" | All docs/refs use "Hindsight" externally | decisions.md: Decision 1 |
 
-### REQ-013: Update Builder Prompt
-**Requirement:** Modify builder agent prompt to reference risk areas
-**Acceptance Criteria:**
-- Add to prompt: "Check `.planning/git-intelligence.md` before editing files"
-- Add: "If editing a churn hotspot, be extra careful and test thoroughly"
-- Builder demonstrates awareness of risk report
-**Source:** PRD Section 4
+### INTEGRATION Requirements (P0)
 
----
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-014 | Pipeline integration point | `generateProjectHindsight()` called before plan phase | decisions.md: MVP |
+| REQ-015 | Planner prompt context | `hindsightPlannerContext()` injected into planner prompt | decisions.md: Prompt Modifiers |
+| REQ-016 | Executor prompt context | `hindsightExecutorContext()` injected into executor prompt | decisions.md: Prompt Modifiers |
+| REQ-017 | Outcome tracking | `trackHindsightOutcome()` logs flagged file + build failure correlation | decisions.md: Outcome Tracking |
+| REQ-018 | First-run acknowledgment | Print: `"Hindsight: ${n} high-risk files identified. Proceed with awareness."` | decisions.md: Board Condition |
+| REQ-019 | No pipeline rewrite | Add module to existing pipeline.ts, don't rewrite | git-intelligence.md: CRITICAL |
 
-## Constraint Requirements
+### PROMPT Requirements (P0)
 
-### REQ-014: No Caching
-**Requirement:** Generate report fresh on every run, no memoization
-**Acceptance Criteria:**
-- Report generated fresh each time
-- No HEAD commit hashing or change detection
-- Caching deferred to v2
-**Source:** Decision 7 (Caching Strategy)
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-020 | Planner reads report | Prompt includes: "Read `.planning/hindsight-report.md`" | PRD: Section 4 |
+| REQ-021 | Planner emphasizes risk | Prompt includes: "Pay extra attention to churn/bug-prone files" | PRD: Section 4 |
+| REQ-022 | Planner adds verification | Prompt includes: "If touching high-risk files, add verification steps" | PRD: Section 4 |
+| REQ-023 | Executor checks report | Prompt includes: "Check report for risk areas before editing" | PRD: Section 4 |
+| REQ-024 | Executor tests hotspots | Prompt includes: "If editing churn hotspot, test thoroughly" | PRD: Section 4 |
+| REQ-025 | Mentor voice | Guidance tone ("tread carefully"), not warnings | decisions.md: Decision 6 |
 
-### REQ-015: No UI/Dashboard
-**Requirement:** Feature is completely invisible infrastructure
-**Acceptance Criteria:**
-- No dashboard component
-- No toggle or configuration UI
-- No visualization or analytics interface
-- Background wisdom only
-**Source:** Decision 8 (UI/Dashboard) — Full alignment
+### OUTPUT Requirements (P0)
 
-### REQ-016: No New Dependencies
-**Requirement:** Implement using git CLI and Node.js built-ins only
-**Acceptance Criteria:**
-- No npm packages added
-- Uses `execSync` from `child_process`
-- Only git and filesystem APIs required
-**Source:** PRD Success Criteria
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-026 | Churn hotspots section | Top 15 files by change frequency with counts | decisions.md |
+| REQ-027 | Bug-prone files section | Files with 3+ bug-fix commits listed | decisions.md |
+| REQ-028 | Recent failures section | Commits mentioning failures/reverts included | PRD: Section 2c |
+| REQ-029 | Uncommitted state section | Dirty files from `git status --short` | PRD: Section 2e |
+| REQ-030 | Parseable markdown | Risk assessment leads, timestamp as footnote | decisions.md: Code Quality |
+| REQ-031 | Clear structure | Sections: churn, bugs, failures, uncommitted, summary | PRD: Section 2 |
+| REQ-032 | No risk badges | Show data only, no numeric scores | decisions.md: CUT |
+| REQ-033 | Terse formatting | Technical language, not narrative prose | decisions.md: Decision 5 |
 
-### REQ-017: Execution Time <2 Seconds
-**Requirement:** Performance target for report generation
-**Acceptance Criteria:**
-- Completes in <2 seconds on standard repos
-- Completes in <5 seconds on large monorepos
-**Source:** Success Criteria (Definition of Done)
+### CONFIG Requirements (P0)
 
----
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-034 | Zero user config | No config files, flags, or env vars for users | decisions.md: Decision 4 |
+| REQ-035 | No dashboard/UI | No web interface, toggles, or visual dashboard | decisions.md: Decision 10 |
+| REQ-036 | No artificial delays | ~1.5s runtime is natural analysis time | decisions.md: Decision 12 |
+| REQ-037 | Performance safeguard | `--max-count=1000` on all git log commands | decisions.md: Decision 8 |
 
-## Quality Requirements
+### DOCUMENTATION Requirements (P0)
 
-### REQ-018: Use Project Logger
-**Requirement:** Follow daemon logging patterns
-**Acceptance Criteria:**
-- Use `log()` from `./logger.js`, NOT `console.log`
-- Log format: `HINDSIGHT: <message>`
-- Log start, completion, and any errors
-**Source:** BANNED-PATTERNS.md, daemon conventions
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-038 | README boundaries | Document who this is for (English commits, standard git) | decisions.md: Board Condition |
+| REQ-039 | Integration location docs | Document exact file paths for prompt integration | decisions.md: Open Question 4 |
 
-### REQ-019: Avoid Banned Patterns
-**Requirement:** Code must not contain banned patterns
-**Acceptance Criteria:**
-- No hardcoded `/Users/` paths
-- No `console.log` in daemon code
-- Use `REPO_PATH` from config.ts for all paths
-**Source:** BANNED-PATTERNS.md
+### QUALITY Requirements (P0)
 
-### REQ-020: Integration Test
-**Requirement:** Verify feature works end-to-end
-**Acceptance Criteria:**
-- Function runs without errors
-- Report generates with all sections
-- Planner output references git history
-- Pipeline completes successfully
-**Source:** Definition of Done (decisions.md)
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-040 | Code breathing room | Blank lines between data gathering and synthesis | decisions.md: Jony Ive |
+| REQ-041 | No unused parameters | Remove all `_project` prefixed params | decisions.md: Jony Ive |
+| REQ-042 | Named constants | All magic numbers extracted | decisions.md: Jony Ive |
+| REQ-043 | JSDoc manifesto | index.ts includes feature philosophy JSDoc | decisions.md: File Structure |
 
 ---
 
-## Traceability Matrix
+## CUT Features (NOT in v1.0)
 
-| Requirement | Source Doc | Priority | Wave |
-|-------------|-----------|----------|------|
-| REQ-001 | Decision 2 | P0 | 1 |
-| REQ-002 | Decision 3 | P1 | 1 |
-| REQ-003 | PRD 1a | P0 | 1 |
-| REQ-004 | PRD 1b, Decision 9 | P0 | 1 |
-| REQ-005 | PRD 1c | P0 | 1 |
-| REQ-006 | Decision 5 | P1 | — |
-| REQ-007 | PRD 1e | P0 | 1 |
-| REQ-008 | Decision 6 | P0 | 1 |
-| REQ-009 | PRD 2 | P0 | 1 |
-| REQ-010 | Decision 4 | P1 | 1 |
-| REQ-011 | PRD 3 | P0 | 2 |
-| REQ-012 | PRD 4 | P0 | 2 |
-| REQ-013 | PRD 4 | P0 | 2 |
-| REQ-014 | Decision 7 | P1 | 1 |
-| REQ-015 | Decision 8 | P1 | — |
-| REQ-016 | PRD | P0 | 1 |
-| REQ-017 | Success Criteria | P1 | 3 |
-| REQ-018 | BANNED-PATTERNS | P0 | 1 |
-| REQ-019 | BANNED-PATTERNS | P0 | 1 |
-| REQ-020 | Definition of Done | P0 | 3 |
+| Feature | Reason | Source |
+|---------|--------|--------|
+| Caching/memoization | Fast enough without (1-2s) | decisions.md: DEFERRED |
+| User configuration | "Ships opinions, not options" | decisions.md: Decision 4 |
+| Dashboard/UI | "Invisible by design" | decisions.md: Decision 10 |
+| Agent Activity (shortlog) | Churn captures this | decisions.md: Decision 3 |
+| Risk scores/badges | "Show data, trust the agent" | decisions.md: CUT |
+| Enforcement mechanisms | Soft guidance only | decisions.md: CUT |
 
 ---
 
-## Decision Overrides Summary
+## Deferred Features
 
-These decisions from `rounds/git-intelligence/decisions.md` override the original PRD:
+### v1.1 (30 Days Post-Launch)
 
-| Decision | PRD Said | Decision Says | Winner |
-|----------|----------|---------------|--------|
-| Architecture | Multi-file module | Single function <100 lines | Elon Musk |
-| Configuration | Implied configurable | No configuration in v1 | Steve Jobs |
-| Risk Summary | "Mentor voice" | <50 words, terse | Compromise |
-| Agent Activity | Include shortlog | CUT from v1 | Elon Musk |
-| Monorepo | No mention | `--max-count=1000` required | Elon Musk |
-| Caching | No mention | No caching in v1 | Both (deferred) |
-| UI | No mention | No UI ever | Both (aligned) |
-| Bug Pattern | Implied extensible | Fixed: `fix\|bug\|broken\|revert` | Elon Musk |
+| Feature | Source |
+|---------|--------|
+| Vindication moments (success surfacing) | Shonda Rhimes |
+| Delta reports ("what changed since last run") | Jensen Huang |
+| Outcome persistence | Jensen Huang |
+| i18n patterns (non-English commits) | Oprah Winfrey |
+
+### v1.2 (60 Days)
+
+| Feature | Source |
+|---------|--------|
+| Revenue path documentation | Warren Buffett |
+| Cross-session memory | Shonda Rhimes |
+| Human annotation (.hindsight-context.md) | Oprah Winfrey |
+
+### v2.0 (90 Days)
+
+| Feature | Source |
+|---------|--------|
+| Feedback loop (warning -> outcome -> learning) | Jensen Huang |
+| ML classification (replace regex) | Jensen Huang |
+| Risk API (query interface) | Jensen Huang |
+| Cross-project learning | Jensen Huang |
+
+---
+
+## Success Criteria (v1.0 Definition of Done)
+
+From decisions.md:
+
+- [ ] `generateHindsightReport()` exists and runs in <2 seconds
+- [ ] Report generated and written to `.planning/hindsight-report.md`
+- [ ] Planner prompt references report
+- [ ] Executor prompt includes flagged-file guidance
+- [ ] No user-facing configuration or UI
+- [ ] Total implementation <100 lines core TypeScript
+- [ ] Acknowledgment line on first run
+- [ ] Basic outcome tracking implemented
+- [ ] README documents boundaries (English commits, standard git)
+
+---
+
+## Risk Register
+
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Report ignored by agent | HIGH | HIGH | Strong prompt language; v1.1 context injection |
+| No measurable impact | HIGH | MEDIUM | Basic outcome tracking |
+| False positives | MEDIUM | HIGH | Keep logic simple; soft enforcement |
+| Monorepo timeout | MEDIUM | MEDIUM | `--max-count=1000` safeguard |
+| Token bloat | MEDIUM | MEDIUM | Terse formatting; test with large repos |
+| English-only exclusion | HIGH | MEDIUM | v1.1: i18n patterns |
+
+---
+
+## Technical Notes
+
+### File Structure
+
+```
+deliverables/git-intelligence/
+  index.ts                    # Exports + JSDoc manifesto
+  hindsight.ts                # Core logic (<100 lines)
+  hindsight-integration.ts    # Pipeline hooks + outcome tracking
+  README.md                   # User documentation
+
+daemon/src/
+  pipeline.ts                 # Integration point (runPlan, runBuild)
+  config.ts                   # REPO_PATH constant
+
+.planning/
+  hindsight-report.md         # Generated per-build (not committed)
+```
+
+### Key Integration Points
+
+1. **pipeline.ts:runPlan()** — Call `generateProjectHindsight()` before planner agent
+2. **pipeline.ts:runBuild()** — Call `generateProjectHindsight()` before builder agent
+3. **Planner prompt** — Inject `hindsightPlannerContext()` output
+4. **Builder prompt** — Inject `hindsightExecutorContext()` output
+
+### Git Commands Reference
+
+```bash
+# Recent changes (REQ-003)
+git log --oneline -20 --max-count=1000
+
+# File churn (REQ-004)
+git log --name-only --format= -100 --max-count=1000
+
+# Bug-associated (REQ-005)
+git log --grep="fix\|bug\|broken\|revert" -i --name-only --format= -100 --max-count=1000
+
+# Uncommitted state (REQ-006)
+git status --short
+git diff --stat
+```
+
+---
+
+## Board Scores
+
+| Reviewer | Score | Key Quote |
+|----------|-------|-----------|
+| Jensen Huang | 5/10 | "You named this thing 'Intelligence' and delivered 'Formatted Output.'" |
+| Warren Buffett | 6/10 | "Wonderful engineering. Still looking for the company." |
+| Oprah Winfrey | 7.5/10 | "You got the hardest part right: you made something that cares." |
+| Shonda Rhimes | 4/10 | "Beautiful pilot that ends at the cold open." |
+
+**Composite Score:** 5.6/10 — PROCEED with conditions
+
+---
+
+*Document generated for Great Minds Agency Phase Planning*
+*The Build Phase Is Authorized.*

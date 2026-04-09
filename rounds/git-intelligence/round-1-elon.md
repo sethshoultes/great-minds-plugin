@@ -1,63 +1,64 @@
 # Round 1: Elon Musk — Chief Product & Growth Officer
 
-## Executive Summary
-This PRD is 80% right. The core insight—agents repeat mistakes because they lack historical context—is valid and valuable. But there's unnecessary complexity hiding here. Let me break it down.
-
 ## Architecture: What's the Simplest System That Could Work?
 
-The PRD specifies 5 git commands. That's fine—shell out to git, parse text output, write markdown. **One file, ~150 lines of TypeScript, zero dependencies.** This is already simple.
+Five shell commands. One markdown file. Two prompt injections. **That's it.** No databases, no APIs, no state management. The PRD is already at near-minimum viable complexity.
 
-But I'd cut the "Agent Activity" command (`git shortlog`). Bus factor analysis is a *human* concern, not something an AI agent needs mid-build. It adds noise without improving build quality. **4 commands, not 5.**
+One refinement: **Don't write a file at all.** The `.planning/git-intelligence.md` intermediate artifact is a liability. Parse the git output → inject directly into prompts → done. Files are for humans. Prompts are for agents. Every file write is a race condition waiting to happen with concurrent builds.
+
+**Simplest system:** `runGitIntelligence(repoPath) → string` that returns prompt-ready text. Inline it.
 
 ## Performance: Where Are the Bottlenecks?
 
-**Git commands are I/O bound, not CPU bound.** On a repo with 10K commits:
-- `git log` operations: ~200-500ms each
-- `git status`: ~50-100ms
-- Total: ~1-2 seconds worst case
+The git commands are O(commit history). On a 50K-commit repo, `git log --since="90 days ago"` could take 2-5 seconds. Five sequential commands = 10-25 seconds of blocking I/O.
 
-This is **negligible** compared to LLM inference times (10-60 seconds per agent turn). Not a bottleneck. Run them sequentially—parallelization adds complexity for zero meaningful gain.
+**10x path:**
+1. **Parallel execution** — `Promise.all()` on all 5 commands. Instant 5x improvement.
+2. **Cache with 1-hour TTL** — git intel doesn't change mid-session. Check hash of HEAD; if unchanged, serve cached.
+3. **Add `--max-count=1000`** — cap log traversal. You don't need 10K commits to find patterns.
 
-**10x path?** Cache the report. If no commits in the last 5 minutes, serve stale. But honestly, 1-2 seconds is already fast. Don't optimize what doesn't hurt.
+Target: 50ms cache-hit, 3s cold maximum. LLM inference is 10-60s. Git intel should be imperceptible.
 
-## Distribution: How Does This Reach 10,000 Users Without Paid Ads?
+## Distribution: How Does This Reach 10,000 Users?
 
-This is a **feature**, not a product. Distribution comes from the parent plugin/pipeline, not from git intelligence itself.
+It doesn't need to. This is infrastructure, not product. It makes your agents smarter, which makes your builds better, which is the growth loop.
 
-That said, the `.planning/git-intelligence.md` output is **shareable content**. Smart move: make it pretty enough that developers screenshot and share it. "Look what my AI found about our codebase." That's organic reach.
+If you spin it out later: open-source as `git-intel` CLI. One blog post. Let it compound. But don't distract from core product to chase distribution on a feature.
 
-**One concrete suggestion:** Add a "Technical Debt Score" (1-100) at the top. Numbers get shared. "Our codebase scores 73 on debt" is tweetable. A wall of text isn't.
+## What to CUT
 
-## What to CUT (Scope Creep & v2 Features)
+**Cut from v1:**
+1. **Agent Activity (shortlog)** — Bus factor is a human concern, not agent intel. It doesn't inform any build decision. Pure vanity metrics.
+2. **The markdown file** — As stated, inject directly. File I/O is a debugging nightmare.
+3. **"Risk Summary" LLM generation** — If you're calling an LLM to summarize the git output, you've added latency and cost for marginal value. The raw data IS the summary.
 
-1. **Cut "Agent Activity" section.** Bus factor is irrelevant to build quality. v2 at best.
-2. **Cut the 90-day window configurability.** Hard-code it. Nobody needs to configure this in v1.
-3. **Don't build a UI.** Markdown file is the interface. LLMs read markdown natively.
-4. **No database.** Don't store historical reports. The git repo IS your database.
-
-The PRD is already lean. Don't let anyone add "wouldn't it be nice if..." features.
+**Keep everything else.** The four diagnostics (churn, bugs, failures, uncommitted) are the signal.
 
 ## Technical Feasibility: Can One Agent Session Build This?
 
-**Yes, absolutely.** This is a single-file module (~150 LOC) plus ~20 lines of prompt updates plus ~10 lines of pipeline integration.
+**Yes.** This is 100-150 lines of TypeScript plus ~20 lines of pipeline wiring. One file. One session. Ship it.
 
-A competent agent session could ship this in one turn. It's parsing shell output and writing markdown—not building a distributed system.
-
-**Risk:** The prompt modifications to planner/builder are the fragile part. Ensure the agent knows exactly which files contain those prompts and what format they're in.
+**The risk is prompt integration.** The PRD says "update the planner prompt" but doesn't specify WHERE the planner prompt lives. Is it in pipeline.ts? A config file? A constant? **Add exact file paths and line numbers to the PRD.** Agents fail on vague integration points.
 
 ## Scaling: What Breaks at 100x Usage?
 
-**Nothing breaks.** Every build runs git commands locally against that user's repo. There's no shared state, no central server, no database. It's embarrassingly parallel by design.
+At 100 concurrent builds on the same repo:
+- **Git file locks.** Two simultaneous `git log` processes = one blocks. Git uses lockfiles.
+- **File contention** on `.planning/git-intelligence.md` if you write there.
 
-At 100x usage (say, 10,000 concurrent builds across different users):
-- Each user hits their own disk
-- Git is battle-tested at scale
-- No network calls, no API limits
+**Solution:** Return string, don't write file. Each pipeline instance holds its own copy in memory. Stateless scales. Problem disappears.
 
-The only theoretical limit: a single repo with 1M+ commits might see `git log` slow to 5-10 seconds. Solution? Add `--max-count=1000` to cap traversal. Problem solved.
+At 100 different repos simultaneously: nothing breaks. Embarrassingly parallel.
 
-## Final Verdict
+## Bottom Line
 
-**Ship it.** This is a high-value, low-risk feature with clean architecture. The PRD author showed restraint—appreciate that. The only sin would be letting scope creep in before v1 lands.
+This PRD is 85% correct. The insight is valid. The architecture is clean. The scope is tight.
+
+**Three changes before shipping:**
+1. Parallelize the git commands
+2. Don't write to disk—inject directly
+3. Specify exact prompt locations in the PRD
 
 One agent session. One file. Four git commands. Done.
+
+— Elon

@@ -1,17 +1,13 @@
 # Essence
 
 **What is this product REALLY about?**
-Teaching machines to respect the scars in your code.
+Memory for machines that would otherwise forget.
 
 **What's the feeling it should evoke?**
-The quiet confidence of a surgeon who read your chart before walking in.
+Relief. Someone already knows where you'll trip.
 
 **What's the one thing that must be perfect?**
-The moment the agent demonstrates it *already knows* where the danger lives.
+The silence. Protection that never performs.
 
 **Creative direction:**
-Invisible wisdom. Earned trust.
-
----
-
-*"Context matters more than capability."*
+Scars speak. Listen first.

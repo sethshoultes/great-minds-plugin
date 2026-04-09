@@ -2,49 +2,57 @@
 
 ## Where Elon Is Optimizing for the Wrong Metric
 
-**Elon wants to cut Agent Activity. This is precisely wrong.**
+**Elon wants to eliminate the markdown file entirely.**
 
-He says bus factor is "irrelevant to build quality." But he's measuring the wrong thing. We're not trying to improve *this* build. We're trying to help the agent understand the *territory*.
+"Files are for humans. Prompts are for agents." This is precisely backwards.
 
-When an agent sees that one person has touched `auth.ts` 47 times and nobody else has gone near it, that's not HR data — that's a warning sign that this file has hidden complexity, undocumented assumptions, and tribal knowledge baked in. The agent should tread carefully not because of "team dynamics," but because **single-author files are often single-point-of-failure architectures.**
+Agents *are* the new humans. The entire point of Claude Code is that agents reason, explore, and make decisions. A markdown file isn't debugging overhead — it's a **thinking artifact**. When an agent pauses to read a structured document before acting, it processes information deliberately, like a great developer would.
 
-Elon is optimizing for lines of code. I'm optimizing for wisdom per byte.
+Direct prompt injection treats agents like glorified regex engines. Feed input, get output. That's plumbing, not intelligence. We're building wisdom here.
 
-**His "Technical Debt Score" is a vanity metric.**
+**He wants to cut the shortlog. This is wrong.**
 
-A number from 1-100 tells you nothing. Is 73 good? Bad? Compared to what? It's the kind of metric that makes dashboards look smart while providing zero actionable insight.
+"Bus factor is a human concern, not agent intel"? Elon, *who touched the code* is exactly what separates judgment from blind navigation. When an agent sees that one person touched `auth.ts` 47 times and nobody else went near it, that's not HR data — it's a warning that this file has hidden complexity, undocumented assumptions, and tribal knowledge.
 
-You know what developers actually share? *Stories.* "This AI agent refused to touch our payment handler because it saw 23 patches in 90 days." That's tweetable. A number is forgettable.
+Single-author files are often single-point-of-failure architectures. The agent needs to know.
 
 ## Why Design Quality Matters HERE
 
-Elon would say: "Just ship the markdown. LLMs read markdown natively."
+Elon asks: "What's the simplest system that could work?"
 
-But the first 30 seconds of user experience determines whether this feature becomes trusted or ignored. If the report feels like a log dump, developers will stop reading it. If it feels like *insight*, they'll screenshot it.
+I ask: **What's the most meaningful system that could work?**
 
-The difference between "Warning: high-risk files detected" and "I've studied the history. Here's what I learned" is not cosmetic. It's the difference between an alarm that gets ignored and a mentor that gets trusted.
+His 100-150 lines of TypeScript will work. They'll be fast. And they'll be forgotten. Because tools that don't respect their users — even when those users are AI — don't inspire trust.
+
+The difference between raw git output and "This file has changed 47 times in 90 days. Tread carefully." isn't latency — it's leverage. Agents treat information differently based on how it's framed.
 
 **We're not shipping a report. We're shipping a relationship.**
 
 ## Where Elon Is Right — Concessions
 
-**He's right about cutting the 90-day configurability.** Zero configuration was my position. We agree.
+**He's right about parallelization.** Sequential git commands are lazy engineering. `Promise.all()` is the obvious fix. No argument.
 
-**He's right that caching is premature optimization.** 1-2 seconds is fast. Don't solve problems you don't have.
+**He's right about caching with HEAD hash.** Git intel doesn't change mid-session. Smart.
 
-**He's right that this should be one file.** Simplicity is a feature. One file, 150 lines, done. I respect the restraint.
+**He's right that the PRD needs exact file paths.** Vague integration points are where agent sessions die. Specify the line numbers.
+
+**He's right about scope.** One file. 150 lines. Ship it. I respect the restraint.
 
 ## My Non-Negotiable Decisions — LOCKED
 
 ### 1. The Name is HINDSIGHT
-Not "Git Intelligence." Names matter. This one tells the story.
+Not "git-intel." Not a CLI flag. A name that means something. Names create relationships.
 
-### 2. Agent Activity Stays
-Single-author files are architectural risk. The agent needs to know. Cut something else.
+### 2. The Markdown File Stays
+It's a thinking artifact, not overhead. Agents deserve documents, not just injections.
 
-### 3. Voice is Mentor, Not Alarm
-"I've studied the history" — not "Warning detected." We're building trust, not triggering alert fatigue.
+### 3. Agent Activity (Shortlog) Stays
+Who touched the code matters. Authorship is context. Context is wisdom.
 
 ---
 
-*The goal isn't to ship fast. It's to ship something worth using.*
+Elon builds rockets that land themselves. I respect the engineering.
+
+But this isn't a rocket. It's a mirror. And mirrors need to reflect truth beautifully — not just accurately.
+
+— Steve

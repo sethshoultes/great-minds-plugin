@@ -1,57 +1,64 @@
-# Steve Jobs — Chief Design & Brand Officer
+# Hindsight
 
 ## Product Naming
 
-**HINDSIGHT.**
+Call it **Hindsight**. One word. Says everything.
 
-One word. Says everything. Your agent finally has it. The ability to see what came before — the scars, the failures, the patterns. "Git Intelligence" sounds like a feature checkbox. Hindsight sounds like wisdom.
+Your agents are stumbling through codebases like tourists in a foreign city with no map. Hindsight gives them what every great developer has — the ability to learn from what came before. "Git Intelligence" is a feature description, not a product. Nobody falls in love with a feature description.
 
-When you tell someone "this agent has Hindsight," they immediately understand: it knows the history. It won't repeat the mistakes. That's not a feature — that's a superpower.
+Hindsight. It's the gift of knowing where the bodies are buried before you start digging.
 
 ## Design Philosophy
 
-Here's what makes this insanely great: **it teaches machines to learn from human failure.**
+This isn't a diagnostic tool. It's a **memory transplant**.
 
-Every codebase has scar tissue. Files that developers fear. Functions that have been patched seventeen times. The institutional knowledge that lives only in the heads of senior engineers who wince when someone says "I'm going to refactor the auth module."
+Think about the best engineer you've ever worked with. They don't just read code — they *know* things. "Don't touch that file, we've tried refactoring it three times." "That module is cursed." "Sarah rewrote this last month after three hotfixes." That institutional knowledge takes years to accumulate.
 
-We're bottling that wince. We're encoding tribal fear into a markdown file.
+Hindsight compresses years into seconds. That's insanely great.
 
-This isn't a diagnostic tool. It's a wisdom transfer mechanism. The git log IS the collective memory of every mistake your team ever made. We're giving agents access to the campfire stories.
+The report shouldn't feel like a spreadsheet. It should feel like a wise mentor whispering warnings in your ear. Every line must earn its place on the page.
 
-## User Experience — The First 30 Seconds
+## First 30 Seconds
 
-The agent doesn't just start coding. It pauses. It reads. It *considers*.
+The agent opens the project. Before it writes a single character of code, a voice appears:
 
-The user sees: "Analyzing repository history..." Then a report appears showing exactly where the dragons live. The agent says, "I notice `auth.ts` has been patched 23 times in 90 days. I'll add extra verification steps."
+> "Hold on. This codebase has scars. Let me show you where it bleeds."
 
-That moment — when the agent demonstrates historical awareness — is the moment the user trusts it. Not because it's smart. Because it's *wise*.
+Within seconds: a map of danger zones, a list of cursed files, a record of recent failures. The agent *sees* the history. Not just files — stories. The story of bugs that kept coming back. The story of files nobody wants to touch.
+
+Then — and only then — does it plan. With wisdom, not just intelligence.
 
 ## Brand Voice
 
-Confident but humble. Like a surgeon who's studied your chart before walking into the operating room.
+**Quiet confidence. Battle-tested.**
 
-Not: "Warning: high-risk files detected!"
-Yes: "I've studied the history. Here's what I learned."
+Hindsight doesn't brag. It doesn't list features. It speaks like a veteran developer who's seen it all:
 
-The voice is a mentor, not an alarm system. It speaks in insights, not warnings.
+- "This file has changed 47 times in 90 days. Tread carefully."
+- "Three bug fixes in auth.ts this month. Something's wrong here."
+- "Last week's rollback touched these files. History tends to repeat."
 
-## What to Say NO To
+Short sentences. No jargon. Just truth.
 
-**NO** to real-time complexity. We run five git commands. That's it. No language servers, no static analysis, no AST parsing. Git is the single source of truth.
+## What We Say NO To
 
-**NO** to configuration. Zero settings. It runs before every build. Period. The moment you add a toggle, you've admitted the feature might not be valuable.
+**No recommendations.** Hindsight observes. It doesn't prescribe. The moment we start saying "you should refactor this" we've become another noisy tool. Agents are smart enough to draw conclusions.
 
-**NO** to blame. We track *files*, not people. "Agent Activity" shows distribution of work, not finger-pointing. We're identifying bus factor risk, not assigning fault.
+**No scores or grades.** "Risk Score: 7.2" is meaningless abstraction. Show the data. Let it speak.
 
-**NO** to overwhelming data. Top 10 files. Last 90 days. One summary paragraph. If the report requires scrolling, we've failed.
+**No configuration.** One command. One report. If you need to configure it, we've already failed.
+
+**No historical deep-dives.** 90 days is enough. We're building intuition, not archaeology.
 
 ## The Emotional Hook
 
-Developers will love this because it validates what they've always known: **context matters more than capability.**
+Every developer has shipped a bug that someone else shipped before them. Every team has a file they're afraid to touch. Every codebase has ghosts.
 
-The smartest agent in the world is useless if it doesn't know that `payment-handler.js` has been the source of three production outages. We're not making agents smarter — we're making them wiser.
+Hindsight exorcises those ghosts. It turns invisible knowledge into visible wisdom.
 
-Wisdom is knowing where not to step. Hindsight delivers that wisdom in 200 milliseconds.
+People will love this because it gives agents something rare and precious: **the humility to learn from the past before boldly marching into the future.**
+
+That's not just a feature. That's respect for the craft.
 
 ---
 
