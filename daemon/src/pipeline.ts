@@ -263,6 +263,12 @@ export async function runPlan(project: string): Promise<void> {
 
   await runAgent("planner", `Read and follow the instructions in ${skillPath}.
 Use project slug '${project}'. Read ${decisionsPath} and ${prdPath} as inputs.
+
+IMPORTANT: Before creating the task plan, read CLAUDE.md in the repo root for project-specific rules.
+If the project involves a framework or external API, read the relevant docs in the docs/ directory FIRST.
+Verify your technical approach by reading actual documentation or source code — do NOT guess at API surfaces.
+If docs exist (e.g., docs/EMDASH-GUIDE.md), cite specific sections in your plan to prove you read them.
+
 Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`);
 
   // Sara Blakely gut-check
@@ -285,6 +291,14 @@ export async function runBuild(project: string): Promise<void> {
 
   await runAgent("builder", `Read and follow the instructions in ${skillPath}.
 Use project slug '${project}'. Read ${planPath} and ${decisionsPath} as inputs.
+
+CRITICAL — ANTI-HALLUCINATION RULES:
+1. Read CLAUDE.md in the repo root FIRST for project-specific rules and constraints.
+2. If building an Emdash plugin/theme/site, read docs/EMDASH-GUIDE.md BEFORE writing any code.
+3. If calling any external API or framework, verify the API exists by reading actual source code or docs — do NOT generate code from memory.
+4. Read BANNED-PATTERNS.md if it exists — any banned pattern in your code means automatic QA failure.
+5. After writing code, grep your own output for banned patterns before committing.
+
 Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.
 Commit everything on a feature branch and push.`);
 
@@ -373,6 +387,20 @@ Use project slug '${project}'. Ship the project: commit, write retrospective, pu
   // Marcus Aurelius retrospective
   const retroPath = resolve(roundsDir, "retrospective.md");
   await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20);
+
+  // Auto-merge feature branch into main
+  log("SHIP: Merging feature branch into main");
+  await runAgent("merge-to-main", `You are merging completed work into main. Do the following:
+
+1. Run: git branch --show-current — note the current branch name
+2. Run: git checkout main && git pull origin main
+3. Run: git merge <feature-branch> -m "Merge <feature-branch>: ${project} shipped"
+4. If there are merge conflicts, resolve them by accepting the feature branch version (--theirs)
+5. Run: git push origin main
+6. Switch back to the feature branch: git checkout <feature-branch>
+7. Report what you did
+
+Do NOT create a PR. Just merge directly into main.`, 10);
 
   log("PHASE DONE: ship");
 }

@@ -153,9 +153,15 @@ ${focus}
 
 Verify deliverables in ${deliverablesDir}/ against requirements in ${requirementsPath}.
 
-For EACH requirement:
-- Mark PASS or FAIL
-- Cite the specific file and evidence
+CRITICAL QA STEPS:
+1. BANNED PATTERNS CHECK: If BANNED-PATTERNS.md exists in the repo root, grep all built code for every banned pattern. Any match = automatic BLOCK with the specific file and line number.
+2. CODE REVIEW: For each requirement, mark PASS or FAIL with specific file and evidence.
+3. LIVE TESTING: If the deliverable is a deployable site or plugin, deploy it and test:
+   - Curl all API endpoints and verify they return valid JSON (not 500, not HTML)
+   - Use Playwright (installed on this server) to screenshot admin pages if applicable
+   - Check for JavaScript console errors
+   Code review alone is NOT sufficient — you must verify against a running system.
+4. If a test site URL is provided in the PRD or CLAUDE.md, use it. Otherwise use the project's deploy URL.
 
 Overall verdict: PASS or BLOCK
 If BLOCK: list every issue that must be fixed, ranked by severity (P0, P1, P2).

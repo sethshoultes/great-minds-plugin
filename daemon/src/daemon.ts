@@ -46,7 +46,7 @@ function startPrdWatcher(): void {
 
   watcher.on("add", (filePath: string) => {
     const name = basename(filePath);
-    if (!name.endsWith(".md") || name === "TEMPLATE.md" || filePath.includes("completed")) return;
+    if (!name.endsWith(".md") || name === "TEMPLATE.md" || filePath.includes("completed") || filePath.includes("failed")) return;
 
     const slug = name.replace(/\.md$/, "");
     log(`WATCHER: New PRD detected — ${name}`);
