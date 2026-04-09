@@ -1,143 +1,158 @@
-# Decisions: Sync Great Minds
+# Decisions: sync-great-minds
 
 **Arbitrated by:** Phil Jackson, The Zen Master
-**Date:** Final Consolidation
-**Status:** Blueprint for Build Phase
+**Date:** April 9, 2026
+**Status:** LOCKED FOR BUILD
 
 ---
 
-## Executive Summary
+*"The strength of the team is each individual member. The strength of each member is the team."*
 
-Two visionaries debated the path forward. Steve Jobs championed beautiful simplicity and emotional trust. Elon Musk demanded first-principles engineering and systemic solutions. Both contributed essential wisdom. This document captures what we're building.
-
----
-
-## Decision Log
-
-### Decision 1: Product Name
-
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Steve Jobs |
-| **Winner** | Steve Jobs |
-| **Decision** | **MIRROR** |
-| **Rationale** | The name shapes behavior. "Mirror" communicates instant, complete, unidirectional reflection. It's a promise, not a description. Elon did not contest the naming — his silence is consent. |
+Two brilliant minds debated. Both were partially right. Neither was completely wrong. This document captures what we build—and why.
 
 ---
 
-### Decision 2: Source of Truth Architecture
+## Decision 1: Product Name
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Both (unanimous) |
-| **Winner** | Consensus |
-| **Decision** | **Unidirectional flow only** |
-| **Rationale** | Plugin is truth. Repo is reflection. No bidirectional sync. No merge conflicts. No "which version is newer?" Both Steve and Elon locked this as non-negotiable. |
-
----
-
-### Decision 3: User Confirmation Model
-
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Steve Jobs |
-| **Winner** | Steve Jobs (with conditions) |
-| **Decision** | **Zero confirmation for execution** |
-| **Rationale** | Steve: "If you trust the source, act on it." No dry-run previews, no approval dialogs. Elon raised valid concern about "conviction without verification" breaking things — but for v1 internal tooling with 3 users, speed beats ceremony. |
-| **Condition** | If Mirror expands to production environments or external users, revisit dry-run capability. |
-
----
-
-### Decision 4: Trigger Mechanism
-
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Contested |
-| **Steve's Position** | Human-initiated, immediate execution. "A human decides 'now' and it happens now." |
-| **Elon's Position** | Automated via git hooks or CI. "Humans forget. Systems don't." |
-| **Winner** | **Elon Musk** |
-| **Decision** | **v1: Human-initiated. v1.1: Git hook automation** |
-| **Rationale** | Elon's critique is fatal: "You've wrapped a manual process in beautiful language." A tool you must remember to run will be forgotten. Ship human-initiated for v1 (fastest path), but the immediate follow-up is git hook integration. The daemon is only as good as its automation. |
-
----
-
-### Decision 5: v1 Scope
-
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Elon Musk |
+| Aspect | Decision |
+|--------|----------|
 | **Winner** | Elon Musk |
-| **Decision** | **Three operations only** |
-| **Rationale** | Steve conceded: "He's right about scope creep." Emdash CMS Reference, CLAUDE.md updates — these are documentation debt, not sync. Cut them. The build phase executes exactly three operations. Nothing more. |
+| **Proposed by** | Steve: "Mirror" / Elon: `sync-to-standalone.sh` |
+| **Decision** | No brand name. Internal filename only. |
+| **Rationale** | This is internal tooling for three developers. Branding a utility creates identity confusion and invites scope creep. The file is named `mirror.ts` as a compromise—functional, not marketed. |
+
+**LOCKED:** No logos, no taglines, no marketing copy. It's a script.
 
 ---
 
-### Decision 6: Long-term Architecture
+## Decision 2: Architecture — Script vs. Daemon
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Elon Musk |
-| **Winner** | Elon Musk (deferred) |
-| **Decision** | **Eventually: npm package extraction** |
-| **Rationale** | Steve conceded: "We should eventually extract the daemon to its own repo. But 'eventually' isn't 'today.'" Elon is architecturally correct — npm packages are mirrors that actually work. But the daemon is evolving weekly. Ship Mirror now. Extract to npm when the daemon stabilizes. |
-| **Timeline** | Post-v1, when daemon API is stable. |
+| Aspect | Decision |
+|--------|----------|
+| **Winner** | Elon Musk (v1) / Steve Jobs (v1.1+) |
+| **Proposed by** | Steve: Background daemon, invisible / Elon: Manual script, explicit |
+| **Decision** | v1 ships as a manually-invoked script. v1.1 adds git hook automation. |
+| **Rationale** | Elon's "ship now, iterate later" bias is correct for v1. Steve's "invisible certainty" requires automation—deferred to v1.1 to avoid shipping fragile infrastructure. |
+
+**LOCKED:**
+- v1.0 = Manual invocation via `npx ts-node mirror.ts`
+- v1.1 = Git hook or watch-mode automation (owner TBD)
 
 ---
 
-### Decision 7: Brand Voice / Output Style
+## Decision 3: Sync Direction
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed by** | Steve Jobs |
+| Aspect | Decision |
+|--------|----------|
+| **Winner** | Unanimous |
+| **Proposed by** | Steve Jobs (Round 1), affirmed by Elon (Round 2) |
+| **Decision** | Unidirectional. Plugin repo is source of truth. Standalone repo receives. |
+| **Rationale** | Bidirectional sync is chaos pretending to be flexibility. One canonical source prevents merge conflicts, drift, and the "which version is real?" anxiety that this tool exists to eliminate. |
+
+**LOCKED:**
+- Source: `great-minds-plugin/daemon/`
+- Target: `great-minds/daemon/`
+- Direction: One-way only. Always.
+
+---
+
+## Decision 4: Failure Handling
+
+| Aspect | Decision |
+|--------|----------|
 | **Winner** | Steve Jobs |
-| **Decision** | **Quiet, declarative, past-tense** |
-| **Rationale** | Elon conceded: "`Mirrored pipeline.ts` beats `Copying file 1 of 6... [=====>] 50%`." Output style is confident and quiet. Short sentences. Past tense. It already did it. |
+| **Proposed by** | Steve: "Fail loud, never silent" / Elon: "Exit codes are enough" |
+| **Decision** | Explicit failure modes with non-zero exit codes and human-readable errors. |
+| **Rationale** | Elon's exit codes satisfy the machine. Steve's loud failures satisfy the human at 2 AM. Both win: proper exit codes AND clear error messages. No silent failures. No partial states. |
 
-**Output Format:**
-```
-Mirrored pipeline.ts
-Mirrored agents.ts
-Mirrored errors.ts
-Installed dependencies
-Committed: "Mirror sync from plugin"
-Pushed to origin
-```
+**LOCKED:**
+- On conflict: STOP. Do not overwrite. Exit 1. Print what blocked.
+- On success: Exit 0. Minimal output.
+- On partial: Never. Atomic operation or full rollback.
 
 ---
 
-## MVP Feature Set (v1 Ships This)
+## Decision 5: Configuration
+
+| Aspect | Decision |
+|--------|----------|
+| **Winner** | Unanimous |
+| **Proposed by** | Steve Jobs (Round 1), affirmed by Elon (Round 2) |
+| **Decision** | Config file only. No UI. No wizard. No prompts. |
+| **Rationale** | Power users read files. Config-as-code is version-controllable, diffable, and explicit. This is a tool for professionals who trust themselves. |
+
+**LOCKED:** YAML or JSON config file. Zero interactive prompts.
+
+---
+
+## Decision 6: Conflict Resolution Strategy
+
+| Aspect | Decision |
+|--------|----------|
+| **Winner** | Steve Jobs |
+| **Proposed by** | Steve: "Don't guess, don't merge, scream" |
+| **Decision** | No automatic conflict resolution. Ever. |
+| **Rationale** | "Smart" merging is how you get code that compiles but doesn't work. If source and target have diverged unexpectedly, that's a human decision. The tool surfaces the problem; the human solves it. |
+
+**LOCKED:** On any conflict or unexpected state, halt and report. Human intervenes.
+
+---
+
+## Decision 7: Underlying Architecture Problem
+
+| Aspect | Decision |
+|--------|----------|
+| **Winner** | Elon Musk |
+| **Proposed by** | Elon: "Fix the architecture, not the sync" |
+| **Decision** | Acknowledge but defer. Sync ships now; architecture discussion scheduled. |
+| **Rationale** | Elon correctly identified that duplicate code across repos is technical debt. Sync treats symptoms. However, architectural refactoring (submodules, shared npm package, or repo consolidation) requires broader team input. Ship the bandage; schedule the surgery. |
+
+**LOCKED:**
+- v1 ships the sync tool
+- Architecture discussion scheduled within 30 days (owner: TBD)
+- Options to evaluate: git submodule, npm package, repo merge
+
+---
+
+## MVP Feature Set (v1.0)
+
+What ships now. No more. No less.
 
 ### Core Operations
+1. **Copy daemon source files** from plugin to standalone
+2. **Run `npm install`** in target directory
+3. **Git commit and push** with standardized message
 
-| # | Operation | Description |
-|---|-----------|-------------|
-| 1 | **Copy daemon files** | 6 files from plugin to great-minds repo |
-| 2 | **Run npm install** | Ensure dependencies are synchronized |
-| 3 | **Git commit + push** | Atomic commit with clear message |
+### Files Synced
+```
+Source: great-minds-plugin/daemon/
+Target: great-minds/daemon/
 
-### File Manifest (What Gets Copied)
+Files:
+- src/pipeline.ts
+- src/agents.ts
+- src/config.ts
+- src/daemon.ts
+- package.json
+- README.md
+```
 
-Source: `great-minds-plugin/daemon/`
-Destination: `great-minds/daemon/`
+### Behavioral Requirements
+- Single source of truth (plugin is canonical)
+- Fail loud on any conflict
+- Non-zero exit code on failure
+- No partial states
+- Minimal success output
+- Config file for paths (no hardcoding)
 
-| File | Purpose |
-|------|---------|
-| `pipeline.ts` | Core orchestration logic |
-| `agents.ts` | Agent definitions |
-| `errors.ts` | Error handling |
-| `types.ts` | TypeScript definitions |
-| `utils.ts` | Utility functions |
-| `index.ts` | Entry point |
-
-### What Does NOT Ship in v1
-
-| Excluded | Reason | Owner |
-|----------|--------|-------|
-| CLAUDE.md updates | Documentation debt, not sync | Future sprint |
-| Emdash CMS Reference | Scope creep | Future sprint |
-| Dry-run mode | Erodes confidence per Steve | Revisit if needed |
-| Git hook automation | v1.1 feature per decision | Immediate follow-up |
-| npm package extraction | Long-term architecture | Post-stabilization |
+### Explicitly NOT in v1.0
+- Automatic/scheduled execution
+- Watch mode
+- Bidirectional sync
+- Conflict resolution
+- Progress bars or notifications
+- Web UI or configuration wizard
+- CLAUDE.md merge automation (requires human judgment)
 
 ---
 
@@ -145,58 +160,87 @@ Destination: `great-minds/daemon/`
 
 ```
 great-minds-plugin/
-scripts/
-    mirror.ts          # Main execution script
-    mirror.config.ts   # Configuration (source/dest paths)
-
-great-minds/
-daemon/
-    pipeline.ts        # [MIRRORED]
-    agents.ts          # [MIRRORED]
-    errors.ts          # [MIRRORED]
-    types.ts           # [MIRRORED]
-    utils.ts           # [MIRRORED]
-    index.ts           # [MIRRORED]
+├── daemon/
+│   └── src/
+│       ├── mirror.ts          # Main sync script (NEW)
+│       ├── mirror.config.yaml # Configuration (NEW)
+│       ├── pipeline.ts        # Existing - synced
+│       ├── agents.ts          # Existing - synced
+│       ├── config.ts          # Existing - synced
+│       └── daemon.ts          # Existing - synced
+│   └── package.json           # Existing - synced
+│   └── README.md              # Existing - synced
+└── rounds/
+    └── sync-great-minds/
+        ├── decisions.md       # This document
+        ├── essence.md         # Product soul
+        ├── retrospective.md   # Post-mortem
+        └── round-*.md         # Debate transcripts
 ```
 
-### Script Behavior
+### mirror.ts Responsibilities
+1. Read config file for source/target paths
+2. Validate source files exist
+3. Check target directory state (clean git status)
+4. Copy files (atomic operation)
+5. Run `npm install` in target
+6. Git add, commit, push
+7. Report success or failure
 
-```typescript
-// mirror.ts pseudocode
-const FILES = ['pipeline.ts', 'agents.ts', 'errors.ts', 'types.ts', 'utils.ts', 'index.ts'];
-const SOURCE = '../great-minds-plugin/daemon/';
-const DEST = '../great-minds/daemon/';
+### mirror.config.yaml Structure
+```yaml
+source:
+  root: ./
+  files:
+    - src/pipeline.ts
+    - src/agents.ts
+    - src/config.ts
+    - src/daemon.ts
+    - package.json
+    - README.md
 
-// 1. Copy files
-FILES.forEach(file => {
-  copy(SOURCE + file, DEST + file);
-  log(`Mirrored ${file}`);
-});
+target:
+  root: /path/to/great-minds/daemon
 
-// 2. Install dependencies
-exec('npm install', { cwd: DEST_REPO });
-log('Installed dependencies');
-
-// 3. Commit and push
-exec('git add .');
-exec('git commit -m "Mirror sync from plugin"');
-exec('git push');
-log('Committed. Pushed.');
+git:
+  auto_commit: true
+  commit_message: "sync: mirror from great-minds-plugin"
+  auto_push: true
 ```
 
 ---
 
-## Open Questions (Needs Resolution)
+## Open Questions (Require Resolution)
 
-| # | Question | Stakes | Proposed Owner |
-|---|----------|--------|----------------|
-| 1 | **Where does mirror.ts live?** | In plugin repo? Standalone scripts folder? | Architect decision |
-| 2 | **How are paths configured?** | Hardcoded vs config file vs CLI args | Build phase decision |
-| 3 | **What's the commit message format?** | Static string vs timestamp vs file list | Style decision |
-| 4 | **Does npm install run in plugin or destination?** | Elon's spec says destination, verify | Build phase |
-| 5 | **Authentication for git push?** | SSH keys assumed, verify access | Pre-build check |
-| 6 | **What if destination has uncommitted changes?** | Fail fast? Stash? Overwrite? | Error handling decision |
-| 7 | **v1.1 git hook: pre-commit or post-commit?** | Trigger timing affects workflow | Next sprint |
+### 1. CLAUDE.md Merge Strategy
+**Status:** UNRESOLVED
+**Raised by:** Elon (Round 1), Steve (Round 2)
+**Question:** The original PRD mentions syncing/updating CLAUDE.md, but the merge logic is unspecified. What content goes where?
+**Required:** Explicit before/after specification or removal from v1 scope.
+**Recommendation:** Remove from v1. CLAUDE.md changes are editorial decisions, not automation candidates.
+
+### 2. Target Repository Path
+**Status:** NEEDS CONFIRMATION
+**Question:** Is `/home/agent/great-minds/` the correct target path, or is this environment-specific?
+**Required:** Confirm actual filesystem paths before build.
+
+### 3. v1.1 Automation Owner
+**Status:** UNOWNED
+**Raised by:** Retrospective
+**Question:** Who owns the git hook / watch-mode implementation?
+**Required:** Named owner, target date, and dependency list.
+
+### 4. Architecture Discussion Owner
+**Status:** UNOWNED
+**Raised by:** Elon (Round 1)
+**Question:** Who facilitates the submodule/package/merge architecture discussion?
+**Required:** Named owner and scheduled date within 30 days.
+
+### 5. Product Identity
+**Status:** UNRESOLVED
+**Raised by:** Board review (per retrospective)
+**Question:** Is Mirror internal tooling (build and forget) or platform foundation (invest and compound)?
+**Required:** One-page Product Identity document before v1.1 planning.
 
 ---
 
@@ -204,41 +248,50 @@ log('Committed. Pushed.');
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| **Human forgets to run Mirror** | HIGH | HIGH | v1.1 git hook automation (Elon's point is valid) |
-| **Destination repo has local changes** | MEDIUM | MEDIUM | Fail fast with clear error; force user to commit/stash first |
-| **npm install fails** | LOW | MEDIUM | Log error clearly; don't continue to commit |
-| **Git push fails (auth/network)** | LOW | HIGH | Clear error messaging; don't leave repo in partial state |
-| **Wrong source files selected** | LOW | HIGH | Config file review; manifest in decisions.md |
-| **Daemon changes break consumers** | MEDIUM | HIGH | Long-term: npm package with semver. Short-term: accept risk |
-| **Mirror overwrites intentional local divergence** | LOW | MEDIUM | By design — but document that local changes will be lost |
-| **Scope creep during build** | MEDIUM | MEDIUM | This document is the contract. Three operations only. |
+| **Silent failure if script not run** | HIGH | HIGH | v1.1 automation. Until then: calendar reminders, checklist enforcement |
+| **Target repo has uncommitted changes** | MEDIUM | HIGH | Pre-flight check: require clean git status before sync |
+| **Source files deleted/renamed** | LOW | HIGH | Validate all source files exist before any copy operation |
+| **npm install fails in target** | MEDIUM | MEDIUM | Capture npm output, fail loud, rollback file copies |
+| **Network failure during git push** | LOW | MEDIUM | Retry logic or clear "push failed" message; files are synced locally |
+| **Config file misconfigured** | MEDIUM | HIGH | Validate config schema on load; fail fast with specific error |
+| **User forgets tool exists** | HIGH | HIGH | This is the v1 achilles heel. Automation in v1.1 is critical. |
+| **Drift between decisions.md and PRD** | OCCURRED | MEDIUM | Already happened per retrospective. This document is now canonical. |
 
 ---
 
-## The Synthesis
+## Version Roadmap
 
-Steve gave us the soul: **trust through invisible certainty**. The product is the absence of anxiety.
+### v1.0 (Current Build)
+- Manual script execution
+- Core sync: copy, npm install, commit, push
+- Config file for paths
+- Loud failure on any issue
 
-Elon gave us the spine: **three operations, no ceremony**. Ship the core, automate the trigger.
+### v1.1 (Next)
+- Git hook automation (post-commit trigger)
+- Watch mode option
+- Owner: TBD
+- Target: TBD
 
-Both agreed on the doctrine: **one source of truth, unidirectional flow, no negotiation**.
-
----
-
-## Build Phase Authorization
-
-This document authorizes construction of Mirror v1 with:
-- 6 file copy operations
-- 1 npm install
-- 1 atomic commit + push
-- Quiet, confident output
-- Zero confirmation dialogs
-- Human-initiated trigger (git hook in v1.1)
-
-**Do not add features. Do not subtract operations. Build exactly this.**
+### v2.0 (Future Consideration)
+- Architecture resolution (submodule, package, or merge)
+- Depends on architecture discussion outcome
 
 ---
 
-*"Before enlightenment, chop wood, carry water. After enlightenment, chop wood, carry water. Before Mirror, copy files. After Mirror, trust the reflection."*
+## Sign-Off
 
-— Phil Jackson, The Zen Master
+This document represents the synthesis of:
+- Steve Jobs: Design philosophy, failure modes, unidirectional truth
+- Elon Musk: Technical simplicity, first-principles critique, ship-now bias
+- Marcus Aurelius: Process observation and retrospective wisdom
+- Essence document: Product soul anchor
+
+**The debate is closed. The decisions are locked. Build begins.**
+
+---
+
+*"Good teams become great ones when the members trust each other enough to surrender the Me for the We."*
+
+— Phil Jackson
+Zen Master, Great Minds Agency

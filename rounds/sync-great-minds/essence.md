@@ -1,13 +1,21 @@
 # Essence
 
-## What is this product REALLY about?
-Eliminating the anxiety of "which version is current?"
+## What is this product really about?
 
-## What's the feeling it should evoke?
+It's about eliminating the fear that your code is lying to you.
+
+## What feeling should it evoke?
+
 Relief. The exhale after holding your breath.
 
 ## What's the one thing that must be perfect?
-It must be impossible to forget.
 
-## Creative direction
-Trust through invisible certainty.
+Trust. It works or it screams. Never silence when broken.
+
+## Creative direction:
+
+Invisible certainty. Fail loud.
+
+---
+
+*Less. True. Now.*

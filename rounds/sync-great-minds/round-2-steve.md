@@ -1,66 +1,51 @@
-# Steve Jobs — Round 2 Response
+# Round 2: Steve Jobs — Response to Elon
+
+## Where Elon Is Optimizing for the Wrong Metric
+
+Elon, you're measuring **time to ship** when you should be measuring **time to trust**.
+
+Your 15-line bash script ships in 90 seconds. Congratulations. And the first time it silently overwrites a local change someone forgot to commit? The second time it runs while someone is mid-edit? The third time it breaks and nobody notices for a week?
+
+You've optimized for the wrong thing. **Speed of creation is not speed of value.**
+
+"File copy operation" — you say that like it's dismissive. Do you know what else is a "file copy operation"? Every deployment pipeline ever built. The difference between amateur hour and professional tooling is *not* complexity — it's **reliability, observability, and trust**.
+
+Your script has no dry-run. No conflict detection. No audit trail. No failure notification. It's a gun pointed at your codebase with no safety.
 
 ---
 
-## Challenging Elon's Weakest Positions
+## Defending Design Quality HERE
 
-### "Publish as npm package" — Optimizing for the Wrong Metric
+You'll attack my "invisible until perfect" philosophy as over-engineering. Here's why you're wrong:
 
-Elon, you're optimizing for *theoretical elegance* over *actual workflow*. You're right that npm packages are a solved problem — for *finished* products. But the daemon is in active development, changing weekly. Every publish cycle introduces friction: version bumps, changelogs, publish commands, waiting for npm cache.
+**This tool runs unattended.** That's the use case. Nobody watches sync scripts. They fire and forget. Which means:
 
-You're trading immediate certainty for ceremony. The question isn't "what's the most architecturally pure solution?" — it's "what removes friction *today* while the daemon is evolving?"
+- If it fails silently, you discover it at 2 AM during a production incident
+- If it overwrites something, you don't know until the bug report
+- If it drifts, you lose hours debugging "impossible" inconsistencies
 
-npm packages are where things go to **stabilize**. The daemon isn't stable. It's alive.
-
-### "This is 5 minutes of work for a human"
-
-You're measuring the wrong thing. The work isn't the 5 minutes. The work is **remembering to do it**. The work is the mental overhead of "did I sync after that fix?" The work is debugging the wrong repo for an hour.
-
-A shell script you have to remember to run is no different than no script at all. The real product is *the absence of that question.*
-
-### "10 shell commands, any session can handle this"
-
-You're right about the commands. You're wrong about what we're building. We're not shipping shell commands. We're shipping **trust**. The output isn't "files copied." The output is "I never have to think about this again."
+Design quality here isn't about aesthetics. It's about **operational integrity**. The investment in proper failure modes, logging, and single-source-of-truth discipline *is* the product. A bash script is a liability masquerading as simplicity.
 
 ---
 
-## Defending My Positions
+## Where Elon Is Right (Concessions)
 
-### Why Design Quality Matters HERE
+1. **The CLAUDE.md merge is underspecified.** Agreed. Vague specs create vague outcomes. This needs explicit before/after or it's a human decision, not automation.
 
-Elon will say: "It's internal tooling. Who cares about the name?"
+2. **The root cause is architectural debt.** Yes. Two repos with duplicate code is the disease; sync is treatment. We should schedule the submodule/package conversation.
 
-I care. Because naming shapes behavior. Call it "Mirror" and developers understand it's instant, complete, unidirectional. Call it "sync-daemon-files.sh" and it becomes yet another script in a folder of forgotten scripts.
-
-The name isn't decoration. The name is the *promise*. It's the difference between a tool people reach for instinctively and a tool they forget exists.
-
-### Why No Dry-Run Mode
-
-Because dry-run modes are security blankets that erode confidence. If you trust the source, act on it. If you don't trust the source, *fix the source.* Don't create a middle state where truth exists in limbo awaiting human approval.
+3. **Ship fast, then iterate.** The bias toward action is correct. Overthinking kills products. But "fast" means "fast to reliable," not "fast to fragile."
 
 ---
 
-## Where Elon Is Right
+## My 3 Non-Negotiables (LOCKED)
 
-**He's right about scope creep.** The Emdash CMS Reference section doesn't belong in v1. That's documentation work wearing a sync mask. Cut it.
+1. **One source of truth, one direction.** The plugin repo is canonical. The other repo receives. No bidirectional sync, ever. This is non-negotiable architectural hygiene.
 
-**He's right about the systemic problem.** We *should* eventually extract the daemon to its own repo. But "eventually" isn't "today." Ship the immediate fix, then build the proper architecture.
+2. **Fail loud, never silent.** If the sync cannot complete cleanly, it stops and screams. No partial states. No "it probably worked." Certainty or alarm.
 
-**He's right that this is internal tooling.** It doesn't need 10,000 users. It needs to work perfectly for the 3 people who touch this codebase.
-
----
-
-## My Non-Negotiable Decisions (Locked)
-
-### 1. Unidirectional Flow
-The plugin is truth. The repo is reflection. No bidirectional sync. No merge conflicts. No "which version is newer?" This is doctrine.
-
-### 2. Zero Confirmation
-Run it. It runs. Done. No dry-run previews, no "are you sure?" dialogs, no diff approvals. Conviction, not permission.
-
-### 3. Immediate Execution
-Not a scheduled job. Not a CI trigger. A human decides "now" and it happens *now*. Instant feedback. Instant certainty.
+3. **No config UI.** A YAML file. That's it. Power users read config files. Wizards and GUIs are for products that don't trust their users. We trust ours.
 
 ---
 
-*"We're not debating shell scripts. We're debating whether developers should have to think about consistency — or whether consistency should simply exist."*
+*Simplicity without reliability is negligence.*
