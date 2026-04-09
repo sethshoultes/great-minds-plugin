@@ -292,12 +292,14 @@ export async function runBuild(project: string): Promise<void> {
   await runAgent("builder", `Read and follow the instructions in ${skillPath}.
 Use project slug '${project}'. Read ${planPath} and ${decisionsPath} as inputs.
 
-CRITICAL — ANTI-HALLUCINATION RULES:
+CRITICAL — RULES THAT WILL FAIL YOUR BUILD IF VIOLATED:
 1. Read CLAUDE.md in the repo root FIRST for project-specific rules and constraints.
 2. If building an Emdash plugin/theme/site, read docs/EMDASH-GUIDE.md BEFORE writing any code.
 3. If calling any external API or framework, verify the API exists by reading actual source code or docs — do NOT generate code from memory.
 4. Read BANNED-PATTERNS.md if it exists — any banned pattern in your code means automatic QA failure.
 5. After writing code, grep your own output for banned patterns before committing.
+6. NO PLACEHOLDER CONTENT. No "coming soon", no "TODO", no empty function bodies, no stub files. Every file you create must have COMPLETE, REAL, USABLE content. If you can't finish it, don't create it.
+7. COMMIT EVERYTHING. Run git add -A && git commit before you finish. QA will check git status and BLOCK if there are uncommitted files.
 
 Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.
 Commit everything on a feature branch and push.`);
@@ -382,25 +384,52 @@ export async function runShip(project: string): Promise<void> {
 
   // Ship using the skill
   await runAgent("shipper", `Read and follow the instructions in ${skillPath}.
-Use project slug '${project}'. Ship the project: commit, write retrospective, push, update scoreboard.`);
+Use project slug '${project}'. Ship the project: commit all changes, write retrospective, update scoreboard.
+
+CRITICAL: You MUST commit ALL files before finishing. Run:
+1. git add -A
+2. git commit -m "Ship ${project}: all deliverables"
+3. Verify with git status that working tree is clean
+
+Do NOT push yet — the merge step handles that.`);
 
   // Marcus Aurelius retrospective
   const retroPath = resolve(roundsDir, "retrospective.md");
   await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20);
 
-  // Auto-merge feature branch into main
-  log("SHIP: Merging feature branch into main");
-  await runAgent("merge-to-main", `You are merging completed work into main. Do the following:
+  // Commit retrospective
+  await runAgent("commit-retro", `Run these exact commands:
+git add -A
+git commit -m "Add retrospective for ${project}" --allow-empty
+Report what git status shows.`, 5);
 
-1. Run: git branch --show-current — note the current branch name
-2. Run: git checkout main && git pull origin main
-3. Run: git merge <feature-branch> -m "Merge <feature-branch>: ${project} shipped"
-4. If there are merge conflicts, resolve them by accepting the feature branch version (--theirs)
-5. Run: git push origin main
-6. Switch back to the feature branch: git checkout <feature-branch>
-7. Report what you did
+  // Deterministic merge to main — no agent guessing, just bash
+  log("SHIP: Committing, merging to main, pushing");
+  await runAgent("merge-and-push", `Run these exact commands in order. Do NOT skip any step. Report the output of each.
 
-Do NOT create a PR. Just merge directly into main.`, 10);
+Step 1 — Commit any remaining changes:
+git add -A
+git status
+git commit -m "Final commit: ${project}" --allow-empty
+
+Step 2 — Get current branch name:
+BRANCH=$(git branch --show-current)
+echo "Current branch: $BRANCH"
+
+Step 3 — Merge to main:
+git checkout main
+git pull origin main
+git merge $BRANCH -m "Merge $BRANCH: ${project} shipped" --no-edit
+If merge conflicts: git checkout --theirs . && git add -A && git commit -m "Resolve conflicts: accept ${project} changes"
+
+Step 4 — Push to GitHub:
+git push origin main
+echo "PUSHED TO GITHUB"
+
+Step 5 — Switch back:
+git checkout $BRANCH
+
+Report every step's output. If any step fails, report the error.`, 10);
 
   log("PHASE DONE: ship");
 }

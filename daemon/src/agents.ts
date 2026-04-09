@@ -153,18 +153,31 @@ ${focus}
 
 Verify deliverables in ${deliverablesDir}/ against requirements in ${requirementsPath}.
 
-CRITICAL QA STEPS:
-1. BANNED PATTERNS CHECK: If BANNED-PATTERNS.md exists in the repo root, grep all built code for every banned pattern. Any match = automatic BLOCK with the specific file and line number.
-2. CODE REVIEW: For each requirement, mark PASS or FAIL with specific file and evidence.
-3. LIVE TESTING: If the deliverable is a deployable site or plugin, deploy it and test:
-   - Curl all API endpoints and verify they return valid JSON (not 500, not HTML)
-   - Use Playwright (installed on this server) to screenshot admin pages if applicable
-   - Check for JavaScript console errors
+CRITICAL QA STEPS — EVERY STEP IS MANDATORY:
+
+1. COMPLETENESS CHECK: Read EVERY deliverable file. Grep for placeholder content:
+   grep -rn "placeholder\|coming soon\|TODO\|FIXME\|lorem ipsum\|TBD\|WIP" ${deliverablesDir}/
+   ANY match = automatic BLOCK. No placeholder content ships. Ever.
+
+2. CONTENT QUALITY CHECK: For documentation/workshop files, every section must have REAL content.
+   For code files, every function must have a REAL implementation (not empty bodies or stubs).
+   If a file has fewer than 10 lines of actual content, it's probably a stub — BLOCK it.
+
+3. BANNED PATTERNS CHECK: If BANNED-PATTERNS.md exists in the repo root, grep all built code for every banned pattern. Any match = automatic BLOCK with the specific file and line number.
+
+4. REQUIREMENTS VERIFICATION: For each requirement in ${requirementsPath}, find the corresponding deliverable. Mark PASS or FAIL with the specific file and evidence. Missing deliverable = BLOCK.
+
+5. LIVE TESTING: If the deliverable is a deployable site or plugin:
+   - Build it. If build fails = BLOCK.
+   - Deploy it. Curl all endpoints. If any return 500 = BLOCK.
+   - Screenshot admin pages with Playwright if applicable.
    Code review alone is NOT sufficient — you must verify against a running system.
-4. If a test site URL is provided in the PRD or CLAUDE.md, use it. Otherwise use the project's deploy URL.
+
+6. GIT STATUS CHECK: Run git status. If there are uncommitted files in the deliverables directory = BLOCK. Everything must be committed before passing QA.
 
 Overall verdict: PASS or BLOCK
 If BLOCK: list every issue that must be fixed, ranked by severity (P0, P1, P2).
+A single P0 = BLOCK the entire build. Do NOT pass builds with known P0 issues.
 
 Write to ${outputPath}.`;
 }
