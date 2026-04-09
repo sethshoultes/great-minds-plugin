@@ -9,30 +9,60 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 7 |
-| Total Commits | 15+ |
-| PRs Merged | 4 |
-| Test Specs Added | 0 |
-| Source Files Added | 17+ |
-| Documentation Files | 36+ |
+| Projects Shipped | 8 |
+| Total Commits | 235+ |
+| PRs Merged | 25+ |
+| Source files (LocalGenius) | 270+ |
+| Source files (GM Website) | 35+ |
+| Source files (Plugin) | 50+ |
+| Test specs (LocalGenius) | 770+ |
+| Test specs (Sites) | 83 |
+| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
+| Archived repos | 2 (localgenius-sites, greatminds-website) |
+| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Agent personas | 14 + 2 internal consolidation functions |
+| Jensen board reviews | 22 |
+| Margaret QA reports | 80+ |
+| Workshop video | Rendered (2 MP4s) |
+| Blog posts | 6 |
+| VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
+| Shipyard AI | New company on DO — website, pipeline, credit system |
+| GSD integration | 3 skills + context-guard hook in plugin |
+| Marcus retrospectives | 6 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 6 |
 
 ---
 
 ## Projects Completed
 
-| Project | Date | Score | Key Achievement |
-|---------|------|-------|-----------------|
-| **emdash-marketplace** | 2026-04-09 | 6/10 | Document transformation CLI, 5 design themes, dialectic process, board review |
-| **promptforge-prd** | 2026-04-09 | 5/10 | PRD tracking initialization, process infrastructure |
-| **workshop-tutorial** | 2026-04-09 | N/A | Ship pipeline tutorial, process demonstration |
-| **Pulse (localgenius-benchmark-engine)** | 2026-04-09 | N/A | 4,447 LOC benchmarking system, clean architecture |
-| **Hindsight (git-intelligence)** | 2026-04-09 | 5.6/10 | 93-line core, mentor voice, zero config |
-| plugin-audit | 2026-04-08 | N/A | Critical security fixes |
-| anti-hallucination | 2026-04-07 | N/A | Doc reading enforcement |
+| Project | Date | Key Deliverables | Retrospective |
+|---------|------|-----------------|---------------|
+| project-audit | 2026-04-09 | Templates cleanup, daemon migration docs, AGENTS.md runtime update | memory/project-audit-retrospective.md |
+| emdash-marketplace | 2026-04-09 | Document transformation CLI, 5 design themes, dialectic process, board review | memory/emdash-marketplace-retrospective.md |
+| systemd-daemon | 2026-04-09 | tmux→systemd migration, archived launch.sh, updated AGENTS.md runtime docs | memory/systemd-daemon-retrospective.md |
+| readme-update | 2026-04-09 | README overhaul, 14 agents documented, 17 skills, daemon architecture, honest constraints | memory/readme-update-retrospective.md |
+| workshop-tutorial | 2026-04-09 | Ship pipeline tutorial, process demonstration | N/A |
+| Pulse (localgenius-benchmark-engine) | 2026-04-09 | 4,447 LOC benchmarking system, clean architecture | N/A |
+| Hindsight (git-intelligence) | 2026-04-09 | 93-line core, mentor voice, zero config | N/A |
+| plugin-audit | 2026-04-08 | Remove hardcoded paths, fix daemon deps, update docs | memory/plugin-audit-retrospective.md |
+| anti-hallucination | 2026-04-07 | BANNED-PATTERNS, DO-NOT-REPEAT, doc reading enforcement | memory/anti-hallucination-retrospective.md |
+
+---
+
+## Marcus Aurelius Retrospectives
+
+| Project | Date | Key Principle | Location |
+|---------|------|--------------|----------|
+| project-audit | 2026-04-09 | Maintenance is infrastructure, not overhead | memory/project-audit-retrospective.md |
+| anti-hallucination | 2026-04-08 | Systems beat willpower | memory/anti-hallucination-retrospective.md |
+| plugin-audit | 2026-04-09 | Path references are infrastructure decisions | memory/plugin-audit-retrospective.md |
+| readme-update | 2026-04-09 | Comprehensibility before completeness | memory/readme-update-retrospective.md |
+| systemd-daemon | 2026-04-09 | Visibility beats elegance | memory/systemd-daemon-retrospective.md |
+| emdash-marketplace | 2026-04-09 | Discovery is architecture, not marketing | memory/emdash-marketplace-retrospective.md |
+
+**Score: 6 retrospectives, 6 principles extracted**
 
 ---
 
@@ -202,9 +232,12 @@ When authority says "proceed with conditions," add those conditions to the requi
 
 ## Live Deployments
 
-*No live URLs for git-intelligence (local tool, not deployed service)*
+| Service | URL | Status |
+|---------|-----|--------|
+| LocalGenius | localgenius.company | Live |
+| Great Minds | greatminds.company | Live |
 
 ---
 
 **Scoreboard Maintained By:** Phil Jackson
-**Version:** 1.0
+**Version:** 1.1
