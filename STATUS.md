@@ -1,7 +1,7 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** localgenius-benchmark-engine (Pulse)
+**Last Ship:** workshop-tutorial
 **Last Ship Date:** 2026-04-09
 
 ---
@@ -10,6 +10,7 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| workshop-tutorial | Shipped | 2026-04-09 |
 | localgenius-benchmark-engine (Pulse) | Shipped | 2026-04-09 |
 | git-intelligence (Hindsight) | Shipped | 2026-04-09 |
 | plugin-audit | Shipped | 2026-04-08 |

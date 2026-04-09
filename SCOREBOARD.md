@@ -9,16 +9,16 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 4 |
-| Total Commits | 13+ |
+| Projects Shipped | 5 |
+| Total Commits | 14+ |
 | PRs Merged | 4 |
 | Test Specs Added | 0 |
 | Source Files Added | 17+ |
-| Documentation Files | 32+ |
+| Documentation Files | 33+ |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 4 |
+| Retrospectives | 5 |
 
 ---
 
@@ -26,6 +26,7 @@
 
 | Project | Date | Score | Key Achievement |
 |---------|------|-------|-----------------|
+| **workshop-tutorial** | 2026-04-09 | N/A | Ship pipeline tutorial, process demonstration |
 | **Pulse (localgenius-benchmark-engine)** | 2026-04-09 | N/A | 4,447 LOC benchmarking system, clean architecture |
 | **Hindsight (git-intelligence)** | 2026-04-09 | 5.6/10 | 93-line core, mentor voice, zero config |
 | plugin-audit | 2026-04-08 | N/A | Critical security fixes |
@@ -172,6 +173,28 @@ When authority says "proceed with conditions," add those conditions to the requi
 
 ### Key Quote
 > "You cannot control outcomes. You can only control whether you're honest about what's happening." — Marcus Aurelius retrospective
+
+---
+
+## Workshop Tutorial Learnings
+
+### Key Principle: Separate the Verdict from the Conditions
+When authority says "proceed with conditions," add those conditions to the requirements immediately. Don't treat conditions as optional Phase 2 work.
+
+### What Worked
+1. **Debate locked a clear path** — Steve vs Elon produced binding decisions
+2. **QA was honest and unblocking** — BLOCK verdicts were specific enough to respond to
+3. **Essence document held north star** — Never wavered during execution
+4. **Board review was rigorous** — Honest scores (5/10 to 7.5/10), not diplomatic ones
+
+### What to Improve
+1. Initial deliverable was 19% of requirement (231 vs 800-1200 lines)
+2. Board strategic questions weren't anticipated upfront
+3. Open questions were listed but quietly dropped during execution
+4. Lock decisions earlier in the pipeline
+
+### Key Quote
+> "The obstacle is the way. The process reveals what we avoid confronting." — Marcus Aurelius retrospective
 
 ---
 
