@@ -9,10 +9,12 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
+| localgenius-lite | 2026-04-09 | [memory/localgenius-lite-retrospective.md](memory/localgenius-lite-retrospective.md) | N/A |
 | demo-video | 2026-04-09 | [memory/demo-video-retrospective.md](memory/demo-video-retrospective.md) | 6/10 |
 | git-intelligence (Hindsight) | 2026-04-09 | [memory/git-intelligence-retrospective.md](memory/git-intelligence-retrospective.md) | 7/10 |
 | github-intake | 2026-04-09 | [memory/github-intake-retrospective.md](memory/github-intake-retrospective.md) | N/A |
 | localgenius-benchmark-engine | 2026-04-09 | [memory/localgenius-benchmark-engine-retrospective.md](memory/localgenius-benchmark-engine-retrospective.md) | N/A |
+| pipeline-test | 2026-04-09 | [memory/pipeline-test-retrospective.md](memory/pipeline-test-retrospective.md) | N/A |
 | plugin-audit | 2026-04-08 | [memory/plugin-audit-retrospective.md](memory/plugin-audit-retrospective.md) | N/A |
 | anti-hallucination | 2026-04-07 | [memory/anti-hallucination-retrospective.md](memory/anti-hallucination-retrospective.md) | N/A |
 
@@ -68,6 +70,7 @@ memory/
   git-intelligence-retrospective.md    # Hindsight — 7/10 process score
   github-intake-retrospective.md       # GitHub intake project
   localgenius-benchmark-engine-retrospective.md
+  pipeline-test-retrospective.md       # Pipeline validation smoke test
   plugin-audit-retrospective.md        # Security fixes
   anti-hallucination-retrospective.md  # Doc reading enforcement
 ```

@@ -12,6 +12,7 @@
 import { watch } from "chokidar";
 import { basename, resolve } from "path";
 import { readdir, stat } from "fs/promises";
+import { existsSync } from "fs";
 import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH, AGENT_TIMEOUT_MS, PIPELINE_TIMEOUT_MS } from "./config.js";
 import { runPipeline } from "./pipeline.js";
 import { runFeatureDream } from "./dream.js";
@@ -46,9 +47,17 @@ function startPrdWatcher(): void {
 
   watcher.on("add", (filePath: string) => {
     const name = basename(filePath);
-    if (!name.endsWith(".md") || name === "TEMPLATE.md" || filePath.includes("completed") || filePath.includes("failed")) return;
+    if (!name.endsWith(".md") || name === "TEMPLATE.md" || filePath.includes("completed") || filePath.includes("failed") || filePath.includes("parked")) return;
 
     const slug = name.replace(/\.md$/, "");
+
+    // DUPLICATE CHECK: skip if already completed
+    const completedPath = resolve(PRDS_DIR, "completed", name);
+    if (existsSync(completedPath)) {
+      log(`WATCHER: Skipping "${name}" — already in completed/`);
+      return;
+    }
+
     log(`WATCHER: New PRD detected — ${name}`);
 
     if (!prdQueue.includes(slug)) {
@@ -77,6 +86,14 @@ async function scanExistingPrds(): Promise<void> {
     const files = await readdir(PRDS_DIR);
     for (const file of files) {
       if (!file.endsWith(".md") || file === "TEMPLATE.md") continue;
+
+      // DUPLICATE CHECK: skip if already completed
+      const completedPath = resolve(PRDS_DIR, "completed", file);
+      if (existsSync(completedPath)) {
+        log(`SCAN: Skipping "${file}" — already in completed/`);
+        continue;
+      }
+
       const filePath = resolve(PRDS_DIR, file);
       const st = await stat(filePath);
       if (st.mtimeMs > statusMtime) {
@@ -98,6 +115,15 @@ async function processNextPrd(): Promise<void> {
   if (pipelineRunning || prdQueue.length === 0) return;
 
   const project = prdQueue.shift()!;
+  const prdFile = `${project}.md`;
+
+  // FINAL DUPLICATE CHECK before spending tokens
+  const completedPath = resolve(PRDS_DIR, "completed", prdFile);
+  if (existsSync(completedPath)) {
+    log(`SKIP: "${project}" already in completed/ — not rebuilding`);
+    return;
+  }
+
   pipelineRunning = true;
   pipelineStartTime = Date.now();
 
