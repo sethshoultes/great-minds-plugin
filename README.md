@@ -159,24 +159,132 @@ That's it. No tmux, no claude-swarm, no external dependencies.
 
 ## Quick Start
 
+### Option 1: Claude Code Plugin (Interactive)
+
+Use the plugin directly inside Claude Code for interactive, command-driven builds.
+
 ```bash
-# Install the plugin
+# 1. Install the plugin
 npx plugins add sethshoultes/great-minds-plugin
 
-# Start a new project
+# 2. Start a new project (creates SOUL.md, AGENTS.md, TASKS.md, STATUS.md, prds/)
 /agency-start my-product
 
-# Drop a PRD in prds/my-product.md
+# 3. Write a PRD
+#    Create prds/my-product.md describing what you want built.
+#    Use prds/TEMPLATE.md as a starting point.
 
-# Launch the pipeline (one-shot)
+# 4. Launch the pipeline (one-shot, runs all phases in sequence)
 /agency-launch
 
-# Or run the daemon for continuous orchestration (recommended)
-/agency-daemon
+# 5. Or run individual phases
+/agency-debate "Should we use React or Astro?"
+/agency-plan
+/agency-execute
+/agency-verify
+/agency-board-review
+/agency-ship
 
-# Check status anytime
+# 6. Check status anytime
 /agency-status
 ```
+
+### Option 2: Daemon (Autonomous)
+
+Run the daemon for continuous, autonomous builds. Drop PRDs in and walk away.
+
+```bash
+# 1. Clone the plugin and your target repo
+git clone https://github.com/sethshoultes/great-minds-plugin.git
+git clone https://github.com/your-org/your-project.git
+
+# 2. Install daemon dependencies
+cd great-minds-plugin/daemon
+npm install
+
+# 3. Start the daemon pointed at your repo
+PIPELINE_REPO=/path/to/your-project npx tsx src/daemon.ts
+
+# 4. Drop a PRD in your repo's prds/ directory
+cp prds/TEMPLATE.md /path/to/your-project/prds/my-feature.md
+# Edit the PRD with your requirements
+
+# 5. The daemon automatically:
+#    - Detects the new PRD
+#    - Runs debate (Steve vs Elon, 2 rounds + Rick Rubin + Phil Jackson)
+#    - Plans (task breakdown + Sara Blakely gut check)
+#    - Builds (code, tests, commits)
+#    - QA (2 passes by Margaret Hamilton — including live testing)
+#    - Creative review (Jony Ive, Maya Angelou, Aaron Sorkin)
+#    - Board review (Jensen, Oprah, Buffett, Shonda)
+#    - Ships (commit, push, merge to main, retrospective)
+#    - Archives the PRD to prds/completed/
+```
+
+### Option 3: Docker
+
+```bash
+cd great-minds-plugin/daemon
+docker build -t greatminds-daemon .
+docker run -d \
+  -e PIPELINE_REPO=/repo \
+  -v /path/to/your-project:/repo \
+  greatminds-daemon
+```
+
+### Option 4: Server (systemd)
+
+For always-on autonomous builds on a remote server:
+
+```bash
+# Create the service
+sudo cat > /etc/systemd/system/greatminds-daemon.service << 'EOF'
+[Unit]
+Description=Great Minds Pipeline Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=your-user
+WorkingDirectory=/path/to/great-minds-plugin/daemon
+Environment=PIPELINE_REPO=/path/to/your-project
+Environment=HOME=/home/your-user
+ExecStart=/usr/bin/npx tsx src/daemon.ts
+Restart=always
+RestartSec=10
+StandardOutput=append:/tmp/claude-shared/daemon.log
+StandardError=append:/tmp/claude-shared/daemon.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable greatminds-daemon
+sudo systemctl start greatminds-daemon
+```
+
+### Writing a Good PRD
+
+Your PRD is the input that drives everything. A good PRD includes:
+
+1. **Problem** — What problem does this solve?
+2. **Solution** — What are you building?
+3. **Requirements** — Specific, testable requirements
+4. **Technical constraints** — Framework, language, deployment target
+5. **Success criteria** — How do we know it's done?
+
+See `prds/TEMPLATE.md` for the full template.
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PIPELINE_REPO` | `../../` | Target repo the daemon builds in |
+| `AGENT_TIMEOUT_MS` | `1200000` (20 min) | Max time per agent call |
+| `PIPELINE_TIMEOUT_MS` | `3600000` (60 min) | Max time per pipeline run |
+| `TELEGRAM_BOT_TOKEN` | _(none)_ | Telegram notifications |
+| `TELEGRAM_CHAT_ID` | _(none)_ | Telegram chat ID |
 
 ## Related Projects
 
