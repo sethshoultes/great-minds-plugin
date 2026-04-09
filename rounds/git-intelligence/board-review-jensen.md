@@ -28,7 +28,7 @@ Let me explain.
 Here's what happens every time Hindsight runs:
 
 ```
-Git History → Parse → Format → Markdown → Prompt → [FORGOTTEN]
+Git History -> Parse -> Format -> Markdown -> Prompt -> [FORGOTTEN]
 ```
 
 Tomorrow's run has no memory of today. Next week has no memory of this week. Project B learns nothing from Project A.
@@ -79,7 +79,7 @@ This is regex. Ken Thompson wrote this pattern in 1968. It's not intelligence �
 | `fix\|bug\|broken` regex | Semantic commit classification | 10x accuracy |
 | Change count = risk | ML model on actual failure correlation | 5x precision |
 | Static markdown report | Conversational risk advisor | 20x usability |
-| English patterns | Embedding models work in any language | ∞ markets |
+| English patterns | Embedding models work in any language | Infinite markets |
 
 **The missed opportunity:**
 
@@ -103,7 +103,7 @@ You're using **none** of this to make Hindsight smarter.
 **The unfair advantage formula:**
 
 ```
-Moat = Proprietary Data × AI Leverage × Network Effects
+Moat = Proprietary Data x AI Leverage x Network Effects
 ```
 
 Your current score:
@@ -111,7 +111,7 @@ Your current score:
 - AI Leverage: **0** (using 1968-era regex)
 - Network Effects: **0** (single project, single run, no memory)
 
-**0 × 0 × 0 = 0**
+**0 x 0 x 0 = 0**
 
 That's not a moat. That's a speed bump.
 
@@ -121,18 +121,18 @@ That's not a moat. That's a speed bump.
 
 **What you built:**
 ```
-[Git Repo] → [Hindsight] → [Markdown] → [Prompt]
+[Git Repo] -> [Hindsight] -> [Markdown] -> [Prompt]
 ```
 
 This is a feature. A well-built feature. But a feature.
 
 **What a platform looks like:**
 ```
-[Any Code Source] → [Risk Intelligence API] → [Any Consumer]
-         ↑                                           ↓
-   [Multi-Signal       ←    [Learning Engine]   ←   [Outcome
-    Aggregation]                                     Tracking]
-         ↓
+[Any Code Source] -> [Risk Intelligence API] -> [Any Consumer]
+         ^                                           |
+   [Multi-Signal       <-    [Learning Engine]   <-  [Outcome
+    Aggregation]                                      Tracking]
+         |
    [Cross-Project Network Intelligence]
 ```
 
@@ -148,7 +148,7 @@ This is a feature. A well-built feature. But a feature.
    - Deployment failure rates
    - Time-to-merge patterns
 
-3. **Feedback ingestion** — Every build outcome feeds the model. Warning → Modification → Result → Model Update.
+3. **Feedback ingestion** — Every build outcome feeds the model. Warning -> Modification -> Result -> Model Update.
 
 4. **Network intelligence** — Anonymized, aggregated patterns across customers. "Files matching `**/auth/**` show 3.2x higher bug rates industry-wide."
 

@@ -1,21 +1,21 @@
-# Sara Blakely Gut-Check: Mirror v1
+# Sara Blakely Gut-Check: Hindsight v1
 
 ## Would a real customer pay for this?
-**No.** This is plumbing. It syncs YOUR files between YOUR repos. That's fine—I built Spanx to solve MY problem first. But don't dress it up with "waves" and "risk registers." It's a copy script. Ship it and move on.
+**Not yet.** You built a git-analysis tool for AI agents. The agents are your customer, not humans. Problem: agents don't have wallets. The human paying for the AI doesn't FEEL this pain—they just see "the build failed." You've built insurance no one knows they need until AFTER the accident.
 
 ## What's confusing? What would make someone bounce?
-- **"Plugin is truth. Repo is reflection."** — Delete this. It tells me nothing about what breaks if I don't use it.
-- **6 tasks, 3 waves for ~100 lines of code.** You're planning a 30-minute script like it's a NASA launch.
-- **No "before/after" story.** What was painful before? What's better after? I read 600 lines and still don't feel the pain.
+- **43 requirements for <100 lines of code.** You're engineering a solution before you've proven the problem exists.
+- **"Risk: HIGH/MEDIUM/LOW"** — based on what evidence? You're guessing at thresholds before you've run this on 10 real repos.
+- **Board scores of 5.6/10 from your own advisors.** They're telling you it's half-baked. Listen.
 
 ## 30-Second Elevator Pitch
-*"One command syncs your private dev code to your public repo—copies files, installs deps, commits, pushes. No prompts, no config. I was doing this manually 3x a week and screwing it up."*
+*"Before your AI agent touches your code, Hindsight shows it which files have broken before. 2 seconds, one markdown file, no config. Agents stop blindly editing the file that's caused 6 bugs this month."*
 
 ## What would you test first with $0 marketing budget?
-Use it yourself for 2 weeks. Does it actually save time, or did you just automate something you do twice a month? If you're not running it constantly, you overbuilt. Then find ONE other dev who maintains code in two places. Watch them. Shut up. Learn.
+Run it on 5 different repos. Track: did the agent READ the report? Did it CHANGE its behavior? Did builds fail LESS on flagged files? If you can't prove "agents that read this break less," you built a pretty report nobody uses.
 
 ## What's the retention hook?
-**None.** It runs once and disappears. If you want stickiness, add: "Last synced: 3 days ago. Daemon is 2 commits behind." Make it nag. Make me feel guilty for NOT using it.
+**Outcome tracking (REQ-017) IS your hook—but it's buried.** Surface this: "Last 10 builds: 3 failures were on flagged files. Hindsight warned you." Make success visible. Make me feel smart for using it.
 
 ---
-**Build the ugly version. Use it until it annoys you. THEN polish.**
+**Ship the report generator. Obsess over whether anyone reads it. Everything else is decoration.**
