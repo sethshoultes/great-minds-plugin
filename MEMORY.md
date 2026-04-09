@@ -9,6 +9,7 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
+| demo-video | 2026-04-09 | [memory/demo-video-retrospective.md](memory/demo-video-retrospective.md) | 6/10 |
 | git-intelligence (Hindsight) | 2026-04-09 | [memory/git-intelligence-retrospective.md](memory/git-intelligence-retrospective.md) | 7/10 |
 | github-intake | 2026-04-09 | [memory/github-intake-retrospective.md](memory/github-intake-retrospective.md) | N/A |
 | localgenius-benchmark-engine | 2026-04-09 | [memory/localgenius-benchmark-engine-retrospective.md](memory/localgenius-benchmark-engine-retrospective.md) | N/A |
@@ -63,6 +64,7 @@
 
 ```
 memory/
+  demo-video-retrospective.md          # Pipeline demonstration — 6/10 process score
   git-intelligence-retrospective.md    # Hindsight — 7/10 process score
   github-intake-retrospective.md       # GitHub intake project
   localgenius-benchmark-engine-retrospective.md

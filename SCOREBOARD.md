@@ -9,16 +9,16 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 6 |
-| Total Commits | 15+ |
+| Projects Shipped | 7 |
+| Total Commits | 16+ |
 | PRs Merged | 4 |
 | Test Specs Added | 0 |
 | Source Files Added | 17+ |
-| Documentation Files | 36+ |
+| Documentation Files | 38+ |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 6 |
+| Retrospectives | 7 |
 
 ---
 
@@ -26,6 +26,7 @@
 
 | Project | Date | Score | Key Achievement |
 |---------|------|-------|-----------------|
+| **demo-video** | 2026-04-09 | 6/10 | Pipeline validation, 7 projects shipped, process proven |
 | **promptforge-prd** | 2026-04-09 | 5/10 | PRD tracking initialization, process infrastructure |
 | **workshop-tutorial** | 2026-04-09 | N/A | Ship pipeline tutorial, process demonstration |
 | **Pulse (localgenius-benchmark-engine)** | 2026-04-09 | N/A | 4,447 LOC benchmarking system, clean architecture |
@@ -196,6 +197,32 @@ When authority says "proceed with conditions," add those conditions to the requi
 
 ### Key Quote
 > "The obstacle is the way. The process reveals what we avoid confronting." — Marcus Aurelius retrospective
+
+---
+
+## Demo-Video Learnings (from Marcus Aurelius)
+
+### Key Principle: Front-load the Hard Questions
+When authority will eventually ask "What's the moat? What's the revenue path?" — ask those questions at PRD time, not verdict time.
+
+### What Worked
+1. **Pipeline survived contact with reality** — Complete GSD cycle executed without deviation
+2. **Documentation became first-class** — 300+ lines of documentation per project
+3. **Dialectic produced genuine synthesis** — Steve vs Elon decisions were not compromises
+4. **Constraints forced clarity** — Hindsight stayed at 93 LOC, Pulse maintained clean architecture at 9x scope
+5. **Board review was honest** — 5.6/10 composite score revealed strategic gaps
+
+### What to Improve
+1. Move board engagement forward to planning, not verdict
+2. Treat "proceed with conditions" as binding requirements, not deferrals
+3. Assign named owners to every deferred item
+4. Involve creative reviewers at outline stage, before architecture
+5. Couple process score to product outcomes
+
+### Key Quote
+> "Front-load the hard questions. Distribute the burden of truth-telling early." — Marcus Aurelius retrospective
+
+**Process Score:** 6/10
 
 ---
 
