@@ -114,6 +114,91 @@ Two layers of timeout protection:
 - If exceeded, the pipeline is force-skipped and the daemon moves to the next PRD.
 - Set via environment variable: `PIPELINE_TIMEOUT_MS=3600000`
 
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PIPELINE_REPO` | `../../` (relative to daemon) | Path to the target repo the daemon builds in |
+| `AGENT_TIMEOUT_MS` | `1200000` (20 min) | Max time for a single agent call before abort |
+| `PIPELINE_TIMEOUT_MS` | `3600000` (60 min) | Max time for an entire pipeline run |
+| `MEMORY_DB` | `${PIPELINE_REPO}/memory-store/memory.db` | Path to SQLite memory store |
+| `TELEGRAM_BOT_TOKEN` | _(none)_ | Telegram bot token for notifications |
+| `TELEGRAM_CHAT_ID` | _(none)_ | Telegram chat ID for notifications |
+| `TEST_SITE_URL` | _(none)_ | URL for smoke test deployment verification |
+
+## Running Locally
+
+```bash
+# From the great-minds-plugin repo
+cd daemon
+npm install
+
+# Point at your target repo
+PIPELINE_REPO=/path/to/your/repo npx tsx src/daemon.ts
+
+# Or run in background
+PIPELINE_REPO=/path/to/your/repo nohup npx tsx src/daemon.ts >> /tmp/daemon.log 2>&1 &
+```
+
+The daemon will watch `${PIPELINE_REPO}/prds/` for new `.md` files and run the full pipeline.
+
+## Running on a Server (systemd)
+
+```ini
+# /etc/systemd/system/shipyard-daemon.service
+[Unit]
+Description=Great Minds Pipeline Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=agent
+WorkingDirectory=/home/agent/great-minds-plugin/daemon
+Environment=PIPELINE_REPO=/home/agent/shipyard-ai
+Environment=HOME=/home/agent
+ExecStart=/usr/bin/npx tsx src/daemon.ts
+Restart=always
+RestartSec=10
+StandardOutput=append:/tmp/claude-shared/daemon.log
+StandardError=append:/tmp/claude-shared/daemon.log
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+systemctl daemon-reload
+systemctl enable shipyard-daemon
+systemctl start shipyard-daemon
+```
+
+## Running with Docker
+
+```bash
+cd daemon
+docker build -t greatminds-daemon .
+docker run -d \
+  -e PIPELINE_REPO=/repo \
+  -v /path/to/your/repo:/repo \
+  greatminds-daemon
+```
+
+## Anti-Hallucination Rules
+
+The pipeline enforces these rules to prevent agents from building against hallucinated APIs:
+
+1. **Planner** must read `CLAUDE.md` and `docs/` in the target repo before planning
+2. **Builder** must read docs, `CLAUDE.md`, and `BANNED-PATTERNS.md` before writing code
+3. **Builder** must grep own output for banned patterns before committing
+4. **QA** must deploy and test against a live system — code review alone is not sufficient
+5. **QA** must run banned patterns grep — any match = automatic BLOCK
+
+See `BANNED-PATTERNS.md` in the plugin root for the full list of patterns that auto-fail QA.
+
+## Auto-Merge
+
+After the Ship phase, the pipeline automatically merges the feature branch into `main` and pushes. This ensures completed work is always accessible on the main branch.
+
 ## Logs
 
 Logs write to both console and `/tmp/claude-shared/daemon.log`.
