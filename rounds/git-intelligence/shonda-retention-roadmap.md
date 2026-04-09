@@ -1,17 +1,27 @@
-# Hindsight Retention Roadmap
-## What Keeps Users Coming Back
+# Shonda Rhimes Retention Roadmap: Hindsight v1.1+
 
-**Author:** Shonda Rhimes (Board Member)
-**Purpose:** Transform Hindsight from a forgettable utility into a relationship users return to
-**Philosophy:** "The things that make you invisible are the things that make you forgettable."
+**Author:** Shonda Rhimes, Board Member
+**Purpose:** What keeps users coming back — the show bible for Hindsight's renewal
+**Date:** April 9, 2026
+**Status:** Board-Mandated Deliverable
+
+---
+
+## The Showrunner's Philosophy
+
+> *"The shows that create obsession — that earn renewal — leave threads dangling. They create narrative debt that only the next session can pay."*
+
+Hindsight v1.0 pays everything back immediately. It owes the user nothing tomorrow.
+
+This roadmap changes that. Every feature is designed to create one thing: **a reason to return.**
 
 ---
 
 ## The Core Problem
 
-Hindsight v1.0 is a **procedural episode**—each run is self-contained, wraps up completely, and gives users no reason to care about the next one.
+Hindsight v1.0 is a **procedural episode** — each run is self-contained, wraps up completely, and gives users no reason to care about the next one.
 
-Great products create **serial narratives**—unfinished business, progress arcs, and emotional payoffs that compound over time.
+Great products create **serial narratives** — unfinished business, progress arcs, and emotional payoffs that compound over time.
 
 **Current State:**
 ```
@@ -26,151 +36,253 @@ Progress shown → User returns → Better predictions → Deeper trust
 
 ---
 
-## Retention Framework: The Four Arcs
+## The Retention Framework
 
-### Arc 1: The Daily Return
-*Why check Hindsight today?*
+### What Brings People Back?
 
-### Arc 2: The Weekly Investment
-*Why has this week been worth it?*
-
-### Arc 3: The Monthly Payoff
-*What have I earned by using this consistently?*
-
-### Arc 4: The Institutional Memory
-*Why can't I live without this now?*
+| Timeframe | Hook Type | Current State | v1.1 Target |
+|-----------|-----------|---------------|-------------|
+| **Tomorrow** | New information | None — identical reports | Delta surfacing |
+| **Next week** | Progress tracking | None — no trajectory | Risk score trends |
+| **Next month** | Investment payoff | None — no memory | Streak mechanics |
+| **Long-term** | Relationship | None — tool is amnesiac | Personal recognition |
 
 ---
 
-## v1.1 Features (30 Days)
+## v1.1 Features (30-Day Sprint)
 
 ### 1. Vindication Moments
-**The Save Scene**
+**The "Aha" That Earns Trust**
 
-When users touch flagged files and the build succeeds, acknowledge it:
-
-```
-Hindsight: You modified 2 high-risk files (auth.ts, payment.ts) and
-the build succeeded. Careful work pays off.
+**Current behavior:**
+```typescript
+if (!buildFailed) return; // Success is explicitly silenced
 ```
 
-**Why it retains:** Users need to know when they did it right. Recognition builds habit.
+**v1.1 behavior:**
+```markdown
+## Session Summary
+auth.ts was flagged as HIGH risk (6 bugs in 90 days).
+You read the file first. You added tests. Build succeeded.
+
+That's how careful work pays off.
+```
 
 **Implementation:**
-- Track when flagged files are modified in a session
-- On build success, surface a vindication message
-- Tone: warm acknowledgment, not patronizing praise
+- Track flagged files that were modified during session
+- On successful build, surface which high-risk files were handled
+- Acknowledge the behavior, not just the outcome
+
+**Why it works:** Recognition is the most powerful retention hook. Users don't just want to avoid failure — they want to know when they got it right.
 
 ---
 
 ### 2. Delta Surfacing
-**"Previously on Hindsight..."**
+**The "Previously On" Recap**
 
-Every report should show what changed since the last run:
+**Current behavior:**
+- Each report is isolated
+- No comparison to previous runs
+- No trajectory visible
 
+**v1.1 behavior:**
 ```markdown
-## What's Changed Since Last Run
-- NEW HIGH-RISK: config.ts (7 commits in 3 days)
-- IMPROVED: auth.ts (30 days without incident)
-- STABLE: utils.ts (no change)
+## What's Changed Since Yesterday
+
+### Risk Escalations
+- `config.ts`: LOW → MEDIUM (3 new commits, 1 with "fix")
+- `database/migrations.ts`: NEW high-risk file
+
+### Risk Reductions
+- `auth.ts`: HIGH → MEDIUM (14 days without incident)
+
+### Stable Files
+- 23 files unchanged from last report
 ```
 
-**Why it retains:** Change creates curiosity. "What's new?" is the reason to return.
-
 **Implementation:**
-- Store previous report state (simple JSON file)
-- Diff against current analysis
-- Surface only meaningful changes (not noise)
+- Persist previous report to `.hindsight/last-report.json`
+- Compare current analysis to stored baseline
+- Surface meaningful changes only (not noise)
+
+**Why it works:** Delta creates narrative momentum. "What happened since last time?" is the most basic story hook.
 
 ---
 
-### 3. The Cold Open Upgrade
+### 3. Forward Cliffhangers
+**The "Next Episode" Preview**
+
+**Current behavior:**
+- Reports end with complete resolution
+- No forward tension
+- No reason to check back
+
+**v1.1 behavior:**
+```markdown
+## Files to Watch
+
+- `config.ts` is **2 commits away** from HIGH risk threshold
+- `api/routes.ts` has been touched 4 times this week — trending hot
+- `utils/validation.ts` hasn't been modified in 90 days — may be drifting
+
+Tomorrow's report will show if these hold.
+```
+
+**Implementation:**
+- Calculate distance to risk threshold changes
+- Track weekly velocity (commits per file per week)
+- Identify "dormant but dangerous" files (high historical risk, recently quiet)
+
+**Why it works:** Incomplete information creates curiosity. The user returns to see if their prediction was right.
+
+---
+
+### 4. Outcome Persistence
+**The Memory That Creates Relationship**
+
+**Current behavior:**
+```typescript
+let firstRunAcknowledged = false; // Resets every process restart
+```
+
+**v1.1 behavior:**
+```typescript
+// .hindsight/outcomes.json
+{
+  "sessions": [
+    {
+      "date": "2026-04-09T14:32:00Z",
+      "flaggedFiles": ["auth.ts", "config.ts"],
+      "modifiedFlagged": ["auth.ts"],
+      "buildResult": "success",
+      "vindicated": true
+    }
+  ],
+  "streaks": {
+    "cleanBuilds": 14,
+    "flagsHeeded": 23
+  },
+  "patterns": {
+    "auth.ts": { "flagCount": 47, "heededCount": 38, "successRate": 0.89 }
+  }
+}
+```
+
+**Implementation:**
+- Create `.hindsight/` directory on first run
+- Store session outcomes as JSON
+- Aggregate patterns across sessions
+- Expose in report: "Your warning precision this month: 73%"
+
+**Why it works:** Memory creates relationship. The tool that remembers you is the tool you trust.
+
+---
+
+### 5. The Cold Open Upgrade
 **Make the Acknowledgment Visible**
 
-Current state: Buried in logs.
-Required state: Visible at session start.
+**Current state:** Buried in logs.
+**Required state:** Visible at session start.
 
 ```
 Hindsight: 12 high-risk files in this repo. The scariest: auth.ts
 (8 bugs in 90 days). I'll be watching it.
 ```
 
-**Why it retains:** Sets the stakes. Creates a named antagonist. Makes the user curious.
-
 **Implementation:**
 - Identify the single highest-risk file
 - Surface it prominently at session start
 - Give it narrative weight
 
+**Why it works:** Sets the stakes. Creates a named antagonist. Makes the user curious.
+
 ---
 
-### 4. Success Attribution
-**Credit Where Credit Is Due**
+### 6. Streak Mechanics
+**The Investment That Pays Forward**
 
-When a session ends without build failures after touching risky files:
+**Current behavior:**
+- Yesterday's caution earns nothing today
+- No accumulation of good behavior
+- No visible progress
 
+**v1.1 behavior:**
+```markdown
+## Your Hindsight Journey
+
+Current Streak: **14 clean sessions**
+Flags Heeded: 23/27 (85%)
+Risk Files Mastered: auth.ts (30 days clean)
+
+Milestone approaching: 20-session streak unlocks detailed analytics
 ```
-Session complete. You touched 3 flagged files and handled them
-carefully. Hindsight is working.
-```
-
-**Why it retains:** Competence recognition. Users want to feel skilled, not just safe.
 
 **Implementation:**
-- Track session-level file modifications
-- Correlate with flagged files
-- Surface attribution at session end (not just on failure)
+- Track consecutive successful builds with flagged file modifications
+- Calculate "heeding rate" (flagged files read before modified)
+- Identify "mastered" files (historically risky, now stable under user's care)
+
+**Why it works:** Streaks create loss aversion. Breaking a streak feels bad. Maintaining one feels earned.
 
 ---
 
-## v1.2 Features (60 Days)
+## v1.2 Features (60-Day Horizon)
 
-### 5. The Forward Cliffhanger
-**Unresolved Tension**
+### 7. The Recurring Villain
+**The Character That Demands Attention**
 
-End every report with something to wonder about:
+**Current behavior:**
+- Files are anonymous statistics
+- No personality, no narrative weight
+- No emotional relationship
+
+**v1.2 behavior:**
+```markdown
+## Your Nemesis Files
+
+### auth.ts — The Usual Suspect
+- Flagged **47 times** across your history
+- When you add tests first: 89% success rate
+- When you modify directly: 34% success rate
+- Status: Respect it. It bites back.
+
+### database/schema.ts — The Sleeping Giant
+- Only flagged 3 times, but...
+- Every flag was followed by a 2+ hour incident
+- Status: Don't wake it without a plan.
+```
+
+**Implementation:**
+- Track per-file statistics across sessions
+- Calculate success rate by behavior pattern
+- Generate narrative descriptions based on patterns
+- Name archetypes: "Usual Suspect," "Sleeping Giant," "Reformed Troublemaker"
+
+**Why it works:** Characters create emotional investment. A nemesis is more memorable than a statistic.
+
+---
+
+### 8. The Redemption Arc
+**Progress Narratives for Files**
 
 ```markdown
-## Files to Watch
-- config.ts is 2 commits away from becoming high-risk
-- If payment.ts breaks again, it enters "recurring villain" status
-- Friday deployments have a 2.3x higher failure rate in this repo
+## Redemption Stories
+
+### auth.ts: From Villain to Victory
+- 90 days ago: HIGH risk, 6 bugs, 2 reverts
+- 60 days ago: Team added comprehensive tests
+- 30 days ago: MEDIUM risk, 1 bug, 0 reverts
+- Today: Approaching stability milestone
+
+The careful work is paying off.
 ```
 
-**Why it retains:** Narrative debt. The next session "owes" the user resolution.
-
-**Implementation:**
-- Predict trending files (acceleration in churn)
-- Surface temporal patterns (day-of-week risk)
-- Create named status categories ("recurring villain")
+**Why it works:** Progress is story. Improvement is character development.
 
 ---
 
-### 6. The Redemption Arc
-**Files That Healed**
-
-Track and celebrate files that improved:
-
-```markdown
-## Redemption Watch
-- auth.ts: Was your most dangerous file. 45 days without incident.
-  The careful work is paying off.
-- config.ts: Removed from high-risk after refactoring (March 15)
-```
-
-**Why it retains:** Progress is story. Improvement is character development.
-
-**Implementation:**
-- Track file risk history over time
-- Identify files that moved from HIGH → MEDIUM → LOW
-- Surface the healing narrative
-
----
-
-### 7. Cross-Session Memory
+### 9. Cross-Session Memory
 **"I Remember You"**
-
-Reports should reference past interactions:
 
 ```markdown
 ## Session History
@@ -179,134 +291,98 @@ Reports should reference past interactions:
 - Last flagged file incident: 23 days ago
 ```
 
-**Why it retains:** Relationship depth. The tool knows your history together.
-
-**Implementation:**
-- Persist session-level outcomes
-- Aggregate into user-level statistics
-- Reference history in reports
+**Why it works:** Relationship depth. The tool knows your history together.
 
 ---
 
-### 8. The Streak Mechanic
-**Consistency Rewarded**
+## v2.0 Features (90-Day Horizon)
 
-```
-Streak: 14 consecutive sessions without breaking a flagged file.
-Personal best: 21 sessions.
-```
-
-**Why it retains:** Gamification that respects adults. Not badges—streaks.
-
-**Implementation:**
-- Track consecutive "clean" sessions
-- Surface streak status subtly
-- Optional: team streaks for collaborative motivation
-
----
-
-## v2.0 Features (90 Days)
-
-### 9. The Bug Autopsy
+### 10. The Bug Autopsy
 **When Hindsight Was Right**
 
-When a flagged file causes a failure, capture and surface the story:
-
 ```markdown
-## Autopsy: Build Failure (April 8)
+## Validated Predictions
 
-**The Warning:** payment.ts was flagged as high-risk (8 bugs in 90 days)
-**What Happened:** Modified without additional tests
-**The Result:** Build failure at 2:47 PM
-**The Lesson:** Payment logic requires integration test coverage
+### April 3, 2026: config.ts
+- Hindsight flagged: HIGH risk (12 commits, 3 fixes)
+- Warning was ignored
+- Build failed 47 minutes later
+- Root cause: Exactly what Hindsight warned about
 
-This file has failed 3 times after being flagged. Consider adding
-to protected files list.
+This is why we pay attention.
 ```
 
-**Why it retains:** Shareable content. Word-of-mouth driver. Proof of value.
-
-**Implementation:**
-- Capture full context on failure
-- Generate narrative autopsy report
-- Suggest preventive actions
-
----
-
-### 10. The Recurring Villain
-**Name Your Nemesis**
-
-Every codebase has That File. Name it. Track it. Make it personal.
-
-```markdown
-## Recurring Villain: auth.ts
-
-Status: Active threat
-Last incident: 3 days ago
-Total incidents: 8 in 90 days
-Survival rate when touched: 62%
-
-"This file has a history. Approach with extra caution."
-```
-
-**Why it retains:** Narrative antagonist. Users root against it. Creates emotional investment.
-
-**Implementation:**
-- Identify files with recurring issues
-- Assign "villain" status at threshold
-- Track "survival rate" (touches without failure)
+**Why it matters:** Proof of value is the ultimate retention hook. Show users when the system saved them.
 
 ---
 
 ### 11. The Trajectory Narrative
-**Your Codebase Is Changing**
+**Your Codebase's Story**
 
 ```markdown
-## Codebase Health Trajectory
+## Health Trajectory
 
-Risk Score: 67 (down from 74 last month)
-Trend: Improving
+         Risk Score Over Time
+    100 |
+     80 |    *
+     60 |  *   *  *
+     40 |        *  *  *
+     20 |              *  * <- You are here
+      0 |________________________
+        Jan  Feb  Mar  Apr  May
 
-What's helping:
-- auth.ts stabilized after March refactor
-- New test coverage in payment module
-- Reduced Friday deployments
-
-What's concerning:
-- config.ts is heating up
-- New contributors touching core modules
+Your codebase is getting healthier.
+3 months ago: 67 risk score
+Today: 34 risk score
+Projection: <25 by June if current patterns hold
 ```
 
-**Why it retains:** Progress narrative. Users see improvement over time.
-
-**Implementation:**
-- Calculate aggregate risk score
-- Track over time (weekly/monthly)
-- Attribute changes to specific events
+**Why it works:** Progress narrative. Users see improvement over time.
 
 ---
 
-### 12. Cross-Repo Patterns
-**Industry Intelligence**
+### 12. The Network Intelligence
+**Learning From the Industry**
 
 ```markdown
-## Pattern Intelligence (Aggregated across 1,247 repos)
+## Industry Patterns
 
-Files matching `**/auth/**` have 3.2x higher bug rates industry-wide.
-Friday deployments fail 2.1x more often than Tuesday deployments.
-Files with >10 contributors have 4x higher churn rates.
+Files matching `**/auth/**`:
+- Industry average: 3.2x higher bug rate
+- Your auth files: 1.8x (better than average)
+- Recommendation: Your auth practices are working. Document them.
 
-Your repo vs. average:
-- Auth stability: Better than 78% of repos
-- Deployment timing: Room for improvement
+Files matching `**/migrations/**`:
+- Industry average: 5.1x incident rate
+- Your migrations: 7.3x (needs attention)
+- Recommendation: Consider migration review process
 ```
 
-**Why it retains:** Benchmarking. Users want to know where they stand.
+**Why it works:** Benchmarking. Users want to know where they stand.
 
-**Implementation:**
-- Aggregate anonymized patterns (if platform becomes multi-tenant)
-- Surface comparative insights
-- Create aspirational benchmarks
+---
+
+## Retention Metrics to Track
+
+### Daily Active Sessions
+- **Baseline:** How many times is Hindsight invoked?
+- **Target:** >80% of build sessions include Hindsight check
+
+### Report Engagement
+- **Baseline:** How long do users spend with reports?
+- **Target:** >15 seconds average (reading, not dismissing)
+
+### Warning Heeding Rate
+- **Baseline:** Flagged files read before modified
+- **Target:** >70% heeding rate
+
+### Streak Maintenance
+- **Baseline:** Average streak length
+- **Target:** >10 sessions average streak
+
+### Vindication Rate
+- **Baseline:** How often do warnings correlate with avoided issues?
+- **Target:** >60% validated warnings (builds succeed when warnings heeded)
 
 ---
 
@@ -324,18 +400,18 @@ Retention = (Daily Hooks) x (Weekly Payoffs) x (Monthly Narratives) x (Instituti
 - **Total: 0**
 
 **v1.1 Target:**
-- Daily Hooks: 2 (vindication, cold open)
-- Weekly Payoffs: 1 (delta surfacing)
+- Daily Hooks: 3 (vindication, cold open, delta)
+- Weekly Payoffs: 1 (streak mechanics)
 - Monthly Narratives: 0
-- Institutional Memory: 0
-- **Total: 2**
+- Institutional Memory: 1 (outcome persistence)
+- **Total: 5**
 
 **v2.0 Target:**
 - Daily Hooks: 4
 - Weekly Payoffs: 3
 - Monthly Narratives: 2
-- Institutional Memory: 2
-- **Total: 11**
+- Institutional Memory: 3
+- **Total: 12**
 
 ---
 
@@ -346,15 +422,50 @@ Retention = (Daily Hooks) x (Weekly Payoffs) x (Monthly Narratives) x (Instituti
 | Vindication moments | HIGH | LOW | v1.1 - Must Have |
 | Delta surfacing | HIGH | MEDIUM | v1.1 - Must Have |
 | Cold open upgrade | MEDIUM | LOW | v1.1 - Must Have |
-| Success attribution | MEDIUM | LOW | v1.1 - Should Have |
-| Forward cliffhanger | HIGH | MEDIUM | v1.2 - Must Have |
-| Redemption arc | MEDIUM | MEDIUM | v1.2 - Should Have |
-| Cross-session memory | HIGH | MEDIUM | v1.2 - Must Have |
-| Streak mechanic | LOW | LOW | v1.2 - Nice to Have |
+| Outcome persistence | HIGH | MEDIUM | v1.1 - Must Have |
+| Forward cliffhangers | HIGH | MEDIUM | v1.1 - Should Have |
+| Streak mechanics | MEDIUM | LOW | v1.1 - Should Have |
+| Recurring villain | MEDIUM | MEDIUM | v1.2 |
+| Redemption arc | MEDIUM | MEDIUM | v1.2 |
+| Cross-session memory | HIGH | MEDIUM | v1.2 |
 | Bug autopsy | HIGH | HIGH | v2.0 |
-| Recurring villain | MEDIUM | MEDIUM | v2.0 |
 | Trajectory narrative | HIGH | HIGH | v2.0 |
-| Cross-repo patterns | VERY HIGH | VERY HIGH | v2.0+ |
+| Network intelligence | VERY HIGH | VERY HIGH | v2.0+ |
+
+---
+
+## v1.1 Implementation Checklist
+
+### Sprint 1 (Days 1-10)
+- [ ] Create `.hindsight/` directory structure
+- [ ] Implement outcome persistence to JSON
+- [ ] Build delta comparison logic
+- [ ] Surface basic vindication on success
+
+### Sprint 2 (Days 11-20)
+- [ ] Upgrade cold open with "scariest file"
+- [ ] Add forward cliffhangers to reports
+- [ ] Implement streak tracking
+- [ ] Per-file statistics accumulation
+
+### Sprint 3 (Days 21-30)
+- [ ] Tone review: warm, not patronizing
+- [ ] Integration testing
+- [ ] Documentation update
+- [ ] Polish narrative descriptions
+
+---
+
+## The Show Bible Summary
+
+| Episode | Hook | Emotional Beat | Retention Mechanism |
+|---------|------|----------------|---------------------|
+| **First Run** | Acknowledgment | "Someone's watching out for me" | Trust establishment |
+| **Daily Return** | Delta report | "What changed?" | Information curiosity |
+| **Weekly Check** | Streak progress | "I'm getting better" | Investment protection |
+| **Monthly Review** | Trajectory | "Look how far I've come" | Achievement narrative |
+| **Incident Avoided** | Vindication | "It actually works" | Proof of value |
+| **Incident Occurred** | Autopsy | "I should have listened" | Lesson reinforcement |
 
 ---
 
@@ -387,28 +498,6 @@ Board Member, Great Minds Agency
 
 ---
 
-## Appendix: v1.1 Implementation Checklist
-
-### Vindication Moments
-- [ ] Track flagged files modified in session
-- [ ] Detect build success after modifications
-- [ ] Surface acknowledgment message
-- [ ] Tone review: warm, not patronizing
-
-### Delta Surfacing
-- [ ] Create `.hindsight-state.json` for persistence
-- [ ] Implement diff logic between runs
-- [ ] Surface: new risks, improved files, stable files
-- [ ] Handle first-run case gracefully
-
-### Cold Open Upgrade
-- [ ] Identify single highest-risk file
-- [ ] Calculate "scariness" metric (bugs x churn)
-- [ ] Surface prominently at session start
-- [ ] Ensure visibility (not buried in logs)
-
-### Success Attribution
-- [ ] Track file modifications throughout session
-- [ ] Correlate with flagged file list
-- [ ] Generate end-of-session summary
-- [ ] Fire on success, not just failure
+**Document Status:** Board-Mandated Deliverable
+**Implementation Deadline:** v1.1 features within 30 days
+**Success Metric:** Measurable retention improvement by 60-day review

@@ -1,289 +1,238 @@
-# Mirror v1 Requirements
+# Hindsight v1.0 — Requirements Specification
 
-**Project:** sync-great-minds
-**Product Name:** Mirror
-**Source:** PRD `prds/sync-great-minds.md` + Decisions `rounds/sync-great-minds/decisions.md`
-**Generated:** 2025-04-09
-**Status:** Approved for Build
-
----
-
-## Requirements Traceability Matrix
-
-| Req ID | Description | Source | Priority | Task(s) |
-|--------|-------------|--------|----------|---------|
-| REQ-001 | Copy daemon source files (pipeline.ts, agents.ts, config.ts, daemon.ts) | PRD | v1 | phase-1-task-1 |
-| REQ-002 | Copy daemon config files (package.json, README.md) | PRD | v1 | phase-1-task-1 |
-| REQ-003 | Copy documentation files (BANNED-PATTERNS.md, DO-NOT-REPEAT.md) | PRD | v1.1 (deferred) | — |
-| REQ-004 | Update great-minds CLAUDE.md with anti-hallucination rules | PRD | v1.1 (deferred) | — |
-| REQ-005 | Run npm install in destination daemon | PRD, Decisions | v1 | phase-1-task-3 |
-| REQ-006 | Git commit all synced changes | PRD, Decisions | v1 | phase-1-task-4 |
-| REQ-007 | Git push to origin | PRD, Decisions | v1 | phase-1-task-4 |
-| REQ-008 | Implement quiet, declarative output style | Decisions (D7) | v1 | phase-1-task-1, phase-1-task-2 |
-| REQ-009 | Zero confirmation dialogs | Decisions (D3) | v1 | phase-1-task-2 |
-| REQ-010 | Human-initiated trigger (no git hooks in v1) | Decisions (D4) | v1 | phase-1-task-5 |
-| REQ-011 | Use PRD file list (not Decisions hypothetical list) | Analysis | v1 | All tasks |
-| REQ-012 | Fail fast on uncommitted changes in destination | Decisions (Risk) | v1 | phase-1-task-2 |
-| REQ-013 | Error handling for npm install failure | Decisions (Risk) | v1 | phase-1-task-3 |
-| REQ-014 | Error handling for git push failure | Decisions (Risk) | v1 | phase-1-task-4 |
-| REQ-015 | Create mirror.ts script and config | Decisions | v1 | phase-1-task-1, phase-1-task-2 |
+**Project:** Git Intelligence for AI Agents (Hindsight)
+**Generated:** April 9, 2026
+**Sources:**
+- `rounds/git-intelligence/decisions.md` (Final Build Blueprint)
+- `prds/completed/git-intelligence.md` (Original PRD)
 
 ---
 
-## v1 Requirements (Must Ship)
+## Executive Summary
 
-### REQ-001: Copy Daemon Source Files
+Hindsight is a pre-build git analysis tool that surfaces risk areas before agents modify code. It runs git diagnostics, produces a markdown report at `.planning/hindsight-report.md`, and injects context into planner/executor prompts so agents "proceed with awareness."
 
-**Source:** PRD lines 11-18
-**Description:** Copy core TypeScript source files from plugin daemon to great-minds daemon.
-
-**File Manifest:**
-| Source | Destination |
-|--------|-------------|
-| `daemon/src/pipeline.ts` | `great-minds/daemon/src/pipeline.ts` |
-| `daemon/src/agents.ts` | `great-minds/daemon/src/agents.ts` |
-| `daemon/src/config.ts` | `great-minds/daemon/src/config.ts` |
-| `daemon/src/daemon.ts` | `great-minds/daemon/src/daemon.ts` |
-
-**Acceptance Criteria:**
-- [ ] All 4 files copied successfully
-- [ ] File contents byte-identical to source
-- [ ] No manual edits applied during copy
+**Key Decisions Locked:**
+- Product name: "Hindsight" (Steve Jobs won vs "git-intel")
+- Output: Markdown file artifact (Steve won vs direct injection)
+- Architecture: Single function <100 lines, no classes (Elon won)
+- Performance: Parallel git commands with `--max-count=1000` safeguard (Elon won)
+- Config: Zero user-facing options ("ships opinions, not options")
+- Voice: Mentor tone, not alarm ("tread carefully" not "WARNING")
 
 ---
 
-### REQ-002: Copy Daemon Config Files
+## Requirements by Category
 
-**Source:** PRD lines 17-18
-**Description:** Copy package.json and README.md for daemon configuration and documentation.
+### CORE Requirements (P0 — Must Ship)
 
-**File Manifest:**
-| Source | Destination |
-|--------|-------------|
-| `daemon/package.json` | `great-minds/daemon/package.json` |
-| `daemon/README.md` | `great-minds/daemon/README.md` |
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-001 | Create `generateHindsightReport(repoPath, outputPath?)` | Function exists, exported, runs in <2 seconds | decisions.md: MVP Feature Set |
+| REQ-002 | Generate markdown to `.planning/hindsight-report.md` | File created, contains structured analysis, not committed | decisions.md: Decision 2 |
+| REQ-003 | Git Command: Recent changes | `git log --oneline -20 --max-count=1000` results in report | decisions.md: Git Command 1 |
+| REQ-004 | Git Command: File churn | `git log --name-only --format= -100 --max-count=1000` identifies churn | decisions.md: Git Command 2 |
+| REQ-005 | Git Command: Bug-associated files | `git log --grep="fix\|bug\|broken\|revert" -i ...` executed | decisions.md: Git Command 3 |
+| REQ-006 | Git Command: Uncommitted state | `git status --short` + `git diff --stat` captured | decisions.md: Git Command 4 |
+| REQ-007 | Parallel git execution | All git commands use `Promise.all()` for <2s total | decisions.md: Decision 8 |
+| REQ-008 | Risk assessment function | `assessRisk(churn, bugs)` returns LOW/MEDIUM/HIGH | decisions.md: Risk Assessment |
+| REQ-009 | Core <100 lines | `hindsight.ts` under 100 lines, no classes | decisions.md: Decision 7 |
+| REQ-010 | Named constants | `RECENT_COMMITS=20`, `ANALYSIS_DEPTH=100`, `CHURN_THRESHOLD=3` | decisions.md: Code Quality |
+| REQ-011 | Consistent error handling | Return `null` for git failures, not empty strings | decisions.md: Code Quality |
+| REQ-012 | Risk summary <50 words | Terse synthesis, not prose | decisions.md: Decision 5 |
+| REQ-013 | Product named "Hindsight" | All docs/refs use "Hindsight" externally | decisions.md: Decision 1 |
 
-**Acceptance Criteria:**
-- [ ] Both files copied successfully
-- [ ] package.json includes `better-sqlite3` dependency
-- [ ] README.md documents daemon usage
+### INTEGRATION Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-014 | Pipeline integration point | `generateProjectHindsight()` called before plan phase | decisions.md: MVP |
+| REQ-015 | Planner prompt context | `hindsightPlannerContext()` injected into planner prompt | decisions.md: Prompt Modifiers |
+| REQ-016 | Executor prompt context | `hindsightExecutorContext()` injected into executor prompt | decisions.md: Prompt Modifiers |
+| REQ-017 | Outcome tracking | `trackHindsightOutcome()` logs flagged file + build failure correlation | decisions.md: Outcome Tracking |
+| REQ-018 | First-run acknowledgment | Print: `"Hindsight: ${n} high-risk files identified. Proceed with awareness."` | decisions.md: Board Condition |
+| REQ-019 | No pipeline rewrite | Add module to existing pipeline.ts, don't rewrite | git-intelligence.md: CRITICAL |
+
+### PROMPT Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-020 | Planner reads report | Prompt includes: "Read `.planning/hindsight-report.md`" | PRD: Section 4 |
+| REQ-021 | Planner emphasizes risk | Prompt includes: "Pay extra attention to churn/bug-prone files" | PRD: Section 4 |
+| REQ-022 | Planner adds verification | Prompt includes: "If touching high-risk files, add verification steps" | PRD: Section 4 |
+| REQ-023 | Executor checks report | Prompt includes: "Check report for risk areas before editing" | PRD: Section 4 |
+| REQ-024 | Executor tests hotspots | Prompt includes: "If editing churn hotspot, test thoroughly" | PRD: Section 4 |
+| REQ-025 | Mentor voice | Guidance tone ("tread carefully"), not warnings | decisions.md: Decision 6 |
+
+### OUTPUT Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-026 | Churn hotspots section | Top 15 files by change frequency with counts | decisions.md |
+| REQ-027 | Bug-prone files section | Files with 3+ bug-fix commits listed | decisions.md |
+| REQ-028 | Recent failures section | Commits mentioning failures/reverts included | PRD: Section 2c |
+| REQ-029 | Uncommitted state section | Dirty files from `git status --short` | PRD: Section 2e |
+| REQ-030 | Parseable markdown | Risk assessment leads, timestamp as footnote | decisions.md: Code Quality |
+| REQ-031 | Clear structure | Sections: churn, bugs, failures, uncommitted, summary | PRD: Section 2 |
+| REQ-032 | No risk badges | Show data only, no numeric scores | decisions.md: CUT |
+| REQ-033 | Terse formatting | Technical language, not narrative prose | decisions.md: Decision 5 |
+
+### CONFIG Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-034 | Zero user config | No config files, flags, or env vars for users | decisions.md: Decision 4 |
+| REQ-035 | No dashboard/UI | No web interface, toggles, or visual dashboard | decisions.md: Decision 10 |
+| REQ-036 | No artificial delays | ~1.5s runtime is natural analysis time | decisions.md: Decision 12 |
+| REQ-037 | Performance safeguard | `--max-count=1000` on all git log commands | decisions.md: Decision 8 |
+
+### DOCUMENTATION Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-038 | README boundaries | Document who this is for (English commits, standard git) | decisions.md: Board Condition |
+| REQ-039 | Integration location docs | Document exact file paths for prompt integration | decisions.md: Open Question 4 |
+
+### QUALITY Requirements (P0)
+
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|-------------------|--------|
+| REQ-040 | Code breathing room | Blank lines between data gathering and synthesis | decisions.md: Jony Ive |
+| REQ-041 | No unused parameters | Remove all `_project` prefixed params | decisions.md: Jony Ive |
+| REQ-042 | Named constants | All magic numbers extracted | decisions.md: Jony Ive |
+| REQ-043 | JSDoc manifesto | index.ts includes feature philosophy JSDoc | decisions.md: File Structure |
 
 ---
 
-### REQ-005: Run npm Install
+## CUT Features (NOT in v1.0)
 
-**Source:** PRD line 29, Decisions Operation 2
-**Description:** Install dependencies in destination daemon after syncing package.json.
-
-**Command:** `cd great-minds/daemon && npm install`
-
-**Acceptance Criteria:**
-- [ ] Command exits with code 0
-- [ ] `better-sqlite3` installed successfully
-- [ ] No missing peer dependencies
-- [ ] `node_modules/` created/updated
+| Feature | Reason | Source |
+|---------|--------|--------|
+| Caching/memoization | Fast enough without (1-2s) | decisions.md: DEFERRED |
+| User configuration | "Ships opinions, not options" | decisions.md: Decision 4 |
+| Dashboard/UI | "Invisible by design" | decisions.md: Decision 10 |
+| Agent Activity (shortlog) | Churn captures this | decisions.md: Decision 3 |
+| Risk scores/badges | "Show data, trust the agent" | decisions.md: CUT |
+| Enforcement mechanisms | Soft guidance only | decisions.md: CUT |
 
 ---
 
-### REQ-006: Git Commit Changes
+## Deferred Features
 
-**Source:** PRD line 32, Decisions Operation 3
-**Description:** Create atomic git commit with all synced changes.
+### v1.1 (30 Days Post-Launch)
 
-**Command:** `git add -A && git commit -m "Mirror sync from plugin"`
+| Feature | Source |
+|---------|--------|
+| Vindication moments (success surfacing) | Shonda Rhimes |
+| Delta reports ("what changed since last run") | Jensen Huang |
+| Outcome persistence | Jensen Huang |
+| i18n patterns (non-English commits) | Oprah Winfrey |
 
-**Acceptance Criteria:**
-- [ ] All copied files staged
-- [ ] Commit message follows format: `Mirror sync from plugin`
-- [ ] Commit created successfully
-- [ ] Exit code 0
+### v1.2 (60 Days)
+
+| Feature | Source |
+|---------|--------|
+| Revenue path documentation | Warren Buffett |
+| Cross-session memory | Shonda Rhimes |
+| Human annotation (.hindsight-context.md) | Oprah Winfrey |
+
+### v2.0 (90 Days)
+
+| Feature | Source |
+|---------|--------|
+| Feedback loop (warning -> outcome -> learning) | Jensen Huang |
+| ML classification (replace regex) | Jensen Huang |
+| Risk API (query interface) | Jensen Huang |
+| Cross-project learning | Jensen Huang |
 
 ---
 
-### REQ-007: Git Push to Origin
+## Success Criteria (v1.0 Definition of Done)
 
-**Source:** PRD line 32, Decisions Operation 3
-**Description:** Push committed changes to origin remote.
+From decisions.md:
 
-**Command:** `git push`
-
-**Acceptance Criteria:**
-- [ ] Push succeeds with SSH authentication
-- [ ] Changes visible on GitHub
-- [ ] No force push used
-- [ ] Exit code 0
+- [ ] `generateHindsightReport()` exists and runs in <2 seconds
+- [ ] Report generated and written to `.planning/hindsight-report.md`
+- [ ] Planner prompt references report
+- [ ] Executor prompt includes flagged-file guidance
+- [ ] No user-facing configuration or UI
+- [ ] Total implementation <100 lines core TypeScript
+- [ ] Acknowledgment line on first run
+- [ ] Basic outcome tracking implemented
+- [ ] README documents boundaries (English commits, standard git)
 
 ---
 
-### REQ-008: Quiet, Declarative Output Style
+## Risk Register
 
-**Source:** Decisions (Decision 7, lines 87-104)
-**Description:** Mirror outputs short, past-tense, declarative status messages.
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| Report ignored by agent | HIGH | HIGH | Strong prompt language; v1.1 context injection |
+| No measurable impact | HIGH | MEDIUM | Basic outcome tracking |
+| False positives | MEDIUM | HIGH | Keep logic simple; soft enforcement |
+| Monorepo timeout | MEDIUM | MEDIUM | `--max-count=1000` safeguard |
+| Token bloat | MEDIUM | MEDIUM | Terse formatting; test with large repos |
+| English-only exclusion | HIGH | MEDIUM | v1.1: i18n patterns |
 
-**Output Format:**
+---
+
+## Technical Notes
+
+### File Structure
+
 ```
-Mirrored pipeline.ts
-Mirrored agents.ts
-Mirrored config.ts
-Mirrored daemon.ts
-Mirrored package.json
-Mirrored README.md
-Installed dependencies
-Committed: "Mirror sync from plugin"
-Pushed to origin
+deliverables/git-intelligence/
+  index.ts                    # Exports + JSDoc manifesto
+  hindsight.ts                # Core logic (<100 lines)
+  hindsight-integration.ts    # Pipeline hooks + outcome tracking
+  README.md                   # User documentation
+
+daemon/src/
+  pipeline.ts                 # Integration point (runPlan, runBuild)
+  config.ts                   # REPO_PATH constant
+
+.planning/
+  hindsight-report.md         # Generated per-build (not committed)
 ```
 
-**Acceptance Criteria:**
-- [ ] Each file copy outputs `Mirrored {filename}`
-- [ ] npm install outputs `Installed dependencies`
-- [ ] git commit outputs `Committed: "{message}"`
-- [ ] git push outputs `Pushed to origin`
-- [ ] No progress bars, spinners, or percentages
-- [ ] No verbose multi-line messages
+### Key Integration Points
+
+1. **pipeline.ts:runPlan()** — Call `generateProjectHindsight()` before planner agent
+2. **pipeline.ts:runBuild()** — Call `generateProjectHindsight()` before builder agent
+3. **Planner prompt** — Inject `hindsightPlannerContext()` output
+4. **Builder prompt** — Inject `hindsightExecutorContext()` output
+
+### Git Commands Reference
+
+```bash
+# Recent changes (REQ-003)
+git log --oneline -20 --max-count=1000
+
+# File churn (REQ-004)
+git log --name-only --format= -100 --max-count=1000
+
+# Bug-associated (REQ-005)
+git log --grep="fix\|bug\|broken\|revert" -i --name-only --format= -100 --max-count=1000
+
+# Uncommitted state (REQ-006)
+git status --short
+git diff --stat
+```
 
 ---
 
-### REQ-009: Zero Confirmation Dialogs
+## Board Scores
 
-**Source:** Decisions (Decision 3, lines 39-48)
-**Description:** Execute immediately without dry-run or approval prompts.
+| Reviewer | Score | Key Quote |
+|----------|-------|-----------|
+| Jensen Huang | 5/10 | "You named this thing 'Intelligence' and delivered 'Formatted Output.'" |
+| Warren Buffett | 6/10 | "Wonderful engineering. Still looking for the company." |
+| Oprah Winfrey | 7.5/10 | "You got the hardest part right: you made something that cares." |
+| Shonda Rhimes | 4/10 | "Beautiful pilot that ends at the cold open." |
 
-**Acceptance Criteria:**
-- [ ] No "Are you sure?" prompts
-- [ ] No dry-run preview mode in v1
-- [ ] No changelog preview before execution
-- [ ] Execution begins immediately on invocation
-
----
-
-### REQ-010: Human-Initiated Trigger
-
-**Source:** Decisions (Decision 4, lines 51-61)
-**Description:** Mirror requires manual invocation; no automated triggers in v1.
-
-**Invocation:** `npx tsx scripts/mirror.ts` (or npm script)
-
-**Acceptance Criteria:**
-- [ ] Clear CLI command documented
-- [ ] No git hooks installed in v1
-- [ ] No file watchers for auto-trigger
-- [ ] Human must explicitly run command
+**Composite Score:** 5.6/10 — PROCEED with conditions
 
 ---
 
-### REQ-012: Fail Fast on Uncommitted Changes
-
-**Source:** Decisions (Risk Register, line 208)
-**Description:** Detect and reject if destination repo has uncommitted changes.
-
-**Acceptance Criteria:**
-- [ ] Check `git status --porcelain` before any operations
-- [ ] If output non-empty, fail immediately
-- [ ] Error message: `Error: Destination has uncommitted changes. Commit or stash first.`
-- [ ] Exit code non-zero
-
----
-
-### REQ-013: Error Handling for npm Install
-
-**Source:** Decisions (Risk Register, line 209)
-**Description:** Stop execution if npm install fails.
-
-**Acceptance Criteria:**
-- [ ] If npm install exits non-zero, stop immediately
-- [ ] Display npm error output to user
-- [ ] Do NOT proceed to git commit
-- [ ] Exit code non-zero
-
----
-
-### REQ-014: Error Handling for Git Push
-
-**Source:** Decisions (Risk Register, line 210)
-**Description:** Handle git push failures gracefully.
-
-**Acceptance Criteria:**
-- [ ] If git push fails, display error message
-- [ ] Local commit remains intact (not rolled back)
-- [ ] User instructed to resolve and retry manually
-- [ ] Exit code non-zero
-
----
-
-## v1.1 Requirements (Deferred per Decisions)
-
-### REQ-003: Copy Documentation Files (DEFERRED)
-
-**Reason:** Decisions Decision 5 explicitly excludes documentation sync as "scope creep."
-
-**Files:**
-- `BANNED-PATTERNS.md`
-- `DO-NOT-REPEAT.md`
-
-### REQ-004: Update CLAUDE.md (DEFERRED)
-
-**Reason:** Decisions Decision 5 explicitly excludes CLAUDE.md updates.
-
-### REQ-016: Git Hook Automation (v1.1)
-
-**Source:** Decisions (Decision 4)
-**Description:** Automatic mirror on git commit via pre-commit or post-commit hook.
-
----
-
-## Discrepancy Resolution
-
-### File List: PRD vs Decisions
-
-| PRD (Authoritative) | Decisions (Hypothetical) |
-|---------------------|--------------------------|
-| pipeline.ts | pipeline.ts |
-| agents.ts | agents.ts |
-| config.ts | errors.ts (WRONG) |
-| daemon.ts | types.ts (WRONG) |
-| package.json | utils.ts (WRONG) |
-| README.md | index.ts (WRONG) |
-
-**Resolution:** Use PRD file list. The decisions document's file list appears to be placeholder/example names that don't match the actual daemon structure. Verified via `ls daemon/src/`:
-- Actual files: pipeline.ts, agents.ts, config.ts, daemon.ts, dream.ts, health.ts, logger.ts, telegram.ts, token-ledger.ts
-- PRD selects the 4 core files + package.json + README.md
-- No files named errors.ts, types.ts, utils.ts, or index.ts exist
-
-### Documentation Sync: PRD vs Decisions
-
-| PRD Says | Decisions Says | Resolution |
-|----------|---------------|------------|
-| Sync BANNED-PATTERNS.md | Excluded (scope creep) | Defer to v1.1 |
-| Sync DO-NOT-REPEAT.md | Excluded (scope creep) | Defer to v1.1 |
-| Update CLAUDE.md | Excluded (documentation debt) | Defer to v1.1 |
-
-**Resolution:** Decisions document is authoritative for v1 scope. Documentation sync is deferred.
-
----
-
-## Risk Considerations
-
-From Risk Scanner analysis:
-
-| Risk | Mitigation in v1 |
-|------|------------------|
-| Human forgets to run Mirror | Accepted (v1.1 adds git hooks) |
-| Destination has uncommitted changes | REQ-012: Fail fast with error |
-| npm install fails | REQ-013: Stop, don't commit |
-| git push fails | REQ-014: Clear error, don't rollback |
-| Wrong files selected | Use PRD manifest, verify in config |
-| Path hardcoding | Use relative paths, no `/Users/` |
-
----
-
-## Out of Scope for v1
-
-Per Decisions document, these are explicitly excluded:
-- CLAUDE.md updates
-- Emdash CMS Reference
-- Dry-run mode
-- Git hook automation
-- npm package extraction
-- Bidirectional sync
-- Merge conflict resolution
-- Any file not in the 6-file manifest
+*Document generated for Great Minds Agency Phase Planning*
+*The Build Phase Is Authorized.*

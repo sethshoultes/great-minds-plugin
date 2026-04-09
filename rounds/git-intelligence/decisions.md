@@ -1,398 +1,396 @@
-# Hindsight: Consolidated Decisions Document
+# Hindsight: Build Blueprint
 
-**Project:** Git Intelligence Feature
+**Project:** Git Intelligence for AI Agents
 **Codename:** Hindsight
-**Status:** Ready for Build Phase
+**Status:** APPROVED FOR BUILD
 **Arbiter:** Phil Jackson, The Zen Master
-**Document Version:** 2.0 — Final Blueprint
+**Date:** April 9, 2026
+**Version:** 3.0 — Final Build Specification
 
 ---
 
-## Executive Summary
-
-This document consolidates all locked decisions from two rounds of debate (Steve Jobs vs. Elon Musk), two creative reviews (Maya Angelou, Jony Ive), four board reviews (Shonda Rhimes, Jensen Huang, Warren Buffett, Oprah Winfrey), and one retrospective (Marcus Aurelius).
-
-**Board Verdict:** PROCEED with conditions
-**Average Board Score:** 5.5/10
-**Essence:** Protection that doesn't announce itself. Machines with the instinct to know which code is dangerous.
-
----
-
-## Part I: Decision Register
+## I. Locked Decisions
 
 ### Decision 1: Product Name
 
-| Aspect | Detail |
-|--------|--------|
+| Field | Value |
+|-------|-------|
 | **Proposed By** | Steve Jobs (Round 1) |
-| **Challenged By** | Elon Musk ("poetry, not product") |
+| **Challenged By** | Elon Musk ("git-intel is cleaner for CLIs") |
 | **Winner** | Steve Jobs |
-| **Decision** | External name is **Hindsight** |
-| **Rationale** | Names outlast code. "Hindsight" creates a metaphor that resists feature creep. Internal filename can be `git-intelligence.md` for discoverability (Elon's concession), but human-facing language uses "Hindsight." |
+| **Final Decision** | External name is **Hindsight** |
+| **Why Steve Won** | "Names outlast code. 'Git Intelligence' is a feature description. Nobody falls in love with a feature description." Elon conceded in Round 2: "I love the name. 'Hindsight' is poetry. I'm stealing it." |
 
 ---
 
-### Decision 2: Architecture Pattern
+### Decision 2: File Artifact vs. Direct Injection
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Elon Musk (Round 1) |
-| **Challenged By** | Steve Jobs (wanted "invisible guardian" framing) |
-| **Winner** | Elon Musk |
-| **Decision** | One function, <100 lines, no classes |
-| **Rationale** | "A 50-line script is easier to debug, extend, and kill than a 200-line invisible guardian." Steve conceded simplicity enables the invisible principle he champions. Jony Ive reinforced: "Remove what is uncertain. Keep what is essential." |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Elon Musk (Round 1) — inject directly, no file writes |
+| **Challenged By** | Steve Jobs (Round 2) — "Agents deserve documents, not just injections" |
+| **Winner** | Steve Jobs |
+| **Final Decision** | Write markdown file to `.planning/hindsight-report.md` |
+| **Why Steve Won** | "A markdown file isn't debugging overhead — it's a thinking artifact. When an agent pauses to read a structured document before acting, it processes information deliberately." Elon's concern about race conditions was addressed by scoping to single-session generation. |
 
 ---
 
 ### Decision 3: Agent Activity (Shortlog)
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Original PRD, defended by Steve Jobs (Round 2) |
-| **Challenged By** | Elon Musk ("bus factor is a human concern") |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Original PRD; defended by Steve Jobs |
+| **Challenged By** | Elon Musk — "Bus factor is a human concern, not agent intel" |
 | **Winner** | Elon Musk |
-| **Decision** | CUT from v1 |
-| **Rationale** | Steve argued single-author files indicate architectural risk. Elon countered that churn data already captures this without parsing contributor names. Board agreed: ship lean, revisit in v2 only if users request it. |
+| **Final Decision** | **CUT** from v1 |
+| **Why Elon Won** | Steve argued single-author files signal hidden complexity. Elon countered: "Churn data already captures this without parsing contributor names." Board agreed: ship lean, revisit only if users request it. |
 
 ---
 
 ### Decision 4: Configuration Options
 
-| Aspect | Detail |
-|--------|--------|
+| Field | Value |
+|-------|-------|
 | **Proposed By** | Steve Jobs |
-| **Winner** | Steve Jobs (Elon agreed) |
-| **Decision** | Zero user-facing configuration in v1 |
-| **Rationale** | "Experts ship opinions, not options." Both agreed. Warren Buffett noted this is capital efficiency. However, enterprise customers (50k+ files) WILL need options—documented as v2 concern. |
+| **Supported By** | Elon Musk (complete alignment) |
+| **Winner** | Consensus |
+| **Final Decision** | **Zero** user-facing configuration in v1 |
+| **Rationale** | "If you need to configure it, we've already failed." — Steve. "Experts ship opinions, not options." Both agreed. Enterprise config deferred to v2. |
 
 ---
 
 ### Decision 5: Risk Summary Generation
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Steve Jobs |
-| **Challenged By** | Elon Musk ("LLMs summarizing for LLMs burns tokens") |
-| **Winner** | COMPROMISE |
-| **Decision** | Include lightweight summary, <50 words, terse not prose |
-| **Rationale** | Steve wanted "mentor voice." Elon wanted raw data only. Compromise: dense summary synthesizing risk posture. Maya Angelou's rewrite guidance: "Let this guide your hands. The files marked here have stories." |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Steve Jobs — "mentor voice" prose |
+| **Challenged By** | Elon Musk — "LLMs summarizing for LLMs burns tokens" |
+| **Winner** | **Compromise** |
+| **Final Decision** | Include summary, <50 words, terse not prose |
+| **Synthesis** | Steve's voice, Elon's discipline. Maya Angelou provided the template: "Let this guide your hands. The files marked here have stories — some of them cautionary tales." |
 
 ---
 
 ### Decision 6: Voice and Tone
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Steve Jobs (Round 1) |
-| **Challenged By** | Elon Musk (no artificial drama) |
-| **Winner** | Steve Jobs (Elon conceded) |
-| **Decision** | Mentor voice, not alarm voice |
-| **Rationale** | "I've studied the history" — not "WARNING: high-risk files detected!" Elon acknowledged: "Tone matters. An alarm creates anxiety. A mentor creates trust." Maya Angelou reinforced: weak language creates forgettable products. |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Steve Jobs |
+| **Challenged By** | Elon Musk (initially dismissed as "emotional overhead") |
+| **Winner** | Steve Jobs |
+| **Final Decision** | Mentor voice, not alarm voice |
+| **Why Steve Won** | Elon conceded in Round 2: "Tone matters. An alarm creates anxiety. A mentor creates trust." Sample: "Tread carefully" not "WARNING: DANGER." Maya Angelou reinforced: "Weak language creates forgettable products." |
 
 ---
 
-### Decision 7: Monorepo Handling
+### Decision 7: Architecture Pattern
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Elon Musk (Round 2) |
-| **Challenged By** | Steve Jobs initially dismissed |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Elon Musk |
+| **Challenged By** | Steve Jobs (wanted "invisible guardian" abstraction) |
 | **Winner** | Elon Musk |
-| **Decision** | Add `--max-count=1000` flag to all git log commands |
-| **Rationale** | Steve conceded: "I was romanticizing when practical limits matter." 100k+ commit repos would timeout without this safeguard. |
+| **Final Decision** | One function, <100 lines, no classes |
+| **Why Elon Won** | "A 50-line script is easier to debug, extend, and kill than a 200-line invisible guardian." Steve conceded simplicity enables the invisible principle he champions. Jony Ive reinforced: "Remove what is uncertain. Keep what is essential." |
 
 ---
 
-### Decision 8: Caching Strategy
+### Decision 8: Git Command Performance
 
-| Aspect | Detail |
-|--------|--------|
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Elon Musk |
+| **Challenged By** | Steve (initially dismissed as "premature optimization") |
+| **Winner** | Elon Musk |
+| **Final Decision** | Parallel execution with `Promise.all()`, add `--max-count=1000` to all log commands |
+| **Why Elon Won** | "On a 50K-commit repo, sequential git commands = 10-25 seconds of blocking I/O. Parallel = instant 5x improvement." Steve conceded in Round 2: "I was romanticizing when practical limits matter." |
+
+---
+
+### Decision 9: Caching
+
+| Field | Value |
+|-------|-------|
 | **Proposed By** | Elon Musk |
 | **Winner** | Both (DEFERRED) |
-| **Decision** | No caching in v1 |
-| **Rationale** | "Don't optimize what doesn't hurt." 1-2 seconds is fast enough. Hash-based cache invalidation documented for v2. |
+| **Final Decision** | No caching in v1 |
+| **Rationale** | "Don't optimize what doesn't hurt." 1-2 seconds is fast enough. Hash-based cache invalidation documented for v2 if needed. |
 
 ---
 
-### Decision 9: Dashboard/UI
+### Decision 10: Dashboard/UI
 
-| Aspect | Detail |
-|--------|--------|
-| **Proposed By** | Steve Jobs |
-| **Winner** | Both (complete alignment) |
-| **Decision** | No dashboard, no toggle, no UI |
-| **Rationale** | "The moment you add a Git Intelligence Dashboard you've failed." This is background wisdom. Invisible infrastructure. Shonda Rhimes disagreed strategically but accepted for v1. |
+| Field | Value |
+|-------|-------|
+| **Proposed By** | Steve Jobs ("invisible by design") |
+| **Supported By** | Elon Musk (complete alignment) |
+| **Challenged By** | Shonda Rhimes ("invisible heroes don't get renewed") |
+| **Winner** | Steve/Elon for v1 |
+| **Final Decision** | No dashboard, no toggle, no UI in v1 |
+| **Board Note** | Shonda's retention concerns addressed via v1.1 "vindication moments" — surface value without adding UI. |
 
 ---
 
-### Decision 10: Bug Pattern Matching
+### Decision 11: Bug Pattern Matching
 
-| Aspect | Detail |
-|--------|--------|
+| Field | Value |
+|-------|-------|
 | **Proposed By** | Elon Musk |
 | **Winner** | Elon Musk |
-| **Decision** | Simple regex: `fix|bug|broken|revert` — no expansion |
-| **Rationale** | Diminishing returns from complexity. Oprah noted: English-only patterns exclude international teams. Documented as v2 i18n concern. |
+| **Final Decision** | Simple regex: `fix|bug|broken|revert` — no expansion |
+| **Rationale** | Diminishing returns from complexity. Jensen called it "regex from 1968." Oprah noted English-only excludes international teams. |
+| **Board Condition** | Internationalization required for v1.1 |
 
 ---
 
-### Decision 11: Artificial Delays
+### Decision 12: Artificial Delays
 
-| Aspect | Detail |
-|--------|--------|
+| Field | Value |
+|-------|-------|
 | **Proposed By** | Implied by Steve's "the agent pauses, it reads, it considers" |
-| **Challenged By** | Elon Musk ("that's a dark pattern") |
+| **Challenged By** | Elon Musk — "that's a dark pattern" |
 | **Winner** | Elon Musk |
-| **Decision** | No artificial delays. Feature runs in ~1.5 seconds because it IS ~1.5 seconds |
+| **Final Decision** | No artificial delays. Feature runs in ~1.5 seconds because it IS ~1.5 seconds |
 | **Rationale** | "We ship fast things that are fast. Users learn to trust speed." |
 
 ---
 
-## Part II: MVP Feature Set (v1.0 Ship Manifest)
+## II. MVP Feature Set (v1.0 Ship Manifest)
 
 ### What Ships
 
 | Component | Specification |
 |-----------|---------------|
-| **Core Function** | `generateHindsightReport()` |
+| **Core Function** | `generateHindsightReport(repoPath, outputPath?)` |
 | **Git Command 1** | Recent changes: `git log --oneline -20 --max-count=1000` |
-| **Git Command 2** | File churn: `git log --name-only --max-count=1000` → frequency count |
-| **Git Command 3** | Bug-associated files: `git log --grep="fix\|bug\|broken\|revert" --max-count=1000` |
-| **Git Command 4** | Uncommitted state: `git status --short`, `git diff --stat` |
-| **Output** | Single markdown file written to build context |
-| **Integration** | One line added to pipeline.ts |
-| **Prompt Updates** | Planner and executor prompts reference report |
+| **Git Command 2** | File churn: `git log --name-only --format= -100 --max-count=1000` |
+| **Git Command 3** | Bug-associated: `git log --grep="fix\|bug\|broken\|revert" -i --name-only --format= -100 --max-count=1000` |
+| **Git Command 4** | Uncommitted state: `git status --short` + `git diff --stat` |
+| **Output Format** | Markdown file to `.planning/hindsight-report.md` |
+| **Integration** | `generateProjectHindsight()` called in pipeline |
+| **Prompt Modifiers** | `hindsightPlannerContext()`, `hindsightExecutorContext()` |
+| **Risk Assessment** | `assessRisk(churnCount, bugCount)` returns LOW/MEDIUM/HIGH |
 | **Summary** | <50 words synthesizing risk posture |
 | **Safeguard** | `--max-count=1000` on all log commands |
-| **Acknowledgment Line** | Single log line on first run (Board condition, Oprah) |
-| **Basic Outcome Tracking** | Log when flagged file modified + build fails (Board condition, Jensen/Buffett) |
+| **Acknowledgment** | `"Hindsight: ${n} high-risk files identified. Proceed with awareness."` |
+| **Outcome Tracking** | `trackHindsightOutcome()` logs flagged file + build failure correlation |
 
 ### What Does NOT Ship (v1.0)
 
-- Caching/memoization
-- User configuration options
-- Dashboard or UI
-- Agent Activity/shortlog analysis
-- Historical reports or logging
-- Risk scores or badges
-- Enforcement mechanisms
-- Vindication moments (v1.1)
-- Delta reports (v1.1)
-- Internationalized patterns
+| Feature | Status | Reason |
+|---------|--------|--------|
+| Caching/memoization | DEFERRED | Fast enough without it |
+| User configuration | CUT | "Ships opinions, not options" |
+| Dashboard/UI | CUT | "Invisible by design" |
+| Agent Activity (shortlog) | CUT | Elon won debate |
+| Risk scores/badges | CUT | "Show data, trust the agent" |
+| Enforcement mechanisms | CUT | Soft guidance only |
+| Vindication moments | DEFERRED to v1.1 | Board condition |
+| Delta reports | DEFERRED to v1.1 | Board condition |
+| i18n patterns | DEFERRED to v1.1 | Board condition |
+| ML classification | DEFERRED to v2.0 | Jensen's roadmap |
 
 ---
 
-## Part III: File Structure (Build Specification)
+## III. File Structure (Build Specification)
 
 ```
 src/
   hindsight/
-    index.ts              # Primary export with JSDoc manifesto
-    hindsight.ts          # Core logic, <100 lines total
-    hindsight-integration.ts  # Pipeline integration points
+    index.ts                    # Exports + JSDoc manifesto
+    hindsight.ts                # Core logic (<100 lines)
+    hindsight-integration.ts    # Pipeline hooks + outcome tracking
 
-  # Output location:
-  .planning/
-    hindsight-report.md   # Generated per-build, not committed
+.planning/
+  hindsight-report.md           # Generated per-build (not committed)
 
 prompts/
-  planner.ts              # Add: "Reference the Hindsight report..."
-  executor.ts             # Add: "Before modifying flagged files..."
+  planner.ts                    # Add Hindsight context block
+  executor.ts                   # Add "before modifying flagged files" guidance
 
-pipeline.ts               # Add: await generateProjectHindsight()
+pipeline.ts                     # Add: await generateProjectHindsight()
 ```
-
-### Naming Convention (Steve/Elon Synthesis)
-
-| Context | Name |
-|---------|------|
-| Internal filename | `hindsight.ts` or `git-intelligence.ts` |
-| Output file | `hindsight-report.md` |
-| Function name | `generateHindsightReport()` |
-| Human-facing | "Hindsight" |
-| Marketing | "Git Intelligence for AI Agents" |
 
 ### Code Quality Standards (Jony Ive Review)
 
-1. **Extract risk calculation** into its own function: `assessRisk(churn, bugs)`
-2. **Remove numbered comments** — trust the code to be clear
-3. **Delete unused parameters** — no `maxCount` if not used
-4. **Unify semantic registers** — use consistent language ("clean" vs "none")
-5. **Add breathing room** between data gathering and synthesis sections
+1. **Named constants** — Extract magic numbers: `RECENT_COMMITS = 20`, `ANALYSIS_DEPTH = 100`, `CHURN_THRESHOLD = 3`
+2. **Extracted risk function** — `assessRisk(churn, bugs)` as separate pure function
+3. **Consistent fallbacks** — Use same semantic register ("clean"/"unchanged" or "none"/"none")
+4. **Error handling** — Return `null` for git failures, not empty strings
+5. **Breathing room** — Blank lines between data gathering and synthesis blocks
+6. **No unused parameters** — Delete `_project` prefixed params
+7. **Report hierarchy** — Risk assessment leads, timestamp becomes footnote
 
 ---
 
-## Part IV: Open Questions (Requiring Resolution)
+## IV. Open Questions (Requiring Resolution)
 
 ### 1. Enforcement Mechanism
 **Status:** UNRESOLVED
-**Problem:** Elon noted "agents ignore the report 40% of the time"
+**Problem:** Elon noted agents may ignore the report
 **Options:**
-- Soft: Prompt language only ("tread carefully")
-- Medium: Post-modification verification step
-- Hard: Require confirmation before modifying flagged files
+- Soft: Prompt language only (current)
+- Medium: Post-modification verification
+- Hard: Require confirmation for flagged files
 **Owner:** Technical Lead
 **Timeline:** Define approach for v1.1
 
-### 2. Report Verbosity Template
-**Status:** PARTIALLY RESOLVED
-**Decision:** <50 words
-**Needs:** Exact template with character limits
-**Maya's Guidance:** "Let this guide your hands. The files marked here have stories—some of them cautionary tales."
-
-### 3. Threshold Definitions
+### 2. Threshold Definitions
 **Status:** IMPLICIT
 **Problem:** What constitutes "high churn" or "bug-prone"?
-**Recommendation:** Ship with fuzzy language, tune with data
-**Example:** Top 10 files by change frequency = high churn
+**Current:** Top 15 files by change frequency, files with 3+ changes
+**Recommendation:** Ship with current logic, tune with data
 
-### 4. Report Location
-**Status:** ASSUMED
-**Decision:** `.planning/hindsight-report.md`
-**Rationale:** Follows existing planning directory convention
-
-### 5. Revenue Path
+### 3. Revenue Path
 **Status:** REQUIRED (Board condition)
-**Timeline:** Define within 60 days of launch
+**Timeline:** Define within 60 days
 **Buffett's Question:** "Who writes the check?"
 **Options:**
 - Retention feature for paid platform
 - Open source for ecosystem goodwill
 - Enterprise tier with configuration
 
-### 6. Internationalization
-**Status:** DOCUMENTED LIMITATION
-**Problem:** English commit patterns exclude international teams
-**Oprah's Ask:** Document who this is for and who it isn't for
-**v2 Consideration:** Configurable patterns (`fix|corrige|修复|исправить`)
+### 4. Integration Location
+**Status:** ASSUMED
+**Problem:** Elon noted "PRD doesn't specify WHERE the planner prompt lives"
+**Action:** Builder must identify exact file paths and line numbers before implementation
 
 ---
 
-## Part V: Risk Register
+## V. Risk Register
 
-| Risk | Likelihood | Impact | Mitigation | Owner |
-|------|------------|--------|------------|-------|
-| **Report ignored** — Planner/executor doesn't use report | HIGH | HIGH | Strong prompt language; v1.1 summary in agent context window | Technical Lead |
-| **No measurable impact** — Can't prove value | HIGH | MEDIUM | Accept invisibility; basic outcome tracking; v1.1 dashboard | Product Lead |
-| **False positives** — Agent avoids critical file incorrectly | MEDIUM | HIGH | Keep logic simple; soft enforcement only | Technical Lead |
-| **Monorepo timeout** | MEDIUM | MEDIUM | `--max-count=1000` safeguard | Technical Lead |
-| **Token bloat** — Report truncated by LLM | MEDIUM | MEDIUM | Terse formatting; test with large repos | Technical Lead |
-| **Feature creep** — "Hindsight Dashboard" requested | HIGH | MEDIUM | Point to this document | Product Lead |
-| **Scope creep** — Classes/interfaces added | MEDIUM | LOW | Code review; "$100 penalty" culture | Technical Lead |
-| **Enterprise demands** — Config needed | MEDIUM | MEDIUM | Defer to v2; document limitation | Product Lead |
-| **v2 becomes fantasy** | MEDIUM | HIGH | Firm roadmap with dates and owners | Executive Sponsor |
-| **No competitive moat** | HIGH | HIGH | v2: cross-repo learning, feedback loops | Strategy Lead |
-| **Discovery problem** — Users don't know they're protected | HIGH | MEDIUM | v1.0 acknowledgment line; v1.1 vindication moment | Product Lead |
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| **Report ignored by agent** | HIGH | HIGH | Strong prompt language; v1.1 context injection; vindication feedback |
+| **No measurable impact** | HIGH | MEDIUM | Basic outcome tracking; v1.1 analytics |
+| **False positives** | MEDIUM | HIGH | Keep logic simple; soft enforcement only |
+| **Monorepo timeout** | MEDIUM | MEDIUM | `--max-count=1000` safeguard |
+| **Token bloat** | MEDIUM | MEDIUM | Terse formatting; test with large repos |
+| **Feature creep** | HIGH | MEDIUM | Point to this document; "$100 penalty" culture |
+| **No competitive moat** | HIGH | HIGH | v2: cross-repo learning, feedback loops, ML |
+| **English-only exclusion** | HIGH | MEDIUM | v1.1: i18n patterns |
+| **v2 becomes fantasy** | MEDIUM | HIGH | Firm roadmap with dates and owners |
+| **Invisible value trap** | HIGH | MEDIUM | v1.1: vindication moments, delta surfacing |
 
 ---
 
-## Part VI: Board Conditions
+## VI. Board Conditions
 
 ### Mandatory for v1.0 Launch
 
-| Condition | Source | Specification |
-|-----------|--------|---------------|
-| **Acknowledgment Line** | Oprah | Single log line on first run: "Hindsight: X high-risk files identified. Proceed with awareness." |
-| **Basic Outcome Tracking** | Jensen/Buffett | Log when flagged file modified AND build fails |
-| **Boundary Documentation** | Oprah | README stating who this is for and who it isn't for |
+| Condition | Source | Specification | Status |
+|-----------|--------|---------------|--------|
+| Acknowledgment Line | Oprah | `"Hindsight: ${n} high-risk files identified. Proceed with awareness."` | REQUIRED |
+| Basic Outcome Tracking | Jensen/Buffett | Log when flagged file modified AND build fails | REQUIRED |
+| Boundary Documentation | Oprah | README stating who this is for and who it isn't for | REQUIRED |
 
-### Required for v1.1 (Within 60 Days)
-
-| Feature | Source | Specification |
-|---------|--------|---------------|
-| **Vindication Moment** | Shonda | Surface when warning was validated: "Hindsight flagged auth.ts. You handled it carefully. Build succeeded." |
-| **Delta Surfacing** | Shonda | Show what changed: "2 new high-risk files since yesterday." |
-| **Revenue Path** | Buffett | Document monetization strategy |
-| **i18n Plan** | Oprah | Document English-commit assumption; consider configurable patterns |
-
-### Required for v2.0 (Within 6 Months)
+### Required for v1.1 (30 Days Post-Launch)
 
 | Feature | Source | Specification |
 |---------|--------|---------------|
-| **Feedback Loop** | Jensen | Track warning → modification → outcome |
-| **ML Classification** | Jensen | Replace regex with semantic commit understanding |
-| **Human Annotation** | Oprah | `.hindsight-context.md` for team-provided context |
-| **Platform API** | Jensen | Let other tools query risk assessments |
+| Vindication Moments | Shonda | Surface when flagged files handled successfully |
+| Delta Surfacing | Shonda/Jensen | "What changed since last run" |
+| Outcome Persistence | Jensen | Store warning/outcome pairs |
+| i18n Patterns | Oprah | Support non-English commit conventions |
+
+### Required for v1.2 (60 Days)
+
+| Feature | Source | Specification |
+|---------|--------|---------------|
+| Revenue Path | Buffett | Document monetization strategy |
+| Cross-Session Memory | Shonda | Reports reference past interactions |
+| Human Annotation | Oprah | `.hindsight-context.md` for team wisdom |
+
+### Required for v2.0 (90 Days)
+
+| Feature | Source | Specification |
+|---------|--------|---------------|
+| Feedback Loop | Jensen | Track warning -> modification -> outcome -> learning |
+| ML Classification | Jensen | Replace regex with semantic commit analysis |
+| Risk API | Jensen | Let other tools query risk assessments |
+| Cross-Project Learning | Jensen | Aggregated patterns across repos |
 
 ---
 
-## Part VII: Success Criteria
+## VII. Board Scores & Key Quotes
+
+| Reviewer | Score | Key Quote |
+|----------|-------|-----------|
+| **Jensen Huang** | 5/10 | "You named this thing 'Intelligence' and delivered 'Formatted Output.'" |
+| **Warren Buffett** | 6/10 | "This is wonderful engineering. I'm still looking for the company." |
+| **Oprah Winfrey** | 7.5/10 | "You got the hardest part right: you made something that cares." |
+| **Shonda Rhimes** | 4/10 | "You've built a beautiful pilot that ends at the cold open." |
+
+**Composite Score:** 5.6/10
+**Verdict:** PROCEED with conditions
+
+---
+
+## VIII. Success Criteria
 
 ### v1.0 Definition of Done
 
-1. Function exists and runs in <2 seconds on standard repos
-2. Report generated and included in planner context
-3. Prompt language references report appropriately
-4. No user-facing configuration or UI
-5. Total implementation <100 lines of TypeScript
-6. Acknowledgment line on first run
-7. Basic outcome tracking implemented
-8. Boundary documentation in README
-
-### v1.1 Success Metrics (from Shonda's Retention Roadmap)
-
-| Metric | Target |
-|--------|--------|
-| Report Views | >70% of generated reports viewed |
-| Return Rate | >50% users check again within 7 days |
-| Vindication Views | >80% of vindication moments seen |
-| Share Rate | >5% users share a Hindsight moment |
+- [ ] `generateHindsightReport()` exists and runs in <2 seconds
+- [ ] Report generated and written to `.planning/hindsight-report.md`
+- [ ] Planner prompt references report
+- [ ] Executor prompt includes flagged-file guidance
+- [ ] No user-facing configuration or UI
+- [ ] Total implementation <100 lines core TypeScript
+- [ ] Acknowledgment line on first run
+- [ ] Basic outcome tracking implemented
+- [ ] README documents boundaries (English commits, standard git workflows)
 
 ---
 
-## Part VIII: Retrospective Learnings
+## IX. The Essence
 
-Marcus Aurelius's observation for future projects:
+> **What is this product REALLY about?**
+> Memory for machines that would otherwise forget.
 
-1. **Front-load strategic questions** — moat, revenue, compounding value should be asked BEFORE creative investment
+> **What's the feeling it should evoke?**
+> Relief. Someone already knows where you'll trip.
+
+> **What's the one thing that must be perfect?**
+> The silence. Protection that never performs.
+
+> **Creative direction:**
+> Scars speak. Listen first.
+
+---
+
+## X. Retrospective Wisdom (Marcus Aurelius)
+
+For future projects:
+
+1. **Front-load strategic questions** — moat, revenue, compounding should be asked BEFORE creative investment
 2. **Require technical validation** — a 2-hour spike before multi-day deliberation
 3. **Involve creative reviewers earlier** — at outline stage, not finished artifacts
 4. **v2 accountability** — every deferral needs owner, date, and kill condition
-5. **Reconcile conflicting scores** — 4/10 and 8/10 on same project requires resolution
+5. **Reconcile conflicting scores** — 4/10 and 8/10 on same project requires explicit resolution
 
-**Process Score:** 7/10 — competent execution of a process that could be sequenced better.
-
----
-
-## Part IX: The Essence
-
-> **What is this product REALLY about?**
-> Teaching machines to respect the scars in your code.
-
-> **What's the feeling it should evoke?**
-> The quiet confidence of a surgeon who read your chart before walking in.
-
-> **What's the one thing that must be perfect?**
-> The moment the agent demonstrates it *already knows* where the danger lives.
-
-> **Creative direction:**
-> Invisible wisdom. Earned trust. Context matters more than capability.
+**Process Score:** 7/10 — competent execution, better sequencing needed
 
 ---
 
 ## Authorization
 
-This document represents the consolidated decisions from:
-- 2 rounds of Steve Jobs vs. Elon Musk debate
-- 2 creative reviews (Maya Angelou, Jony Ive)
-- 4 board reviews (Shonda, Jensen, Buffett, Oprah)
-- 1 retrospective (Marcus Aurelius)
-- 1 retention roadmap (Shonda)
+This document consolidates locked decisions from:
+- 2 rounds of debate: Steve Jobs vs. Elon Musk
+- 2 creative reviews: Maya Angelou (copy), Jony Ive (design)
+- 4 board reviews: Jensen Huang, Warren Buffett, Oprah Winfrey, Shonda Rhimes
+- 1 retrospective: Marcus Aurelius
+- 1 retention roadmap: Shonda Rhimes
+- 1 demo script: Production-ready narrative
 
 **The Build Phase Is Authorized.**
 
 ---
 
-*"The best products aren't optimized for shipping speed. They're optimized for the moment when a user thinks, 'This is exactly what I needed, and I didn't even know it existed.'"* — Steve Jobs
+*"Ship the elegant ugly thing that doesn't break and doesn't announce itself. Then evolve it."*
 
-*"Ship the ugly thing that doesn't break."* — Elon Musk
-
-*"Show us the story. Show us the learning. Show us the moat."* — The Board
-
-*"Both are true. Ship the elegant ugly thing that doesn't break and doesn't announce itself. Then evolve it."* — The Zen Master
+— Phil Jackson, The Zen Master
 
 ---
 
-**Document Version:** 2.0
+**Document Version:** 3.0 — Final Build Blueprint
 **Authority:** Great Minds Agency Consolidated Decision Record
-**Arbiter:** Phil Jackson
