@@ -5,8 +5,9 @@ ALERT="/tmp/claude-shared/alerts.log"
 
 {
   echo "=== GIT $(date '+%H:%M') ==="
+  SITES_ROOT="${SITES_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
   for repo in localgenius great-minds great-minds-plugin; do
-    DIR="/Users/sethshoultes/Local Sites/$repo"
+    DIR="$SITES_ROOT/$repo"
     [ -d "$DIR/.git" ] || continue
     DIRTY=$(git -C "$DIR" status --short 2>/dev/null | wc -l | tr -d ' ')
     BRANCH=$(git -C "$DIR" branch --show-current 2>/dev/null)

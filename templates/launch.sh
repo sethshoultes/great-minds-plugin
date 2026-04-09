@@ -6,7 +6,8 @@
 # Default: admin (Moderator) + 2 workers (Steve, Elon)
 # Extra workers are spawned in the Build phase for sub-agents.
 
-PROJECT_DIR="/Users/sethshoultes/Local Sites/great-minds"
+# Auto-detect project directory: use PIPELINE_REPO env var, or the directory containing this script
+PROJECT_DIR="${PIPELINE_REPO:-$(cd "$(dirname "$0")" && pwd)}"
 PROJECT_NAME="${1:-}"
 EXTRA_WORKERS="${2:-2}"  # 2 = Steve + Elon
 SHARED_DIR="/tmp/claude-shared"

@@ -23,3 +23,21 @@ grep -rn "throw new Response\|rc\.user\|rc\.pathParams\|rc\.rawBody\|rc\.headers
 ```
 
 Any match = BLOCK. Fix the code before passing QA.
+
+## Cross-Project Patterns
+
+These patterns apply to ALL Great Minds code, not just Emdash plugins.
+
+| Pattern | Why It's Wrong | Correct Alternative |
+|---------|---------------|-------------------|
+| `/Users/sethshoultes/` (or any absolute home path) | Hardcoded paths break on other machines. See `DO-NOT-REPEAT.md` for full context. | Use `${PIPELINE_REPO}`, `${HOME}`, `$(git rev-parse --show-toplevel)`, or relative paths |
+| `console.log` in production daemon code | Bypasses the structured logger; missing timestamps and log levels | Use `logger.info()` / `logger.error()` from `daemon/src/logger.ts` |
+| `await new Promise(resolve => setTimeout(...))` without timeout protection | Can hang indefinitely if the awaited work never completes | Wrap with `Promise.race([..., timeoutPromise])` or use `AGENT_TIMEOUT_MS` |
+
+### How to Check for Hardcoded Paths
+
+```bash
+grep -rn '/Users/' agents/ crons/ skills/ templates/ --include="*.md" --include="*.sh"
+```
+
+Any match = BLOCK. Replace with environment variables or auto-detection before merging.

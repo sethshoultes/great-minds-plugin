@@ -11,7 +11,7 @@ set -euo pipefail
 LOG="/tmp/claude-shared/pipeline.log"
 ALERT="/tmp/claude-shared/alerts.log"
 REPO="${PIPELINE_REPO:-$(pwd)}"
-PLUGIN="${PLUGIN_DIR:-/Users/sethshoultes/Local Sites/great-minds-plugin}"
+PLUGIN="${PLUGIN_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 # Read current state from STATUS.md
 STATE=$(grep -oP '(?<=\*\*state\*\*:\s).*' "$REPO/STATUS.md" 2>/dev/null || echo "idle")

@@ -7,21 +7,21 @@ Install and run the Great Minds autonomous daemon. This replaces ALL cron script
 ## Install
 
 ```bash
-cd /Users/sethshoultes/Local Sites/great-minds/daemon
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/daemon"
 npm install
 ```
 
 ## Run
 
 ```bash
-cd /Users/sethshoultes/Local Sites/great-minds/daemon
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/daemon"
 ./bin/greatminds-daemon
 ```
 
 Or directly:
 
 ```bash
-cd /Users/sethshoultes/Local Sites/great-minds/daemon && npx tsx src/daemon.ts
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/daemon" && npx tsx src/daemon.ts
 ```
 
 ## What It Replaces
@@ -70,7 +70,7 @@ Set `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` env vars to receive real-time pi
 Agent calls automatically retry up to 2 times with exponential backoff. If a pipeline fails entirely, the daemon archives the failed PRD to `prds/failed/`, sends a Telegram alert, and continues watching for new work (no crash).
 
 ### Hung Agent Detection
-- **Agent timeout** (`AGENT_TIMEOUT_MS`, default 10 min): kills and retries individual agent calls that exceed the limit.
+- **Agent timeout** (`AGENT_TIMEOUT_MS`, default 20 min): kills and retries individual agent calls that exceed the limit.
 - **Pipeline watchdog** (`PIPELINE_TIMEOUT_MS`, default 60 min): force-skips entire pipelines that run too long.
 
 ## Configuration

@@ -104,9 +104,9 @@ Agent calls are wrapped with automatic retry:
 Two layers of timeout protection:
 
 ### Agent Timeout (`AGENT_TIMEOUT_MS`)
-- Default: **10 minutes** (600,000 ms)
+- Default: **20 minutes** (1,200,000 ms)
 - If a single agent call exceeds this limit, it is aborted and retried.
-- Set via environment variable: `AGENT_TIMEOUT_MS=600000`
+- Set via environment variable: `AGENT_TIMEOUT_MS=1200000`
 
 ### Pipeline Watchdog (`PIPELINE_TIMEOUT_MS`)
 - Default: **60 minutes** (3,600,000 ms)

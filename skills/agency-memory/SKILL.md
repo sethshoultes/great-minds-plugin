@@ -24,7 +24,7 @@ When this skill is invoked, run the memory CLI from the memory-store directory.
 Find relevant memories by semantic similarity:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory search "$QUERY" --limit ${LIMIT:-5}
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory search "$QUERY" --limit ${LIMIT:-5}
 ```
 
 ### Add
@@ -32,7 +32,7 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory se
 Store a new memory. Valid types: `learning`, `decision`, `qa-finding`, `board-review`, `retrospective`, `architecture`.
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory add \
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory add \
   --type "$TYPE" \
   --agent "$AGENT" \
   --project "$PROJECT" \
@@ -44,9 +44,9 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory ad
 List memories filtered by type, agent, or project:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory list --type "$TYPE"
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory list --agent "$AGENT"
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory list --project "$PROJECT"
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory list --type "$TYPE"
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory list --agent "$AGENT"
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory list --project "$PROJECT"
 ```
 
 ### Import
@@ -54,7 +54,7 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory li
 Import existing markdown memories from the Great Minds project:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory import
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory import
 ```
 
 This parses:
@@ -69,7 +69,7 @@ This parses:
 Export all memories back to markdown for compatibility:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory export
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory export
 ```
 
 ### Stats
@@ -77,7 +77,7 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory ex
 Show memory store statistics:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory stats
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory stats
 ```
 
 ## Maintenance
@@ -87,8 +87,8 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory st
 Remove duplicate memories (cosine similarity > 0.92) and low-value entries (e.g., "all green" board reviews, "PASS" QA findings):
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory prune
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory prune --threshold 0.85
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory prune
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory prune --threshold 0.85
 ```
 
 ### Consolidate
@@ -96,8 +96,8 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory pr
 Find clusters of similar memories (similarity > 0.75) and merge them into single stronger entries:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory consolidate
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory consolidate --threshold 0.80
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory consolidate
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory consolidate --threshold 0.80
 ```
 
 ### Optimize
@@ -105,8 +105,8 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory co
 Score all memories by recency, uniqueness, and richness. Remove the bottom 10% by score:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory optimize
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory optimize --percentile 20
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory optimize
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory optimize --percentile 20
 ```
 
 ### Maintain
@@ -114,7 +114,7 @@ cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory op
 Run the full maintenance cycle (prune + consolidate + optimize) in sequence. This is what the dream cron calls automatically:
 
 ```bash
-cd "/Users/sethshoultes/Local Sites/great-minds/memory-store" && ./bin/memory maintain
+cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/memory-store" && ./bin/memory maintain
 ```
 
 ## Environment

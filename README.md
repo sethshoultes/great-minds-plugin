@@ -12,7 +12,7 @@ npx plugins add sethshoultes/great-minds-plugin
 
 ## What You Get
 
-### 14 Agent Personas
+### 14 Agent Personas + 2 Internal Consolidation Functions
 
 | Agent | Role |
 |-------|------|
@@ -30,6 +30,10 @@ npx plugins add sethshoultes/great-minds-plugin
 | `aaron-sorkin-screenwriter` | Screenwriter — video scripts, demos, tutorials, launch videos |
 | `sara-blakely-growth` | Growth Strategy — scrappy, customer-first, grassroots |
 | `marcus-aurelius-mod` | Moderator — Stoic orchestration, conflict mediation |
+
+The daemon pipeline also uses 2 internal consolidation functions (not standalone agents):
+- `philJacksonConsolidation` — Merges debate decisions into a single blueprint after Round 2
+- `boardConsolidation` — Consolidates all 4 board member reviews into a unified verdict
 
 ### 17 Skills (Slash Commands)
 
@@ -112,7 +116,7 @@ The daemon includes production-grade resilience features:
 
 - **Telegram Notifications** — Real-time alerts for pipeline starts, completions, failures, and hung agents. Requires `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` environment variables.
 - **Crash Recovery** — Failed pipeline phases retry up to 2 times with exponential backoff. If all retries fail, the PRD is archived to `prds/failed/` so it does not block the queue.
-- **Hung Agent Detection** — Individual agents timeout after 10 minutes (`AGENT_TIMEOUT_MS`). The entire pipeline timeout is 60 minutes (`PIPELINE_TIMEOUT_MS`). Hung agents are killed and the phase is retried or skipped.
+- **Hung Agent Detection** — Individual agents timeout after 20 minutes (`AGENT_TIMEOUT_MS`). The entire pipeline timeout is 60 minutes (`PIPELINE_TIMEOUT_MS`). Hung agents are killed and the phase is retried or skipped.
 
 #### Telegram Setup
 

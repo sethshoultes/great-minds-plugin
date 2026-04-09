@@ -95,9 +95,9 @@ Output: QA report with SHIP / FIX FIRST / BLOCK recommendation
 
 | Project | Location | Live URL | Platform |
 |---------|----------|----------|----------|
-| LocalGenius (app) | /Users/sethshoultes/Local Sites/localgenius/ | localgenius.company | Vercel + Neon |
-| LocalGenius Sites | /Users/sethshoultes/Local Sites/localgenius-sites/ | localgenius-sites.pages.dev | Cloudflare Pages |
-| Great Minds (agency) | /Users/sethshoultes/Local Sites/great-minds/ | github.com/sethshoultes/great-minds | GitHub |
+| LocalGenius (app) | ${PIPELINE_REPO}/../localgenius/ | localgenius.company | Vercel + Neon |
+| LocalGenius Sites | ${PIPELINE_REPO}/../localgenius-sites/ | localgenius-sites.pages.dev | Cloudflare Pages |
+| Great Minds (agency) | ${PIPELINE_REPO}/ | github.com/sethshoultes/great-minds | GitHub |
 
 ## Hybrid AI Architecture
 
