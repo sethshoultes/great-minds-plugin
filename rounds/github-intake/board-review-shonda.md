@@ -1,150 +1,247 @@
-# Board Review: Intake
+# Board Review: Intake (github-intake)
 ## Shonda Rhimes — Narrative & Retention
+
+**Review Date:** April 9, 2026
+**Status:** Re-evaluation post-merge
+
+---
+
+## Executive Summary
+
+I reviewed Intake when it was in feature branch. Now it's merged to main, and my previous review stands: **the story arc is broken because v1 shipped without the GitHub comment**.
+
+The product still delivers Act 1 and Act 2 but cuts to black before Act 3. The user files an issue, Intake converts it to a PRD, the pipeline processes it — and then silence. No closure. No "Shipped. See PR #47." The emotional payoff that makes this product worth using doesn't exist in the shipped code.
 
 ---
 
 ## Story Arc Analysis
 
-**The Setup (Act 1):** The demo script nails this. A notification at 2:47 AM. A buried issue. Nine days of organizational purgatory. This is a pain every developer knows in their bones — the slow death of good intentions in the backlog.
+### Act 1: The Setup (Strong)
+The pain point is real and visceral. The demo script captures it perfectly:
 
-**The Turn (Act 2):** "Watch." One word. Then four seconds of silence while the system breathes in an issue and exhales a PRD. The demo script understands pacing. The heavy weight of broken systems... then effortlessness.
+> "Nine days. That's the average. Nine days from 'someone should fix this' to someone actually fixing it."
 
-**The Resolution (Act 3):** "Shipped. See PR #47." Issue closed. Developer sips coffee, smiles, keeps walking.
+Every developer knows this death spiral. Issues filed at 2 AM, buried by morning standups, lost to backlog purgatory. The setup creates genuine emotional resonance.
 
-**The Problem:** This story arc exists in the demo script. It does NOT exist in the v1 product.
+### Act 2: The Turn (Functional)
+The mechanics work. `pollGitHubIssuesWithLabels()` fetches p0/p1 issues across repos. `convertIssueToPRD()` transforms issue → structured markdown. `processIntake()` orchestrates the pipeline. State management prevents duplicates via `.github-intake-state.json`.
 
-V1 cuts the resolution. No comment. No closure. No "Shipped. See PR #47." The user files an issue, it becomes a PRD, and then... silence. They have to go hunting to see if anything happened. That's not a story — it's a cliffhanger with no next episode scheduled.
+The code is clean. Promise.all() for parallel polling. Proper error handling for auth failures. Sanitized repo slugs for safe filenames. This is competent engineering.
 
-**Verdict:** The narrative is beautiful on paper. The shipped product is missing its final act.
+But competent engineering isn't a story. It's infrastructure.
 
----
+### Act 3: The Resolution (MISSING)
 
-## Retention Hooks
+From `health.ts` lines 202-230 — the entire PRD conversion:
 
-What brings users back?
+```typescript
+writeFileSync(filepath, prdContent);
+log(`INTAKE: Created PRD ${filename}`);
+return filename;
+```
 
-| Timeframe | Hook | Status in v1 |
-|-----------|------|--------------|
-| **Tomorrow** | Check if my issue shipped | MISSING - no notification, manual hunting required |
-| **Next week** | File another issue, trust it'll ship | WEAK - trust requires proof, v1 offers none |
-| **Next month** | Habit: issues = automatic progress | ASPIRATIONAL - depends on v1.1 shipping the feedback loop |
+That's it. Write file. Log. Done.
 
-**The Retention Gap:** Television works because you see the story unfold. You know your investment paid off. Intake v1 asks users to file issues into a void and trust the void. That's not retention — that's faith-based user acquisition.
+No GitHub comment. No "Shipped. See PR #47." No closure.
 
-The state file (`.github-intake-state.json`) tracks what's been processed, but users can't see it. The pipeline runs, but users don't know it. The code might ship, but the original issue sits there, open, taunting them.
+The user experience:
+1. File issue → hope
+2. ... silence ...
+3. ... more silence ...
+4. Maybe manually check the repo weeks later?
+5. ???
 
-**What's missing:** The dopamine hit. The closure. The "Previously on Intake..." moment that hooks you for the next episode.
-
----
-
-## Content Flywheel
-
-Is there a content strategy that compounds?
-
-**Current State: No.**
-
-The PRD mentions zero external-facing content. Elon notes "AI converts GitHub issues to shipped code" is demo-worthy but then dismisses it as "plumbing." Steve says the system "doesn't announce itself."
-
-**The Missed Opportunity:**
-
-Every shipped issue is a story. Every "Shipped. See PR #47" is a tweet. Every before/after (issue → merged code) is a case study. The system generates content by existing — it just doesn't capture or surface it.
-
-**Flywheel Potential:**
-1. Issue filed → PRD created → Code shipped → Comment posted
-2. Comment includes: time elapsed, lines changed, tests passed
-3. Users screenshot "filed at 2 PM, shipped at 9 PM" — viral social proof
-4. Others file issues to see if it's real → more shipped issues → more screenshots
-5. Repeat
-
-This flywheel requires exactly one thing v1 doesn't have: the comment. The visible proof. The shareable artifact.
+**This is not a story. This is a prayer.**
 
 ---
 
-## Emotional Cliffhangers
+## Retention Hooks: The Void
 
-What makes users curious about what's next?
+| Timeframe | What Brings Them Back | Current State |
+|-----------|----------------------|---------------|
+| **Same day** | Confirmation issue was seen | MISSING |
+| **Tomorrow** | Update that work is in progress | MISSING |
+| **Next week** | Notification it shipped | MISSING |
+| **Next month** | Pattern of delivered value | IMPOSSIBLE without above |
 
-**Grey's Anatomy Rule:** Every episode ends with a question, not an answer. "Will they survive?" "Will they reconcile?" "What happens now?"
+### The Dopamine Desert
 
-**Intake v1 Cliffhangers:**
-- "Did my issue get picked up?" (Unanswered — no visibility)
-- "Is it being worked on?" (Unanswered — pipeline is invisible)
-- "Did it ship?" (Unanswered — no notification)
+Television retention works on a simple principle: investment → payoff → reinvestment. You watch Episode 1, you see the resolution, you're hooked for Episode 2.
 
-These aren't compelling cliffhangers. They're anxiety-inducing uncertainty. Good cliffhangers make you eager for the next episode. These make you wonder if the show got cancelled mid-season.
+Intake v1 asks for investment (file an issue) but delivers no visible payoff. The pipeline runs invisibly. The code might ship invisibly. The issue sits there, open, mocking you.
 
-**What Would Work:**
-- "Issue #47 is in the build queue. 2 ahead of it." → Curiosity: when will mine start?
-- "Issue #47 is being processed. Tests running." → Curiosity: will it pass?
-- "Issue #47: tests passed. Deploying now." → Curiosity: will it go live?
-- "Shipped. See PR #47." → Satisfaction + curiosity: what should I file next?
+Users don't return to products that feel like voids. They return to products that acknowledge them, reward them, close loops.
 
-This is progressive disclosure of progress. Each update is a mini-cliffhanger that resolves into the next one. V1 has none of this.
+**Current retention model:** Faith-based user acquisition. "Trust us, it works." That's not a retention hook — that's a religion.
 
 ---
 
-## The Essence Problem
+## Content Flywheel: Non-Existent
 
-The essence document says: *"Trust. If one issue gets dropped, the magic dies."*
+### What Should Exist
 
-This is the right instinct. But trust requires verification. You can't trust what you can't see.
+Every shipped issue is a potential story:
+- "Filed at 2:47 PM, shipped at 9:15 PM"
+- "23 issues auto-shipped this month, zero human intervention"
+- "From GitHub issue to production in 4 hours"
 
-V1's "invisible until it ships" philosophy works for electricity because you flip a switch and the light comes on. Immediate feedback. Intake v1 is more like mailing a letter and hoping it arrives — no tracking number, no delivery confirmation, just faith.
+These are tweets. Case studies. Social proof that compounds.
 
-**The fix isn't a dashboard.** Steve's right that dashboards are attention fragmentation. The fix is the thing they already designed and then cut: the GitHub comment. One sentence. Posted to the place you already look. "Shipped. See PR #47." That's not a feature — that's the emotional payoff of the entire product.
+### What Actually Exists
+
+Nothing user-facing. The state file tracks converted issues, but users can't see it. Logs capture pipeline activity, but users don't read daemon logs. The system generates zero shareable artifacts.
+
+### The Missed Flywheel
+
+```
+Issue filed
+    → PRD created (invisible)
+    → Code shipped (invisible)
+    → Comment posted (MISSING)
+    → User screenshots "Shipped. See PR #47"
+    → User shares on Twitter/LinkedIn
+    → Others file issues to test it
+    → More shipped issues
+    → More screenshots
+    → Repeat
+```
+
+The entire flywheel depends on exactly one thing: the comment. Without it, there's nothing to screenshot, nothing to share, nothing to prove the system works.
+
+---
+
+## Emotional Cliffhangers: Anxiety, Not Anticipation
+
+### Good Cliffhangers (What Great Shows Do)
+
+Grey's Anatomy ends episodes with questions that pull you forward:
+- "Will the surgery succeed?"
+- "Will they reconcile?"
+- "What's the test result?"
+
+You can't stop watching because you *need* to know.
+
+### Intake's Cliffhangers (What v1 Actually Delivers)
+
+- "Did my issue get picked up?" (No way to know)
+- "Is it being worked on?" (Pipeline is invisible)
+- "Did it ship?" (No notification)
+- "Should I check the repo manually?" (Friction)
+- "Is this thing even on?" (Trust erosion)
+
+These aren't cliffhangers — they're abandonment anxiety. Good cliffhangers make you eager for the next episode. These make you wonder if the show was cancelled.
+
+### What Progressive Disclosure Would Look Like
+
+```
+→ "Issue #47 received. Queued for processing."
+→ "Issue #47: PRD generated. Pipeline starting."
+→ "Issue #47: Tests running..."
+→ "Issue #47: Tests passed. Deploying."
+→ "Shipped. See PR #47."
+```
+
+Each update is a mini-cliffhanger that resolves into the next. The user stays engaged because they're following a story with forward momentum.
+
+V1 has none of this. Not even the final beat.
+
+---
+
+## The Essence Contradiction
+
+The essence document nails the aspiration:
+
+> **The feeling it should evoke:** Relief. The weight of follow-up lifted.
+>
+> **The one thing that must be perfect:** Trust. If one issue gets dropped, the magic dies.
+
+But v1 contradicts both:
+
+- **Relief?** Users feel anxiety, not relief. They don't know if their issue shipped.
+- **Trust?** Trust requires verification. "Invisible until it ships" works for electricity (flip switch → light on). It fails for async processes with no feedback.
+
+The creative direction says "Invisible until it ships." But v1 is "Invisible even after it ships." That's not minimalism — that's negligence.
 
 ---
 
 ## What I'd Green-light vs. Send Back
 
-**GREEN-LIGHT:**
-- The name "Intake" — perfect
-- The demo script — emotionally resonant, properly paced
-- The essence — "relief" as the core emotion is exactly right
-- The "no Slack, no email, no dashboard" philosophy — focused
-- Parallel polling, JSON state file, minimal label filtering — pragmatic
+### GREEN-LIGHT (Solid Foundation)
+- **The name "Intake"** — single word, verb-like, exactly right
+- **The demo script** — emotionally perfect, proper pacing, hits the pain point
+- **The essence** — "relief" as core emotion is the right target
+- **Technical execution** — parallel polling, state management, clean code
+- **Minimalist philosophy** — no dashboards, no email spam, focused
+- **Label filtering** — p0/p1 only, no label theater
 
-**SEND BACK:**
-- Shipping v1 without the GitHub comment is a narrative failure
-- The comment is not "polish" — it's the resolution of the story
-- Without it, you're asking users to write the final act themselves
-- That's not "invisible until it ships" — it's "invisible even after it ships"
+### SEND BACK (Incomplete Story)
+- **No GitHub comment** — the entire product experience is missing
+- **No status visibility** — users operate blind
+- **No proof of value** — nothing to screenshot, share, or verify
+- **Shipped incomplete** — feature was merged without the critical path
 
 ---
 
-## The Showrunner's Note
+## The Showrunner's Verdict
 
-Elon and Steve debated architecture vs. elegance for two rounds. They agreed on almost everything except the comment, and then they cut it to ship faster.
+Let me be direct: **Intake v1 shipped the prologue and called it a pilot.**
 
-Here's what they missed: **The comment is not a feature. The comment is the product.**
+The demo script promises a specific moment:
 
-Everything else — polling, filtering, PRD generation, state tracking — is infrastructure. The user never sees any of it. The only moment the user experiences is that five-word comment on their issue. That's the entire show. That's where trust is built or broken.
+> **[SCREEN: Close-up on the comment. Three words: "Shipped. See PR #47." The issue status flips from "Open" to "Closed.]**
 
-You don't ship a TV pilot without the ending. You don't launch a prestige drama with "to be continued" on episode one. V1 needs closure, or V1 is just a demo of potential that never pays off.
+That moment doesn't exist in the shipped code. The demo script is aspirational fiction.
+
+Every time we demo this product, we're showing what it *could* do, not what it *does*. That's not a product launch — that's a spec sheet.
+
+### The Comment Is Not Optional
+
+I've said it before, I'll say it again: **The comment is not a feature. The comment is the product.**
+
+Everything else — polling, filtering, PRD generation, state tracking — is plumbing. The user never experiences any of it. The only moment the user touches is that five-word comment on their issue.
+
+That's the entire show. That's where trust is built or broken. And we shipped without it.
 
 ---
 
 ## Score: 6/10
 
-**Justification:** Exceptional narrative design undercut by shipping the setup without the payoff — like a Grey's pilot that fades to black before the surgery ends.
+**Justification:** Exceptional narrative architecture and solid technical execution undercut by shipping the setup without the payoff — a Grey's pilot that fades to black before the surgery concludes.
 
 ---
 
-## Recommendation
+## Conditions for Score Improvement
 
-Do not ship v1 without the GitHub comment. Expand scope by 200 lines if necessary. The "Shipped. See PR #47" moment is not v1.1 — it's the minimum viable story. Everything else is prologue.
+| Target | Required | Estimated Effort |
+|--------|----------|------------------|
+| **7/10** | GitHub comment on completion | ~100 LOC |
+| **8/10** | Above + progress comments during pipeline | ~200 LOC |
+| **9/10** | Above + failure comments with context | ~150 LOC |
+| **10/10** | Above + usage telemetry for flywheel analytics | ~300 LOC |
 
-If timeline is truly immovable: ship v1 as an internal-only beta, clearly labeled "feedback loop coming." Do not market it. Do not demo it externally. A product that promises closure and delivers silence will burn trust faster than no product at all.
+---
+
+## Final Recommendation
+
+**Do not demo externally.** Do not market this version. Do not position it as shipped.
+
+V1 is an internal beta at best. It proves the concept works. It does not deliver the user experience promised.
+
+Priority one: Add the GitHub comment. One sentence: "Shipped. See PR #{number}." Post it via `gh issue comment`. Close the issue via `gh issue close`.
+
+That's not v1.1. That's v1 complete.
+
+Until then, Intake is infrastructure wearing product clothing. The bones are there. The soul is missing.
 
 ---
 
 *"Everybody wants a happy ending, right? But it doesn't always roll that way."*
 — Olivia Pope, Scandal
 
-The good news: you control this ending. Ship the comment.
+*The good news: you control this ending. Ship the comment.*
 
 ---
 
 **Reviewed by:** Shonda Rhimes
-**Role:** Board Member, Great Minds Agency
-**Date:** Board Review Cycle
+**Role:** Board Member, Great Minds Agency (Narrative & Retention)
+**Lens:** Does the product tell a story from signup to "aha moment"?

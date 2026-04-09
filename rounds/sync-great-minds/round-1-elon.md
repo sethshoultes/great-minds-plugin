@@ -1,73 +1,73 @@
 # Round 1: Elon Musk — Chief Product & Growth Officer
 
-## The Blunt Assessment
+## The Verdict: This Isn't a Product. It's a One-Time Script.
 
-This isn't a PRD. It's a deployment checklist disguised as product requirements. Let's be clear about what we're actually doing.
-
-## Architecture: What's the Simplest System That Could Work?
-
-**Current state:** Manual file copying between repos. This is cargo cult engineering.
-
-**First principles:** You have ONE source of truth (great-minds-plugin). You want N consumers (great-minds, shipyard-ai, others). This is a solved problem called "git submodules" or "npm packages."
-
-**Simplest solution:** Publish the daemon as an npm package. One command: `npm update @great-minds/daemon`. Done. Everything else is manual labor that will drift again in 30 days.
-
-**What you're proposing:** cp commands + prayer. It will work today. It will be stale next month. You'll write another PRD.
-
-## Performance: Where Are the Bottlenecks?
-
-There are none. This is a sync operation. The performance ceiling is your filesystem and network speed. You're copying 6 files and running npm install. This takes <10 seconds.
-
-Stop optimizing things that don't need optimizing.
-
-## Distribution: How Does This Reach 10,000 Users?
-
-**It doesn't.** This is internal tooling sync. It has zero distribution surface.
-
-If you're asking about the daemon itself reaching 10k users: publish it properly, write docs, make installation one command. Nobody will clone your monorepo to use your daemon.
-
-## What to CUT
-
-**v2 features masquerading as v1:**
-- "Update Great Minds CLAUDE.md" — This is documentation debt, not sync. Split it.
-- "Add the Emdash CMS Reference section" — What does CMS have to do with daemon sync? Scope creep.
-
-**Actual v1:**
-- Copy 6 daemon files
-- Run npm install
-- Commit
-
-That's it. Three operations. Everything else is feature creep.
-
-## Technical Feasibility: Can One Agent Session Build This?
-
-Yes, trivially. This is 5 minutes of work for a human. An agent session can:
-1. Copy files (6 operations)
-2. Run npm install (1 command)
-3. Git add, commit, push (3 commands)
-
-Total: ~10 shell commands. Any session can handle this.
-
-**But that's the wrong question.** The right question: why are you using an AI agent to run cp commands? This should be a shell script.
-
-## Scaling: What Breaks at 100x?
-
-Nothing breaks at 100x because this doesn't scale. It's a point-in-time sync. You'll do this again manually next time.
-
-**What actually breaks:** Your process. Every time you update the plugin daemon, you'll forget to sync. You'll have version drift. You'll debug issues that are already fixed upstream.
-
-## The Real Problem
-
-You're treating a systemic problem (version drift across repos) with a symptomatic fix (manual sync PRD).
-
-**Fix the system:**
-1. Extract daemon to its own repo
-2. Publish as npm package
-3. All consumers install from npm
-4. Updates propagate automatically
-
-**Or accept the chaos:** Keep copying files. Write this PRD every quarter. Your call.
+Let me be blunt: this PRD describes a **file copy operation**, not a feature. There's no architecture here because there shouldn't be any architecture. You're copying 8 files between two directories and running `npm install`.
 
 ---
 
-*"The best process is no process. The best sync is no sync. Design systems that don't drift."*
+## Architecture: Simplest System That Works
+
+**Current PRD:** Manual file sync with documentation.
+
+**Actual simplest solution:** A 15-line bash script:
+
+```bash
+#!/bin/bash
+cp daemon/src/*.ts /home/agent/great-minds/daemon/src/
+cp daemon/package.json /home/agent/great-minds/daemon/
+cp BANNED-PATTERNS.md DO-NOT-REPEAT.md /home/agent/great-minds/
+cd /home/agent/great-minds/daemon && npm install
+git add -A && git commit -m "Sync from plugin" && git push
+```
+
+Done. No "requirements document" needed for file copies.
+
+---
+
+## What to CUT (v2 Masquerading as v1)
+
+**Cut everything except the script.** This is scope creep disguised as specification:
+- "Update Great Minds CLAUDE.md" — vague. What specifically? Manual merge? That's a human decision, not a sync task.
+- "Add the Emdash CMS Reference section" — copy what exactly? From where? This is underspecified hand-waving.
+
+---
+
+## Performance & Scaling: Non-Issues
+
+There's no performance question here. You're copying <10 files. At 100x usage, you're still copying <10 files. This doesn't scale because it doesn't need to scale.
+
+**Real question:** Why do you have two repos with duplicate code? That's the actual problem. Fix the architecture, not the sync.
+
+---
+
+## Distribution: N/A
+
+This is internal tooling. There are no users. There's no growth. This question doesn't apply.
+
+---
+
+## Technical Feasibility
+
+**Can one agent session build this?** Yes. In about 90 seconds. This is trivially simple.
+
+The real risk: the CLAUDE.md merge is underspecified. "Same as what's in shipyard-ai's CLAUDE.md" — does that file even exist? Has anyone verified the merge won't break anything? That's the only part that needs human judgment.
+
+---
+
+## First-Principles Assessment
+
+**Root cause:** You're maintaining two copies of the same code. This will happen again.
+
+**Actual fix:** Either:
+1. Make great-minds-plugin a git submodule of great-minds, or
+2. Publish the daemon as an npm package and install it in both, or
+3. Delete one repo
+
+A sync script treats the symptom. Architectural debt remains.
+
+---
+
+## Final Call
+
+**Ship the script.** Takes 5 minutes. But schedule the architectural conversation — you'll be writing this sync PRD again in 3 months otherwise.

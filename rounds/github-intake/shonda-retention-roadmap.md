@@ -1,269 +1,304 @@
-# Retention Roadmap: What Keeps Users Coming Back
-
-**Author:** Shonda Rhimes (Narrative & Retention)
-**Project:** GitHub Intake
-**Focus:** V1.1 Features for Habit Formation
-
----
-
-## The Retention Problem
-
-V1 asks users to file issues into a void. There's no confirmation, no progress, no resolution. That's not a product — that's a prayer.
-
-**Retention requires three things:**
-1. Proof the system works (first use)
-2. Reason to return (tomorrow)
-3. Habit formation (next month)
-
----
-
+# Shonda Retention Roadmap: Intake v1.1
 ## What Keeps Users Coming Back
 
-### The Retention Loop
-
-```
-File Issue → See Progress → Witness Shipment → Feel Relief → File Next Issue
-     ↑                                                              ↓
-     └──────────────────── HABIT FORMED ───────────────────────────┘
-```
-
-**V1 breaks this loop.** There's no "See Progress" and no "Witness Shipment." Users file, then wonder. Wondering is not a retention strategy.
+**Author:** Shonda Rhimes (Narrative & Retention)
+**Date:** April 9, 2026
+**Focus:** Transforming infrastructure into an emotionally engaging product
 
 ---
 
-## V1.1 Feature: The Feedback Loop
+## The Core Problem
 
-### Feature 1: Issue Acknowledgment
+Intake v1 asks users to invest (file an issue) but delivers no visible payoff. Users operate in a "dopamine desert" — no confirmation, no progress, no closure. This is faith-based user acquisition, not product design.
 
-**When:** Immediately after intake converts an issue to PRD
+**The fix:** Create a narrative arc with clear beats that pull users forward.
 
-**What:** GitHub comment on the original issue:
+---
+
+## Retention Philosophy
+
+### Television Retention Model
+Shows retain viewers through: **Investment -> Payoff -> Reinvestment**
+
+1. You watch Episode 1 (investment)
+2. You see the resolution (payoff)
+3. You're hooked for Episode 2 (reinvestment)
+
+### Intake Retention Model (Target)
+1. User files issue (investment)
+2. User sees "Shipped. See PR #47" (payoff)
+3. User files next issue with confidence (reinvestment)
+
+---
+
+## V1.1 Features: The Minimum Viable Story
+
+### Feature 1: Completion Comment (CRITICAL)
+
+**The One Feature That Makes This a Product**
 
 ```
-Intake has received this issue and created a development spec.
-
-Queue position: 3 of 5
-Estimated start: ~45 minutes
-
-You'll receive updates as work progresses.
+When pipeline completes successfully:
+  -> Post comment: "Shipped. See PR #{number}"
+  -> Close the issue
 ```
 
-**Why it retains:**
-- Immediate confirmation (dopamine hit)
-- Transparency (trust building)
-- Anticipation (cliffhanger: "when will mine start?")
-
-### Feature 2: Progress Updates
-
-**When:** At each pipeline stage transition
-
-**What:** Edited or new comment with status:
-
-```
-Status Update: In Progress
-
-- [x] Issue received
-- [x] Spec created
-- [x] Build started
-- [ ] Tests running
-- [ ] QA review
-- [ ] Shipped
-
-Current step: Building implementation...
+**Implementation:**
+```bash
+gh issue comment {issue_number} --body "Shipped. See PR #{pr_number}."
+gh issue close {issue_number}
 ```
 
-**Why it retains:**
-- Progress visibility (investment payoff)
-- Suspense (will tests pass?)
-- Engagement (users check back to see updates)
+**Why This Matters:**
+- It's the only moment users actually experience
+- It's shareable (screenshots, tweets, proof)
+- It builds trust through verification
+- It closes the narrative loop
 
-### Feature 3: Ship Notification
+**Estimated Effort:** ~100 LOC
+**Priority:** NON-NEGOTIABLE
 
-**When:** PR merged or code deployed
+---
 
-**What:** Final comment with proof:
+### Feature 2: Receipt Comment (HIGH PRIORITY)
+
+**Acknowledge the Investment Immediately**
 
 ```
-Shipped. See PR #47.
-
-Time from issue to ship: 2h 14m
-Lines changed: 147
-Tests passed: 23/23
-
-Your issue is now live. Thank you for contributing.
+When issue is converted to PRD:
+  -> Post comment: "Received. Queued for processing."
 ```
 
-**Why it retains:**
-- Closure (emotional payoff)
-- Proof (shareable artifact)
-- Invitation ("Thank you" implies "do it again")
+**Why This Matters:**
+- Eliminates "did anyone see this?" anxiety
+- Creates first emotional beat in the story
+- Low effort, high psychological impact
+
+**Estimated Effort:** ~30 LOC
+**Priority:** HIGH
 
 ---
 
-## The Emotional Arc (V1.1 Complete)
+### Feature 3: Failure Comment (HIGH PRIORITY)
 
-| Stage | User Emotion | Trigger |
-|-------|--------------|---------|
-| **Filing** | Hope | User submits issue |
-| **Acknowledgment** | Relief | "Intake has received this" |
-| **Queue** | Anticipation | "Queue position: 3 of 5" |
-| **Building** | Investment | "Build started" |
-| **Testing** | Suspense | "Tests running..." |
-| **QA** | Tension | "QA review" |
-| **Ship** | Satisfaction | "Shipped. See PR #47" |
-| **Invitation** | Motivation | "Thank you for contributing" |
-
-This is a complete story arc. Beginning, middle, end. Setup, confrontation, resolution.
-
----
-
-## V1.1 Feature: The Content Flywheel
-
-### Feature 4: Ship Stats Summary
-
-**When:** Weekly (if any issues shipped)
-
-**What:** GitHub Discussion or repo wiki update:
-
-```markdown
-## This Week in Intake
-
-Issues shipped: 7
-Average time to ship: 3h 22m
-Total lines of code: 1,247
-Tests passed: 156
-
-Top contributors:
-- @user1: 3 issues shipped
-- @user2: 2 issues shipped
-- @user3: 2 issues shipped
-```
-
-**Why it retains:**
-- Recognition (social proof)
-- Competition (gamification)
-- Shareable (viral potential)
-
-### Feature 5: Personal Ship History
-
-**When:** On demand (via special issue comment or command)
-
-**What:** Summary of user's shipped issues:
+**Don't Let Users Wonder Why Things Went Silent**
 
 ```
-Your Intake History:
-
-Total issues shipped: 12
-Success rate: 92%
-Average ship time: 4h 15m
-Most recent: #147 "Add dark mode toggle" (2 days ago)
-
-Keep them coming!
+When pipeline fails:
+  -> Post comment: "Unable to complete. [Reason]. Issue remains open for manual review."
 ```
 
-**Why it retains:**
-- Ownership (personal investment)
-- Progress tracking (streak psychology)
-- Identity ("I'm someone who ships through Intake")
+**Failure Scenarios to Handle:**
+- Tests failed (provide test output summary)
+- Build failed (provide error context)
+- QA rejected (explain why)
+- Timeout (pipeline exceeded time limit)
+
+**Why This Matters:**
+- Silence after failure is worse than reported failure
+- Users can take action if they know what happened
+- Maintains trust even when things break
+
+**Estimated Effort:** ~150 LOC
+**Priority:** HIGH
 
 ---
 
-## Retention Metrics to Track
+## V1.1 Retention Hooks
 
-| Metric | Target | Indicates |
-|--------|--------|-----------|
-| **Return rate** | >60% file second issue within 7 days | First use convinced them |
-| **Ship-to-file ratio** | <2 days between ship and next issue | Habit forming |
-| **Comment engagement** | >20% click through to PR | Users care about outcome |
-| **Share rate** | >5% screenshot/share ship notification | Product-led growth |
-
----
-
-## The Psychology of Retention
-
-### Why "Shipped. See PR #47" Works
-
-1. **Completion effect:** Open loops cause cognitive dissonance. Closing them provides relief.
-
-2. **Concrete proof:** Abstract "it worked" is weak. Link to specific PR is strong.
-
-3. **Social currency:** "I filed an issue and it shipped in 2 hours" is a story people tell.
-
-4. **Reciprocity:** System delivered value. User wants to reciprocate with more issues.
-
-### Why Status Updates Work
-
-1. **Endowed progress effect:** Showing partial completion increases motivation to see it finish.
-
-2. **Variable reward:** "Will tests pass?" is more engaging than "it's processing."
-
-3. **Investment escalation:** Each update increases user's psychological investment.
+| Timeframe | Hook | V1.0 | V1.1 |
+|-----------|------|------|------|
+| **Immediate** | "Issue received" confirmation | MISSING | Receipt comment |
+| **Hours** | Progress visibility | MISSING | Future (v1.2) |
+| **Same day** | Completion notification | MISSING | Completion comment |
+| **On failure** | Failure explanation | MISSING | Failure comment |
+| **Next week** | Pattern of delivered value | IMPOSSIBLE | Enabled by above |
 
 ---
 
-## V1.1 Implementation Priority
+## The Content Flywheel
 
-### Must Have (Week 1)
-1. Ship notification comment ("Shipped. See PR #47")
-2. Basic stats (time to ship, lines changed)
+### How Retention Creates Growth
 
-### Should Have (Week 2)
-3. Issue acknowledgment ("Intake has received this")
-4. Queue position indicator
+```
+Issue filed
+    |
+    v
+Receipt comment posted ("Received. Queued.")
+    |
+    v
+Pipeline runs (invisible but acknowledged)
+    |
+    v
+Completion comment posted ("Shipped. See PR #47")
+    |
+    v
+User screenshots the comment
+    |
+    v
+User shares on Twitter/LinkedIn/Discord
+    |
+    v
+Others see proof the system works
+    |
+    v
+Others file issues to test it
+    |
+    v
+More shipped issues
+    |
+    v
+More screenshots
+    |
+    v
+Repeat
+```
 
-### Nice to Have (Week 3-4)
-5. Progress updates (stage-by-stage)
-6. Weekly summary
-
-### Future (V1.2+)
-7. Personal ship history
-8. Contributor recognition
-9. Share/export functionality
-
----
-
-## The Shonda Principle
-
-Every episode of a TV series must:
-1. Resolve something from the previous episode (satisfaction)
-2. Open something new for the next episode (anticipation)
-3. Make the viewer feel their time was respected (value)
-
-Every Intake interaction must:
-1. Resolve the previous issue (ship notification)
-2. Invite the next issue (stats, recognition, "keep them coming")
-3. Make the user feel their issue mattered (proof, speed, transparency)
-
----
-
-## Success Criteria for V1.1
-
-V1.1 is successful when:
-
-1. **Every shipped issue has a comment trail** — No silent successes
-2. **Users can share proof** — Screenshot-friendly ship notifications
-3. **Return rate exceeds 50%** — Users file a second issue within 7 days
-4. **Trust is earned** — "I filed it and it shipped" becomes the story
-
----
-
-## The North Star
-
-**V1:** "I think it worked?"
-**V1.1:** "It shipped. I saw it. I'll file another."
-**V2:** "I don't even think about it anymore. I just file issues and they become code."
-
-The goal is not engagement. The goal is trust so deep it becomes invisible. Intake should become like electricity — you flip the switch, the light comes on, you don't think about the power plant.
-
-But first, you have to prove the light comes on. That's V1.1.
+**The flywheel depends entirely on the comment.** Without it:
+- Nothing to screenshot
+- Nothing to share
+- No proof the system works
+- No viral loop
 
 ---
 
-*"Everybody wants a happy ending, right? But it doesn't always roll that way. Unless you build the ending into the product."*
-— Shonda Rhimes
+## V1.2+ Roadmap (Future Retention Features)
+
+### Progressive Status Updates
+```
+-> "Issue #47 received. Queued for processing."
+-> "Issue #47: PRD generated. Pipeline starting."
+-> "Issue #47: Code complete. Tests running..."
+-> "Issue #47: Tests passed. Deploying."
+-> "Shipped. See PR #47."
+```
+
+Each update is a mini-cliffhanger that resolves into the next. Users stay engaged because they're following a story with forward momentum.
+
+**Priority:** MEDIUM (v1.2)
+**Estimated Effort:** ~200 LOC
 
 ---
 
-**Roadmap Owner:** Shonda Rhimes (Narrative & Retention)
-**Implementation:** Engineering Team
-**Review Cycle:** V1.1 Ship + 30 Days
+### Personal Stats Dashboard (Optional)
+```
+Your Intake Stats:
+- Issues filed: 12
+- Auto-shipped: 9
+- Average time to ship: 4.2 hours
+- Longest streak: 5 issues shipped same day
+```
+
+**Priority:** LOW (v1.3+)
+**Why:** Gamification drives return visits, but core loop must work first.
+
+---
+
+### Weekly Digest Email
+```
+This week in your repos:
+- 7 issues auto-shipped
+- 2 issues need clarification
+- 1 issue failed (tests)
+- Highlight: Issue #89 shipped in 47 minutes
+```
+
+**Priority:** LOW (v1.3+)
+**Why:** Re-engagement for users who don't check daily.
+
+---
+
+## Emotional Journey Map
+
+### Current State (V1.0)
+```
+File issue -> ??? -> ??? -> ??? -> Maybe check manually someday?
+Emotion:    Hope   Uncertainty   Anxiety   Abandonment
+```
+
+### Target State (V1.1)
+```
+File issue -> "Received" -> [Pipeline runs] -> "Shipped. See PR #47"
+Emotion:    Hope       Relief            Anticipation    Satisfaction
+```
+
+### Ideal State (V1.2+)
+```
+File issue -> "Received" -> "PRD done" -> "Tests pass" -> "Shipped!"
+Emotion:    Hope       Relief      Progress     Excitement   Triumph
+```
+
+---
+
+## Metrics to Track
+
+### Retention Metrics
+| Metric | Definition | Target |
+|--------|------------|--------|
+| **Return rate** | % of users who file >1 issue | >60% |
+| **Time to second issue** | Days between first and second issue | <7 days |
+| **Completion visibility** | % of shipped issues that get user acknowledgment | 100% |
+| **Share rate** | % of completion comments that get screenshotted/shared | >5% |
+
+### Trust Metrics
+| Metric | Definition | Target |
+|--------|------------|--------|
+| **Issue abandonment** | Issues filed but never checked by user | <20% |
+| **Manual override** | Issues where user intervenes before pipeline completes | <10% |
+| **Repeat failure tolerance** | Users who continue after a failed pipeline | >80% |
+
+---
+
+## Implementation Priority Matrix
+
+| Feature | Effort | Impact | Priority |
+|---------|--------|--------|----------|
+| Completion comment | ~100 LOC | Critical | **V1.1 MUST-HAVE** |
+| Receipt comment | ~30 LOC | High | **V1.1 SHOULD-HAVE** |
+| Failure comment | ~150 LOC | High | **V1.1 SHOULD-HAVE** |
+| Progress updates | ~200 LOC | Medium | V1.2 |
+| Personal stats | ~300 LOC | Low | V1.3+ |
+| Weekly digest | ~400 LOC | Low | V1.3+ |
+
+---
+
+## The Showrunner's Summary
+
+### What Keeps Users Coming Back
+
+1. **Acknowledgment** — "We see you. Your issue matters."
+2. **Progress** — "Things are happening. You're not forgotten."
+3. **Closure** — "Done. Here's the proof."
+4. **Trust** — "We do what we say. Every time."
+
+### V1.1 Minimum Viable Retention
+
+Three features. ~280 lines of code. One complete story arc:
+
+```
+Receipt comment + Completion comment + Failure comment
+= A product that tells a story from start to finish
+```
+
+Without these, Intake is infrastructure.
+With these, Intake is a product that earns loyalty.
+
+---
+
+## Final Words
+
+> "Everybody wants a happy ending, right? But it doesn't always roll that way."
+> — Olivia Pope, Scandal
+
+The good news: **we control this ending.**
+
+V1.1 isn't about adding features. It's about completing the story we started telling. The user filed an issue. They're invested. They're waiting.
+
+Don't leave them on a cliffhanger with no next episode.
+
+**Ship the comment. Close the loop. Earn the return.**
+
+---
+
+*Retention Roadmap by Shonda Rhimes*
+*Board Member, Great Minds Agency (Narrative & Retention)*

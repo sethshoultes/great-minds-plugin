@@ -1,0 +1,10 @@
+
+# Pipeline build artifacts (created by daemon, not plugin source)
+rounds/
+deliverables/
+dreams/
+.planning/
+Sites/
+memory/
+scripts/
+*.db

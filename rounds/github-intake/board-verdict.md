@@ -1,151 +1,147 @@
-# Board Verdict: GitHub Intake
+# Board Verdict: github-intake
 
-**Project:** github-intake (Intake)
-**Reviewers:** Shonda Rhimes (Narrative & Retention), Jensen Huang (Platform & AI Leverage)
-**Consolidated:** Board Review Cycle
+**Date:** April 9, 2026
+**Board Members:** Warren Buffett, Jensen Huang, Shonda Rhimes
+**Overall Verdict:** PROCEED (with conditions)
 
 ---
 
-## Points of Agreement
+## Points of Agreement Across Board Members
 
-Both board members converge on these critical assessments:
+### 1. Technical Execution is Solid
+All three board members acknowledge the code quality:
+- **Buffett:** "Building on existing infrastructure... Simple state management... No new service to deploy"
+- **Jensen:** "The code is solid... Parallel polling with Promise.all()... Graceful degradation"
+- **Shonda:** "Technical execution — parallel polling, state management, clean code"
 
-### 1. The GitHub Comment Is Non-Negotiable
+### 2. The Product is Incomplete Without Feedback Loop
+Universal consensus: the missing GitHub comment is critical.
+- **Buffett:** "Track ROI — Log time-to-resolution before/after; prove the value"
+- **Jensen:** "Status updates to GitHub. Close the loop. Build trust." (v1.2 recommendation)
 - **Shonda:** "The comment is not a feature. The comment is the product."
-- **Jensen:** "Zero feedback to issue reporters... Trust erodes."
-- **Consensus:** Shipping v1 without the feedback loop is a fundamental mistake, not a tradeoff.
 
-### 2. The Foundation Is Solid
-- **Shonda:** Green-lights the name, demo script, essence ("relief" as core emotion), minimalist philosophy
-- **Jensen:** "Solid execution of a minimal-viable-feature that creates the foundation"
-- **Consensus:** The architecture and vision are sound. The execution is incomplete.
+### 3. No Moat / No Defensibility
+All agree there's nothing proprietary:
+- **Buffett:** "A competent developer could replicate this in 2-4 hours"
+- **Jensen:** "Current moat: Zero. Anyone with the gh CLI and a weekend could replicate this"
+- **Shonda:** (Implicitly) — the only differentiation would come from user trust via the feedback loop
 
-### 3. Trust Requires Visibility
-- **Shonda:** "Trust requires verification. You can't trust what you can't see."
-- **Jensen:** "Systems that don't learn die."
-- **Consensus:** Invisible pipelines erode confidence. Users need proof the system works.
+### 4. This is Infrastructure, Not a Product
+- **Buffett:** "This feature has no external user. It's internal automation"
+- **Jensen:** "You built a pipe, not a brain"
+- **Shonda:** "Intake is infrastructure wearing product clothing"
 
-### 4. V1 Is Infrastructure, Not Product
-- **Shonda:** "Everything else is infrastructure. The user never sees any of it."
-- **Jensen:** "This is infrastructure, not platform."
-- **Consensus:** V1 delivers backend plumbing without user-facing value delivery.
+### 5. AI is Underutilized in the Intake Layer
+- **Buffett:** "No issue complexity routing — A typo fix gets the same $5-10 treatment as a major feature"
+- **Jensen:** "Your pipeline is full of AI downstream... But the intake layer? Pure procedural code. No intelligence."
+- **Shonda:** (Implicitly agrees — the system can't even communicate its own status intelligently)
 
 ---
 
 ## Points of Tension
 
-### 1. Scope of AI Leverage
-| Shonda | Jensen |
-|--------|--------|
-| Focused on emotional payoff — "the dopamine hit" | Focused on intelligence accumulation — "compounding moat" |
-| Accepts current conversion as adequate | Calls current conversion "copy-paste, not leverage" |
-| **Fix:** Add the comment | **Fix:** Add AI triage, embeddings, priority inference |
+### 1. Severity of the Missing Comment
+| Member | Position |
+|--------|----------|
+| **Shonda** | Blocker. "Do not demo externally. Do not market this version." V1 is incomplete without it. |
+| **Jensen** | Important but secondary. Lists it as v1.2, after AI pre-triage in v1.1. |
+| **Buffett** | Doesn't mention it directly — focused on unit economics and ROI tracking instead. |
 
-**Resolution:** Both are right at different timeframes. Shonda's fix is v1-critical. Jensen's fixes are v1.1-v2 roadmap.
+**Tension:** Shonda sees the comment as the product itself; Jensen sees it as a feature in the roadmap; Buffett is indifferent to user experience, caring only about cost efficiency.
 
-### 2. Velocity vs. Completeness
-| Shonda | Jensen |
-|--------|--------|
-| "Expand scope by 200 lines if necessary" | "Parallel pipelines should be v1.1, not someday" |
-| Minimum viable = comment only | Minimum viable = comment + telemetry + vector storage |
+### 2. The Pipeline's Value Proposition
+| Member | Position |
+|--------|----------|
+| **Buffett** | Skeptical. "$24-120/hour effective rate for automation" is questionable ROI. "Sledgehammer to drive thumbtacks." |
+| **Jensen** | Optimistic if evolved. "Build the system that makes the next system inevitable." Platform potential. |
+| **Shonda** | Neutral on pipeline, focused on user-facing closure. |
 
-**Resolution:** Shonda's bar is the v1 gate. Jensen's bar is the v1.1 gate.
+**Tension:** Buffett questions whether the entire Great Minds pipeline is worth the cost; Jensen sees it as the foundation for something transformative.
 
-### 3. Product vs. Platform Thinking
-| Shonda | Jensen |
-|--------|--------|
-| Focused on single-user emotional arc | Focused on multi-tenant, API-first platform |
-| Retention = narrative closure | Retention = compounding intelligence |
+### 3. What v1.1 Should Prioritize
+| Member | Priority |
+|--------|----------|
+| **Buffett** | Issue complexity routing (skip full pipeline for trivial issues), webhooks over polling |
+| **Jensen** | AI pre-triage (quality scoring, priority inference, clarification requests) |
+| **Shonda** | GitHub comment on completion — this is the only v1.1 priority |
 
-**Resolution:** Not contradictory. Shonda defines why users stay (story completion). Jensen defines why the business compounds (platform network effects).
+**Tension:** Three different visions for immediate next steps. Shonda wants user-facing closure; Jensen wants AI intelligence; Buffett wants cost efficiency.
 
----
+### 4. Overall Score Disparity
+| Member | Score | Reasoning |
+|--------|-------|-----------|
+| **Buffett** | 4/10 | "Sound infrastructure that feeds an overengineered pipeline with no revenue model, no moat" |
+| **Jensen** | 5/10 | "Solid v1 execution... but leaves 80% of the value on the table" |
+| **Shonda** | 6/10 | "Exceptional narrative architecture... undercut by shipping the setup without the payoff" |
 
-## Overall Verdict
-
-# HOLD
-
-**Not PROCEED:** V1 as currently scoped is missing the minimum viable story. Shipping without the GitHub comment is "a demo of potential that never pays off" (Shonda).
-
-**Not REJECT:** The foundation is strong. Both reviewers see significant potential. Jensen: "The bones are there for 8/10." Shonda: "Exceptional narrative design."
-
----
-
-## Conditions for PROCEED
-
-### Gate 1: V1 Ship (Required for Launch)
-
-| Condition | Owner | Est. Effort |
-|-----------|-------|-------------|
-| **GitHub comment on issue closure** | Dev | 100-200 LOC |
-| Comment format: "Shipped. See PR #{number}" | Dev | Included above |
-| Comment posted via `gh` CLI when pipeline completes | Dev | Included above |
-
-**Shonda's minimum:** "One sentence. Posted to the place you already look."
-
-### Gate 2: V1.1 Ship (Required within 30 days)
-
-| Condition | Owner | Est. Effort |
-|-----------|-------|-------------|
-| Pipeline telemetry (time-to-ship, QA pass rate) | Dev | 200-300 LOC |
-| Status updates during pipeline ("Tests running...") | Dev | 150-200 LOC |
-| Rate limit handling with auto-backoff | Dev | 100 LOC |
-
-### Gate 3: V2 Roadmap (Required in planning)
-
-| Condition | Owner | Est. Effort |
-|-----------|-------|-------------|
-| AI pre-triage (quality scoring, clarification requests) | Dev | 500+ LOC |
-| Vector embeddings for duplicate detection | Dev | 300-400 LOC |
-| Parallel pipeline architecture | Architect | Design doc |
-| Cross-repo intelligence | Architect | Design doc |
+**Tension:** 2-point spread reflects fundamentally different evaluation criteria (ROI vs. potential vs. user experience).
 
 ---
 
-## Risk Mitigation Requirements
+## Overall Verdict: PROCEED
 
-| Risk | Required Mitigation |
-|------|---------------------|
-| Trust erosion from silent failures | Comment MUST post even on partial success ("PR opened, QA pending") |
-| Rate limiting | Implement exponential backoff, not just logging |
-| Pipeline saturation | Document queue behavior; status comments show position |
-| Stale PRDs | Block conversion if issue edited within 5 minutes of processing |
+**Rationale:** Despite significant concerns, all three reviewers acknowledge the foundation is sound. The disagreements are about *direction*, not *viability*. The system works — it just doesn't yet deliver visible value to users or justify its cost structure.
 
 ---
 
-## Final Board Position
+## Conditions for Proceeding
 
-**Shonda (6/10):** "Do not ship v1 without the GitHub comment. If timeline is truly immovable: ship v1 as internal-only beta."
+### Non-Negotiable (Must Have for v1.1)
+1. **GitHub Comment on Completion** (Shonda's critical requirement)
+   - Post "Shipped. See PR #{number}" to the original issue
+   - Close the issue automatically
+   - Estimated effort: ~100 LOC
+   - *This is the product's user experience. Without it, there is no product.*
 
-**Jensen (5/10):** "Solid execution of minimal-viable-feature... but currently captures none of [the compounding] intelligence."
+### Strongly Recommended (v1.1-v1.2)
+2. **Issue Complexity Routing** (Buffett's efficiency concern)
+   - Simple issues (typos, minor bugs) should skip the full 17-agent pipeline
+   - Tiered processing: light pipeline for trivial issues, full pipeline for features
+   - Addresses the "sledgehammer for thumbtacks" problem
 
-**Combined Score: 5.5/10**
+3. **AI Pre-Triage** (Jensen's intelligence layer)
+   - Before converting, Claude evaluates: quality score, priority inference, clarification needs
+   - Low-quality issues get a comment requesting more info instead of becoming garbage PRDs
+   - Addresses the "pipe not brain" criticism
 
-**Board Recommendation:**
+### Monitoring Requirements
+4. **Cost Tracking Per Issue** (Buffett's ROI concern)
+   - Log API costs for each pipeline run
+   - Track time-to-resolution before/after to prove value
+   - If effective rate exceeds $50/hour, re-evaluate the pipeline's overhead
 
-Add the GitHub comment. Ship v1. Immediately begin v1.1 with status updates and telemetry. Do not market externally until comment loop is live and proven.
+### Strategic Considerations (v1.2+)
+5. **Outcome Tracking** (Jensen's moat-building)
+   - Track which issues shipped successfully vs. bounced through QA
+   - Build the intelligence layer that compounds over time
 
-The product narrative is "issues become shipped code, automatically." Without the comment, the narrative is unprovable. With the comment, every successful shipment is a screenshot, a tweet, a case study. The comment is not 200 lines of code. It's the entire proof of value.
+6. **Webhook Migration** (Buffett's efficiency concern)
+   - Replace polling with GitHub webhooks
+   - Instant, free, professional
 
 ---
 
-## Next Steps
+## Board Member Signatures
 
-1. **Immediately:** Add GitHub comment posting to v1 scope
-2. **Before launch:** Test comment posting in real pipeline
-3. **At launch:** Internal beta only, "feedback loop coming" clearly communicated
-4. **Within 30 days:** V1.1 with progressive status updates
-5. **Within 90 days:** V2 planning with AI triage and embeddings
-
----
-
-*"The good news: you control this ending. Ship the comment."*
-— Shonda Rhimes
-
-*"Build the system that makes the next system inevitable."*
-— Jensen Huang
+| Member | Vote | Condition |
+|--------|------|-----------|
+| **Warren Buffett** | PROCEED | With complexity routing and cost tracking |
+| **Jensen Huang** | PROCEED | With AI pre-triage roadmap |
+| **Shonda Rhimes** | PROCEED | GitHub comment is non-negotiable for v1.1 |
 
 ---
 
-**Verdict Issued:** Board Review Cycle
-**Status:** HOLD pending comment implementation
+## Final Note
+
+The board unanimously agrees on one thing: **Intake v1 is a foundation, not a finished product.**
+
+Shonda's framing is the clearest: "Intake v1 shipped the prologue and called it a pilot." The mechanics work. The user experience doesn't exist. The moat is nonexistent. The cost structure is questionable.
+
+But the bones are there. The architecture is sound. The team shipped working code in one session.
+
+**Proceed — but close the loop. The comment is the product.**
+
+---
+
+*Board Verdict Issued: April 9, 2026*
+*Next Review: Post v1.1 ship*
