@@ -9,6 +9,7 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
+| emdash-marketplace (Wardrobe) | 2026-04-09 | [memory/emdash-marketplace-retrospective.md](memory/emdash-marketplace-retrospective.md) | 6/10 |
 | git-intelligence (Hindsight) | 2026-04-09 | [memory/git-intelligence-retrospective.md](memory/git-intelligence-retrospective.md) | 7/10 |
 | github-intake | 2026-04-09 | [memory/github-intake-retrospective.md](memory/github-intake-retrospective.md) | N/A |
 | localgenius-benchmark-engine | 2026-04-09 | [memory/localgenius-benchmark-engine-retrospective.md](memory/localgenius-benchmark-engine-retrospective.md) | N/A |
@@ -26,6 +27,8 @@
 3. **Involve creative reviewers early** — at outline stage, not finished artifacts
 4. **Assign owners to deferrals** — name, date, kill condition for every "v2" item
 5. **Reconcile divergent scores** — 3+ point spread needs explicit resolution
+6. **Discovery is architecture, not marketing** — if users can't find it, it doesn't exist (emdash-marketplace)
+7. **Distinguish MVP from launchable** — MVP proves value; launchable includes discovery/retention (emdash-marketplace)
 
 ### Technical Learnings
 
@@ -63,6 +66,7 @@
 
 ```
 memory/
+  emdash-marketplace-retrospective.md  # Wardrobe — 6/10 process score
   git-intelligence-retrospective.md    # Hindsight — 7/10 process score
   github-intake-retrospective.md       # GitHub intake project
   localgenius-benchmark-engine-retrospective.md
