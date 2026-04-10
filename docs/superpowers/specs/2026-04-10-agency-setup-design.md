@@ -17,7 +17,14 @@ A new Claude Code skill `/agency-setup` that initializes a Great Minds project t
 
 Invoked as a slash command: `/agency-setup`
 
+Supports two modes selected at the start of Phase 2:
+
+- **Quick setup** — Claude asks only for a project name; all other fields use defaults. Generates all files immediately. Good for getting something running fast.
+- **Full setup** — all 8 questions (3 optional). Default mode.
+
 If `.great-minds.json` already exists in the working directory, Claude offers to reconfigure (re-runs Phase 2 with current values as defaults) or cancel.
+
+**Skipping setup entirely:** If the user never runs `/agency-setup`, or abandons it mid-way, the daemon does not crash — it falls back to `config.ts` defaults. A minimal `.great-minds.json` (project name inferred from directory basename, all other fields at defaults) is written only when setup completes or quick mode runs. The daemon treats a missing config as "default config."
 
 ---
 
@@ -116,6 +123,8 @@ Cron entry written (or appended) reflecting the chosen schedule. The `crons/` di
 | Telegram skipped | `botToken` and `chatId` left as empty strings; daemon skips notifications silently |
 | Token budget skipped | Defaults to 50000 |
 | Auto-ship skipped | Defaults to `false` (manual approval) |
+| Setup skipped entirely / `.great-minds.json` absent | Daemon falls back to `config.ts` defaults; no crash |
+| Phase 1 detects nothing (fresh directory) | All Phase 2 questions asked; quick mode still available |
 
 ---
 
