@@ -58,6 +58,10 @@ describe('parseSchedule', () => {
     expect(parseSchedule('*/5 * * * *')).toBe('*/5 * * * *');
   });
 
+  it('returns null for a malformed cron string (wrong field count)', () => {
+    expect(parseSchedule('* * * *')).toBeNull();
+  });
+
   it('returns null for unrecognized input', () => {
     expect(parseSchedule('whenever I feel like it')).toBeNull();
   });
@@ -183,13 +187,27 @@ describe('validateConfig', () => {
     expect(() => validateConfig(c)).toThrow(/pipeline/);
   });
 
-  it('throws if raw is not an object', () => {
-    expect(() => validateConfig(null)).toThrow();
-    expect(() => validateConfig('string')).toThrow();
-    expect(() => validateConfig(42)).toThrow();
+  it('throws if raw is null', () => {
+    expect(() => validateConfig(null)).toThrow(/non-null object|must be/i);
+  });
+
+  it('throws if raw is a string', () => {
+    expect(() => validateConfig('string')).toThrow(/non-null object|must be/i);
+  });
+
+  it('throws if raw is a number', () => {
+    expect(() => validateConfig(42)).toThrow(/non-null object|must be/i);
   });
 
   it('accepts schedule: null (manual-only config)', () => {
     expect(() => validateConfig({ ...valid(), pipeline: { schedule: null, autoShip: false } })).not.toThrow();
+  });
+
+  it('does not validate the version field (any value accepted)', () => {
+    expect(() => validateConfig({ ...valid(), version: 'anything' })).not.toThrow();
+  });
+
+  it('does not validate the createdAt field (any value accepted)', () => {
+    expect(() => validateConfig({ ...valid(), createdAt: 'not-a-date' })).not.toThrow();
   });
 });
