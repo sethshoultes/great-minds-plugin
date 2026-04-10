@@ -62,6 +62,22 @@ describe('parseSchedule', () => {
     expect(parseSchedule('* * * *')).toBeNull();
   });
 
+  it('returns null for out-of-range minutes (0)', () => {
+    expect(parseSchedule('every 0 minutes')).toBeNull();
+  });
+
+  it('returns null for out-of-range minutes (61)', () => {
+    expect(parseSchedule('every 61 minutes')).toBeNull();
+  });
+
+  it('returns null for out-of-range hours (0)', () => {
+    expect(parseSchedule('every 0 hours')).toBeNull();
+  });
+
+  it('returns null for out-of-range hours (25)', () => {
+    expect(parseSchedule('every 25 hours')).toBeNull();
+  });
+
   it('returns null for unrecognized input', () => {
     expect(parseSchedule('whenever I feel like it')).toBeNull();
   });
@@ -184,7 +200,7 @@ describe('validateConfig', () => {
   it('throws if pipeline is missing', () => {
     const c = valid();
     delete (c as any).pipeline;
-    expect(() => validateConfig(c)).toThrow(/pipeline/);
+    expect(() => validateConfig(c)).toThrow(/Config\.pipeline must be an object/);
   });
 
   it('throws if raw is null', () => {

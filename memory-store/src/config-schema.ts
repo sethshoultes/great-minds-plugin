@@ -54,10 +54,18 @@ export function parseSchedule(input: string): string | null {
   if (s === 'daily') return '0 0 * * *';
 
   const minuteMatch = s.match(/^every\s+(\d+)\s+minutes?$/);
-  if (minuteMatch) return `*/${minuteMatch[1]} * * * *`;
+  if (minuteMatch) {
+    const n = parseInt(minuteMatch[1], 10);
+    if (n < 1 || n > 59) return null;
+    return `*/${n} * * * *`;
+  }
 
   const hourMatch = s.match(/^every\s+(\d+)\s+hours?$/);
-  if (hourMatch) return `0 */${hourMatch[1]} * * *`;
+  if (hourMatch) {
+    const n = parseInt(hourMatch[1], 10);
+    if (n < 1 || n > 23) return null;
+    return `0 */${n} * * *`;
+  }
 
   // Pass through raw 5-part cron expressions unchanged
   if (/^[\d*/,\-]+ [\d*/,\-]+ [\d*/,\-]+ [\d*/,\-]+ [\d*/,\-]+$/.test(s)) return s;
@@ -129,8 +137,11 @@ export function validateConfig(raw: unknown): GreatMindsConfig {
   }
 
   const pipeline = c.pipeline as Record<string, unknown> | undefined;
-  if (!pipeline || (pipeline.schedule !== null && typeof pipeline.schedule !== 'string')) {
-    throw new Error('Config.pipeline must have schedule (string | null) and autoShip (boolean)');
+  if (!pipeline) {
+    throw new Error('Config.pipeline must be an object');
+  }
+  if (pipeline.schedule !== null && typeof pipeline.schedule !== 'string') {
+    throw new Error('Config.pipeline.schedule must be a string or null');
   }
   if (typeof pipeline.autoShip !== 'boolean') {
     throw new Error('Config.pipeline.autoShip must be a boolean');
