@@ -7,4 +7,8 @@ dreams/
 Sites/
 memory/
 scripts/
+prds/
 *.db
+
+# Brainstorming session files
+.superpowers/
