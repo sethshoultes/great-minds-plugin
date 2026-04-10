@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-10
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,16 +9,16 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 9 |
-| Total Commits | 19+ |
+| Projects Shipped | 11 |
+| Total Commits | 21+ |
 | PRs Merged | 4 |
 | Test Specs Added | 0 |
 | Source Files Added | 17+ |
-| Documentation Files | 44+ |
+| Documentation Files | 48+ |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 10 |
+| Retrospectives | 12 |
 
 ---
 
@@ -26,6 +26,8 @@
 
 | Project | Date | Score | Key Achievement |
 |---------|------|-------|-----------------|
+| **localgenius-interactive-demo** | 2026-04-10 | N/A | Direct ship cycle, demonstration framework |
+| **shipyard-portfolio** | 2026-04-10 | 5/10 | Ship phase validation, process discipline |
 | **localgenius-lite** | 2026-04-09 | N/A | Direct ship cycle, retrospective discipline |
 | **demo-video** | 2026-04-09 | 6/10 | Pipeline validation, 7 projects shipped, process proven |
 | **promptforge-prd** | 2026-04-09 | 5/10 | PRD tracking initialization, process infrastructure |

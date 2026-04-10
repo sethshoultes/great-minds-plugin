@@ -1,8 +1,8 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** localgenius-lite
-**Last Ship Date:** 2026-04-09
+**Last Ship:** localgenius-interactive-demo
+**Last Ship Date:** 2026-04-10
 
 ---
 
@@ -10,6 +10,8 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| localgenius-interactive-demo | Shipped | 2026-04-10 |
+| shipyard-portfolio | Shipped | 2026-04-10 |
 | localgenius-lite | Shipped | 2026-04-09 |
 | pipeline-test | Shipped | 2026-04-09 |
 | workshop-tutorial | Shipped | 2026-04-09 |
@@ -118,5 +120,5 @@ Full-featured benchmarking system with composable services, clean TypeScript arc
 
 ---
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-10
 **Updated By:** Phil Jackson (orchestrator)
