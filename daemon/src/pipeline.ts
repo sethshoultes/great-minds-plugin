@@ -3,7 +3,9 @@
 
 import { query } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
-import { mkdir } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
+import { execSync } from "child_process";
+import { existsSync } from "fs";
 import {
   REPO_PATH, PLUGIN_PATH, PRDS_DIR, ROUNDS_DIR, DELIVERABLES_DIR,
   SKILLS_DIR, DEFAULT_MAX_TURNS, AGENT_TIMEOUT_MS,
@@ -204,7 +206,7 @@ async function runAgentWithTimeout(
  * Run an agent with timeout protection and automatic retry.
  * This is the function all pipeline phases should call.
  */
-async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
+export async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
   return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 2, phase);
 }
 
@@ -304,6 +306,22 @@ CRITICAL — RULES THAT WILL FAIL YOUR BUILD IF VIOLATED:
 Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.
 Commit everything on a feature branch and push.`);
 
+  // H1: Deterministic post-build commit — don't trust agent to commit
+  log("BUILD: Verifying all files committed");
+  try {
+    const opts = { cwd: REPO_PATH, encoding: "utf-8" as const, timeout: 30_000 };
+    const status = execSync('git status --short', opts).trim();
+    if (status) {
+      log(`BUILD: ${status.split("\n").length} uncommitted files — force-committing`);
+      execSync('git add -A', opts);
+      execSync(`git commit -m "daemon: auto-commit after build phase for ${project}"`, opts);
+    } else {
+      log("BUILD: All files committed — clean");
+    }
+  } catch (err) {
+    logError("BUILD: post-build commit failed", err);
+  }
+
   log("PHASE DONE: build");
 }
 
@@ -314,14 +332,40 @@ export async function runQA(project: string, passNumber: number): Promise<"PASS"
   const reqPath = resolve(REPO_PATH, ".planning/REQUIREMENTS.md");
   const outputPath = resolve(roundsDir, `qa-pass-${passNumber}.md`);
 
+  // H2: Deterministic placeholder check BEFORE agent QA
+  if (existsSync(delDir)) {
+    try {
+      const placeholderCheck = execSync(
+        `grep -rn "placeholder\\|coming soon\\|TODO\\|FIXME\\|lorem ipsum\\|TBD\\|WIP" "${delDir}" 2>/dev/null || true`,
+        { encoding: "utf-8", timeout: 10_000 }
+      ).trim();
+
+      if (placeholderCheck) {
+        log(`QA-${passNumber}: AUTOMATIC BLOCK — placeholder content found:\n${placeholderCheck}`);
+        await writeFile(outputPath, `# QA Pass ${passNumber} — AUTOMATIC BLOCK\n\nPlaceholder content detected:\n\`\`\`\n${placeholderCheck}\n\`\`\`\n`);
+        // Still run auto-fix
+        await runAgent("qa-fixer", `Read the QA report at ${outputPath}.
+Fix every placeholder found — replace with REAL content. No "coming soon", no TODO, no stubs. Edit files directly in ${delDir}/. Commit fixes.`);
+        return "BLOCK";
+      }
+    } catch {}
+  }
+
   const result = await runAgent(
     `margaret-hamilton-qa-${passNumber}`,
     margaretHamiltonQA(project, passNumber, delDir, reqPath, outputPath),
   );
 
-  // Check verdict from the result text
-  const passed = /\bPASS\b/i.test(result) && !/\bBLOCK\b/i.test(result);
-  const verdict = passed ? "PASS" : "BLOCK";
+  // H3: Strict verdict parsing — require explicit format, default to BLOCK
+  const verdictMatch = result.match(/^##?\s*(?:Overall\s+)?Verdict:\s*(PASS|BLOCK)/im);
+  let verdict: "PASS" | "BLOCK";
+  if (!verdictMatch) {
+    // Fallback to old regex but default to BLOCK if ambiguous
+    const passed = /\bPASS\b/i.test(result) && !/\bBLOCK\b/i.test(result);
+    verdict = passed ? "PASS" : "BLOCK";
+  } else {
+    verdict = verdictMatch[1].toUpperCase() as "PASS" | "BLOCK";
+  }
   log(`QA-${passNumber} VERDICT: ${verdict}`);
 
   if (verdict === "BLOCK") {
@@ -397,39 +441,49 @@ Do NOT push yet — the merge step handles that.`);
   const retroPath = resolve(roundsDir, "retrospective.md");
   await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20);
 
-  // Commit retrospective
-  await runAgent("commit-retro", `Run these exact commands:
-git add -A
-git commit -m "Add retrospective for ${project}" --allow-empty
-Report what git status shows.`, 5);
+  // C3: Deterministic merge-and-push via execSync — no agent guessing
+  log("SHIP: Running deterministic merge-and-push via bash");
+  try {
+    const opts = { cwd: REPO_PATH, encoding: "utf-8" as const, timeout: 60_000 };
 
-  // Deterministic merge to main — no agent guessing, just bash
-  log("SHIP: Committing, merging to main, pushing");
-  await runAgent("merge-and-push", `Run these exact commands in order. Do NOT skip any step. Report the output of each.
+    // Step 1: Commit any remaining changes
+    execSync('git add -A', opts);
+    try {
+      execSync(`git commit -m "Ship ${project}: all deliverables + retrospective" --allow-empty`, opts);
+    } catch {} // empty commit is fine
 
-Step 1 — Commit any remaining changes:
-git add -A
-git status
-git commit -m "Final commit: ${project}" --allow-empty
+    // Step 2: Get current branch
+    const branch = execSync('git branch --show-current', opts).trim();
+    log(`SHIP: Current branch: ${branch}`);
 
-Step 2 — Get current branch name:
-BRANCH=$(git branch --show-current)
-echo "Current branch: $BRANCH"
+    if (branch && branch !== 'main') {
+      // Step 3: Merge to main
+      execSync('git checkout main', opts);
+      execSync('git pull origin main', opts);
+      try {
+        execSync(`git merge ${branch} -m "Merge ${branch}: ${project} shipped" --no-edit`, opts);
+      } catch {
+        log("SHIP: Merge conflict — accepting feature branch changes");
+        execSync('git checkout --theirs .', opts);
+        execSync('git add -A', opts);
+        execSync(`git commit -m "Resolve conflicts: accept ${project} changes"`, opts);
+      }
 
-Step 3 — Merge to main:
-git checkout main
-git pull origin main
-git merge $BRANCH -m "Merge $BRANCH: ${project} shipped" --no-edit
-If merge conflicts: git checkout --theirs . && git add -A && git commit -m "Resolve conflicts: accept ${project} changes"
+      // Step 4: Push
+      execSync('git push origin main', opts);
+      log("SHIP: PUSHED TO GITHUB");
 
-Step 4 — Push to GitHub:
-git push origin main
-echo "PUSHED TO GITHUB"
-
-Step 5 — Switch back:
-git checkout $BRANCH
-
-Report every step's output. If any step fails, report the error.`, 10);
+      // Step 5: Switch back
+      execSync(`git checkout ${branch}`, opts);
+    } else {
+      // Already on main
+      execSync('git push origin main', opts);
+      log("SHIP: Already on main, pushed directly");
+    }
+  } catch (err) {
+    logError("SHIP: merge-and-push failed", err);
+    await notify(`SHIP FAILED for ${project}: merge-and-push error`, "critical");
+  }
 
   log("PHASE DONE: ship");
 }
@@ -444,39 +498,53 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
 
   await notify(`Pipeline *started* for project *${project}*\nPRD: \`${prdFile}\``, "info");
 
+  // C4: Import abort check from daemon
+  const { isPipelineAborted } = await import("./daemon.js");
+  const checkAbort = () => {
+    if (isPipelineAborted()) throw new Error("Pipeline aborted by watchdog");
+  };
+
   try {
+    checkAbort();
     await notifyPhase(project, "debate", "start");
     await runDebate(prdFile, project);
     await notifyPhase(project, "debate", "done");
 
+    checkAbort();
     await notifyPhase(project, "plan", "start");
     await runPlan(project);
     await notifyPhase(project, "plan", "done");
 
+    checkAbort();
     await notifyPhase(project, "build", "start");
     await runBuild(project);
     await notifyPhase(project, "build", "done");
 
+    checkAbort();
     // QA pass 1
     await notifyPhase(project, "qa-1", "start");
     const qa1 = await runQA(project, 1);
     await notify(`*${project}* | QA-1 verdict: *${qa1}*`, qa1 === "PASS" ? "info" : "warning");
 
-    // QA pass 2 (even if pass 1 blocked and we auto-fixed)
+    checkAbort();
+    // QA pass 2
     await notifyPhase(project, "qa-2", "start");
     const qa2 = await runQA(project, 2);
     await notify(`*${project}* | QA-2 verdict: *${qa2}*`, qa2 === "PASS" ? "info" : "warning");
 
-    // Creative review (Jony Ive, Maya Angelou, Aaron Sorkin)
+    checkAbort();
+    // Creative review
     await notifyPhase(project, "creative-review", "start");
     await runCreativeReview(project);
     await notifyPhase(project, "creative-review", "done");
 
+    checkAbort();
     // Board review
     await notifyPhase(project, "board-review", "start");
     await runBoardReview(project);
     await notifyPhase(project, "board-review", "done");
 
+    checkAbort();
     // Ship
     await notifyPhase(project, "ship", "start");
     await runShip(project);
