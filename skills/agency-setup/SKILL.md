@@ -50,7 +50,16 @@ Store the list of agent names (without `.md`).
 After scanning, summarize what you found in one short paragraph, then ask questions one at a time. Never ask more than one question per message.
 
 **If the user passed `quick` as an argument, or says "quick" at any point:**
-Ask only Question 1, then proceed to Phase 3 with all other fields at defaults.
+Ask only Question 1, then proceed to Phase 3 with all other fields at defaults:
+- Agents: use all detected agent specs if found, otherwise `[]`
+- PRD dir: use detected path if found, otherwise `./docs/prds`
+- Schedule: `null` (manual only)
+- Auto-ship: `false`
+- Telegram: skipped
+- Token budget: `50000`
+- Custom rules: none
+
+In the completion message for quick mode, explicitly note the assumed PRD dir so the user knows.
 
 ### Question 1 — Project name
 > "I'll set this up as **{detected-name}**. Is that the right project name, or would you like a different one?"
@@ -61,6 +70,8 @@ If they confirm, use the detected name. If they give a new name, use that.
 > "Which agents should be active on this project? Available: {list-from-scan}
 >
 > You can say 'all', list specific names, or 'none' to leave agents unconfigured for now."
+
+If the user says 'all': write every name from the scanned list (1d) into `agents.active`, each normalized (lowercase, strip `.md`).
 
 Normalize each name (lowercase, strip `.md`). If the user names an agent not in the detected list, say:
 > "I don't see **{name}** in `~/.claude/agents/` — did you mean one of these? {closest-matches}. You can also say 'skip' to leave it out."
@@ -73,6 +84,8 @@ If nothing was detected:
 > "Where should the pipeline look for incoming PRDs? (e.g. `docs/prds`, `prds/`, or 'skip' to configure later)"
 
 Do NOT create the directory if it doesn't exist — just record the path.
+
+If the user says 'skip': use `"./docs/prds"` as the default value for `prds.dir`.
 
 ### Question 4 — Pipeline schedule
 > "How often should the pipeline run? Examples: 'hourly', 'every 30 minutes', 'daily', 'manual only'"
@@ -172,6 +185,8 @@ Use `null` (not `"null"`) for schedule when manual-only was selected.
 ## PRD Directory
 - {prd-dir}
 ```
+
+> **Date format:** Use `YYYY-MM-DD` (date-only, e.g. `2026-04-10`) for all `{YYYY-MM-DD}` tokens. Do NOT use the full ISO timestamp.
 
 ### File 3: `SCOREBOARD.md`
 
@@ -280,6 +295,7 @@ If Phase 1 found an existing `.great-minds.json`, say:
 If they say reconfigure:
 - Pre-fill all Phase 2 questions with the existing values as defaults
 - User only needs to answer questions where they want to change something
-- After Phase 3, overwrite all files (STATUS.md, SCOREBOARD.md, TASKS.md are regenerated fresh; .great-minds.json is overwritten)
+- After Phase 3, overwrite `.great-minds.json`, `STATUS.md`, and `TASKS.md` with fresh content
+- Do NOT regenerate `SCOREBOARD.md` during reconfigure — it tracks cumulative metrics and overwriting would destroy existing data. Leave it unchanged.
 
 If they say cancel: stop and do nothing.
