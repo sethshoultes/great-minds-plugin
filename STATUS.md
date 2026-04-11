@@ -1,7 +1,7 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** finish-plugins
+**Last Ship:** emdash-marketplace
 **Last Ship Date:** 2026-04-11
 
 ---
@@ -10,12 +10,58 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| emdash-marketplace (Wardrobe) | Shipped | 2026-04-11 |
 | finish-plugins | Shipped | 2026-04-11 |
-| emdash-marketplace | Shipped | 2026-04-11 |
 | promptops | Shipped | 2026-04-11 |
 | workshop-tutorial | Shipped | 2026-04-09 |
 | localgenius-benchmark-engine (Pulse) | Shipped | 2026-04-09 |
 | git-intelligence (Hindsight) | Shipped | 2026-04-09 |
+
+---
+
+## Project Metrics (emdash-marketplace)
+
+| Metric | Value |
+|--------|-------|
+| Tasks Completed | 5/5 |
+| Themes Delivered | 5 (Ember, Forge, Slate, Drift, Bloom) |
+| Process Score | 6/10 (Marcus Aurelius) |
+| Board Score | 5.4/10 composite |
+| Board Verdict | HOLD (discovery/retention pending) |
+| Ship Report | deliverables/emdash-marketplace/ship-report.md |
+| Retrospective | memory/emdash-marketplace-retrospective.md |
+| Key Principle | Discovery is architecture, not marketing |
+
+---
+
+## Pipeline Summary (emdash-marketplace)
+
+| Phase | Status | Date |
+|-------|--------|------|
+| PRD | Complete | 2026-04-09 |
+| Debate | Complete | 2026-04-09 (Steve vs Elon) |
+| Plan | Complete | 2026-04-09 |
+| Execute | Complete | 2026-04-09 |
+| Verify | Complete | 2026-04-09 |
+| Ship | Complete | 2026-04-11 |
+
+---
+
+## Ship Summary (emdash-marketplace)
+
+**Project:** emdash-marketplace
+**Codename:** Wardrobe
+**Pipeline:** PRD -> Debate -> Plan -> Execute -> Verify -> Ship
+**Shipped At:** 2026-04-11
+**Shipped By:** Phil Jackson (orchestrator)
+
+### What Was Built
+Theme marketplace for Emdash CMS with CLI-first architecture. Five distinct themes (Ember, Forge, Slate, Drift, Bloom), transformation language ("Your site is now wearing Ember"), and static R2 distribution. Dialectic process produced genuine synthesis from Steve/Elon debate.
+
+### Key Learnings (from Marcus Aurelius)
+- **Discovery is architecture, not marketing** — if users can't find it, it doesn't exist
+- Dialectic works when both parties respect losing — synthesis beats compromise
+- Copy is product definition, not polish — Maya Angelou's rewrites defined the voice
 
 ---
 
@@ -73,5 +119,5 @@ Full-featured benchmarking system with composable services, clean TypeScript arc
 
 ---
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-11
 **Updated By:** Phil Jackson (orchestrator)

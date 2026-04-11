@@ -188,6 +188,83 @@
 
 ---
 
+## Agent Participation (emdash-marketplace / Wardrobe)
+
+| Agent | Role | Contributions |
+|-------|------|---------------|
+| **Steve Jobs** | Creative Director | Won naming "Wardrobe," five themes, transformation language |
+| **Elon Musk** | Technical Director | Won no live preview, static infrastructure, <3s install |
+| **Maya Angelou** | Copy Review | 3 key lines rewritten, established voice |
+| **Warren Buffett** | Board Review | 5/10, "Feature masquerading as business" |
+| **Oprah Winfrey** | Board Review | 7.5/10, trust signals advocacy |
+| **Shonda Rhimes** | Board Review | 4/10, 8-page retention roadmap |
+| **Jensen Huang** | Board Review | Platform architecture concerns |
+| **Marcus Aurelius** | Retrospective | 6/10 process score, 403-line retrospective |
+| **Phil Jackson** | Orchestrator | 370-line decisions document |
+
+---
+
+## Quality Gate Results (emdash-marketplace)
+
+| Gate | Result | Details |
+|------|--------|---------|
+| **Maya Angelou Copy Review** | PASS | 3 lines rewritten, voice established |
+| **Board Verdict** | HOLD | Discovery/retention/monetization gaps |
+| **Dialectic Synthesis** | PASS | Steve vs Elon produced genuine synthesis |
+
+---
+
+## Board Verdict Summary (emdash-marketplace)
+
+**Composite Score:** 5.4/10
+
+| Reviewer | Score | Key Quote |
+|----------|-------|-----------|
+| Warren Buffett | 5/10 | "You built a feature masquerading as a business." |
+| Shonda Rhimes | 4/10 | "No retention mechanics = no engagement." |
+| Oprah Winfrey | 7.5/10 | "Trust signals present, but transformation proof missing." |
+
+**Verdict**: HOLD — awaiting discovery, retention, and monetization work.
+
+---
+
+## Key Decisions Made (emdash-marketplace)
+
+| # | Decision | Winner | Key Quote |
+|---|----------|--------|-----------|
+| 1 | Product name "Wardrobe" | Steve Jobs | "Names outlast code." |
+| 2 | Five themes vs three | Steve Jobs | "Emotional range worth the engineering." |
+| 3 | No live preview | Elon Musk | "30 days engineering for zero users." |
+| 4 | Static infrastructure | Elon Musk | "CLI-first, R2 distribution, no ops." |
+| 5 | Transformation copy | Steve Jobs | "Your site is now wearing Ember." |
+| 6 | <3 second install | Consensus | "If it's slow, we've failed." |
+
+---
+
+## Emdash Marketplace (Wardrobe) Learnings
+
+### Key Principle: Discovery is Architecture, Not Marketing
+If users can't find your product, the product doesn't exist. Discovery is as important as the CLI itself.
+
+### What Worked
+1. **Dialectic produced synthesis** — Steve vs Elon opposition created better product than either alone
+2. **Scope discipline under pressure** — Board HOLD became specification, not rejection
+3. **Five themes were distinct** — Ember, Forge, Slate, Drift, Bloom each have emotional clarity
+4. **Copy treated as first-class work** — Maya Angelou's review defined the voice
+5. **Board diversity revealed blind spots** — Four reviewers, four different axes
+
+### What to Improve
+1. **Board review at PRD stage** — structural concerns should be caught before build
+2. **Distinguish MVP from launchable** — MVP proves value; launchable includes discovery
+3. **Risk mitigations enforced** — if you say "three themes," ship three
+4. **Measurement infrastructure built** — even if features are deferred
+5. **Discovery is Phase 1, not Phase 2** — never defer how users find you
+
+### Key Quote
+> "You can build a perfect transformation and still fail if no one knows where to find it." — Marcus Aurelius retrospective
+
+---
+
 ## Pulse (localgenius-benchmark-engine) Learnings
 
 ### Key Principle: Separate the Verdict from the Conditions
