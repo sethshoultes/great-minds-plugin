@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-11
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 9 |
-| Total Commits | 236+ |
+| Projects Shipped | 10 |
+| Total Commits | 237+ |
 | PRs Merged | 25+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 6 |
+| Marcus retrospectives | 7 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -47,6 +47,7 @@
 | Pulse (localgenius-benchmark-engine) | 2026-04-09 | 4,447 LOC benchmarking system, clean architecture | N/A |
 | Hindsight (git-intelligence) | 2026-04-09 | 93-line core, mentor voice, zero config | N/A |
 | plugin-audit | 2026-04-08 | Remove hardcoded paths, fix daemon deps, update docs | memory/plugin-audit-retrospective.md |
+| promptops | 2026-04-11 | Daemon v2.0, PID lockfile, queue persistence, deterministic ops | memory/promptops-retrospective.md |
 | anti-hallucination | 2026-04-07 | BANNED-PATTERNS, DO-NOT-REPEAT, doc reading enforcement | memory/anti-hallucination-retrospective.md |
 
 ---
@@ -61,8 +62,9 @@
 | readme-update | 2026-04-09 | Comprehensibility before completeness | memory/readme-update-retrospective.md |
 | systemd-daemon | 2026-04-09 | Visibility beats elegance | memory/systemd-daemon-retrospective.md |
 | emdash-marketplace | 2026-04-09 | Discovery is architecture, not marketing | memory/emdash-marketplace-retrospective.md |
+| promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
 
-**Score: 6 retrospectives, 6 principles extracted**
+**Score: 7 retrospectives, 7 principles extracted**
 
 ---
 
