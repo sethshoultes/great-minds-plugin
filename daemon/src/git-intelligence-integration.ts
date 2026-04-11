@@ -2,8 +2,8 @@
  * Hindsight Integration — Pipeline hooks and prompt modifiers
  * Provides the integration points for the Hindsight report generator.
  */
-import { generateHindsightReport } from "./hindsight.js";
-import type { HindsightReport } from "./hindsight.js";
+import { generateHindsightReport } from "./git-intelligence.js";
+import type { HindsightReport } from "./git-intelligence.js";
 import { resolve } from "path";
 
 let firstRunAcknowledged = false;
