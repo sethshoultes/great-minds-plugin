@@ -1,6 +1,6 @@
 # Great Minds Agency — Memory Index
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-11
 **Purpose:** Index of project learnings for future reference
 
 ---
@@ -9,6 +9,8 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
+| finish-plugins | 2026-04-11 | [memory/finish-plugins-retrospective.md](memory/finish-plugins-retrospective.md) | 8/10 |
+| promptops | 2026-04-11 | [memory/promptops-retrospective.md](memory/promptops-retrospective.md) | 8/10 |
 | emdash-marketplace (Wardrobe) | 2026-04-09 | [memory/emdash-marketplace-retrospective.md](memory/emdash-marketplace-retrospective.md) | 6/10 |
 | git-intelligence (Hindsight) | 2026-04-09 | [memory/git-intelligence-retrospective.md](memory/git-intelligence-retrospective.md) | 7/10 |
 | github-intake | 2026-04-09 | [memory/github-intake-retrospective.md](memory/github-intake-retrospective.md) | N/A |
@@ -37,6 +39,9 @@
 3. **Parallel execution matters** — Promise.all() for independent git commands
 4. **Mentor voice > alarm voice** — "Tread carefully" not "WARNING: DANGER"
 5. **Named constants improve maintainability** — extract magic numbers to config objects
+6. **Trust bash, not instructions** — agent prompts are requests; shell commands are demands (promptops)
+7. **Defense in depth** — PID lockfiles, queue persistence, abort flags: each layer catches what previous missed (promptops)
+8. **Strict verdict parsing** — require explicit format to eliminate ambiguity (promptops)
 
 ### Agency Learnings
 
@@ -66,6 +71,8 @@
 
 ```
 memory/
+  finish-plugins-retrospective.md      # Consolidation — 8/10 process score
+  promptops-retrospective.md           # Daemon ops — 8/10 process score
   emdash-marketplace-retrospective.md  # Wardrobe — 6/10 process score
   git-intelligence-retrospective.md    # Hindsight — 7/10 process score
   github-intake-retrospective.md       # GitHub intake project

@@ -1,7 +1,7 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** emdash-marketplace
+**Last Ship:** finish-plugins
 **Last Ship Date:** 2026-04-11
 
 ---
@@ -10,11 +10,12 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| finish-plugins | Shipped | 2026-04-11 |
+| emdash-marketplace | Shipped | 2026-04-11 |
+| promptops | Shipped | 2026-04-11 |
 | workshop-tutorial | Shipped | 2026-04-09 |
 | localgenius-benchmark-engine (Pulse) | Shipped | 2026-04-09 |
 | git-intelligence (Hindsight) | Shipped | 2026-04-09 |
-| plugin-audit | Shipped | 2026-04-08 |
-| anti-hallucination | Shipped | 2026-04-07 |
 
 ---
 
