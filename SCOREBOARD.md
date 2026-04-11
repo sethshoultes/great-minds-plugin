@@ -70,6 +70,62 @@
 
 ---
 
+## Project Metrics (promptops)
+
+| Metric | Value |
+|--------|-------|
+| Tasks Completed | 4/4 |
+| Files Changed | 4 |
+| Risk Mitigations | 4 (PID lockfile, queue persistence, abort flag, strict parsing) |
+| Process Score | 8/10 (Marcus Aurelius) |
+| Ship Report | deliverables/promptops/ship-report.md |
+| Retrospective | memory/promptops-retrospective.md |
+| Key Principle | Trust bash, not instructions |
+
+---
+
+## Pipeline Summary (promptops)
+
+| Phase | Status | Date |
+|-------|--------|------|
+| Execute | Complete | 2026-04-11 |
+| Verify | Complete (manual) | 2026-04-11 |
+| Ship | Complete | 2026-04-11 |
+
+---
+
+## Key Decisions Made (promptops)
+
+| # | Decision | Rationale |
+|---|----------|-----------|
+| 1 | Deterministic git operations | `execSync('git add -A')` always works; agent prompts sometimes don't |
+| 2 | Defense in depth | Multiple layers (PID, queue, abort, parsing) each catch what previous missed |
+| 3 | Strict verdict parsing | Require `## Verdict: PASS/BLOCK` format to eliminate ambiguity |
+| 4 | Minimal scope | Four files changed, no new dependencies |
+
+---
+
+## promptops Learnings
+
+### Key Principle: Trust Bash, Not Instructions
+When an operation must happen, make it happen with code. Agent prompts are requests; shell commands are demands.
+
+### What Worked
+1. **Deterministic operations beat agent instructions** — bash commands execute reliably
+2. **Defense in depth** — PID lockfiles prevent duplicate daemons, queue persistence survives crashes
+3. **Strict verdict parsing** — explicit format eliminates ambiguous results
+4. **Small surface area** — four files, no new dependencies, robust without complexity
+
+### What to Improve
+1. No formal test suite for daemon behavior
+2. Documentation lag (changes not yet reflected in README)
+3. Testing in production (no staging environment for daemon)
+
+### Key Quote
+> "The impediment to action advances action. What stands in the way becomes the way." — Marcus Aurelius retrospective
+
+---
+
 ## Agent Participation (git-intelligence)
 
 | Agent | Role | Contributions |
