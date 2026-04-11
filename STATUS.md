@@ -1,8 +1,8 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** workshop-tutorial
-**Last Ship Date:** 2026-04-09
+**Last Ship:** emdash-marketplace
+**Last Ship Date:** 2026-04-11
 
 ---
 
