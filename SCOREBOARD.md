@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 10 |
+| Marcus retrospectives | 11 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -68,8 +68,9 @@
 | emdash-marketplace | 2026-04-09 | Discovery is architecture, not marketing | memory/emdash-marketplace-retrospective.md |
 | promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
 | finish-plugins | 2026-04-11 | Infrastructure enables velocity | memory/finish-plugins-retrospective.md |
+| finish-plugins | 2026-04-12 | Clean the metadata before declaring victory | memory/finish-plugins-retrospective.md |
 
-**Score: 10 retrospectives, 10 principles extracted**
+**Score: 11 retrospectives, 11 principles extracted**
 
 ---
 
