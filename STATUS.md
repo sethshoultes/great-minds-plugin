@@ -1,7 +1,7 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** agentbench
+**Last Ship:** finish-plugins
 **Last Ship Date:** 2026-04-12
 
 ---
@@ -10,9 +10,9 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| finish-plugins | Shipped | 2026-04-12 |
 | agentbench | Shipped | 2026-04-12 |
 | emdash-marketplace (Wardrobe) | Shipped | 2026-04-11 |
-| finish-plugins | Shipped | 2026-04-11 |
 | promptops | Shipped | 2026-04-11 |
 | workshop-tutorial | Shipped | 2026-04-09 |
 | localgenius-benchmark-engine (Pulse) | Shipped | 2026-04-09 |
@@ -117,6 +117,37 @@ Full-featured benchmarking system with composable services, clean TypeScript arc
 - v1.1 mandatory features due: May 9, 2026 (30 days)
 - Revenue path decision due: June 8, 2026 (60 days)
 - v2.0 decision point: July 8, 2026 (90 days)
+
+---
+
+---
+
+## Ship Summary (finish-plugins — 2026-04-12)
+
+**Project:** finish-plugins
+**Pipeline:** Consolidation Ship
+**Shipped At:** 2026-04-12
+**Shipped By:** Phil Jackson (orchestrator)
+
+### What Was Shipped
+Consolidation ship for finish-plugins project. Committed pending changes including:
+- Updated SCOREBOARD.md with project metrics
+- Updated STATUS.md to reflect shipped state
+- Added eventdash-fix PRD
+- Added membership-fix PRD
+
+### Metrics
+| Metric | Value |
+|--------|-------|
+| Files Changed | 4 |
+| Lines Added | 351 |
+| Lines Removed | 8 |
+| PRDs Added | 2 |
+
+### Key Learnings (from Marcus Aurelius)
+- **Infrastructure enables velocity** — invisibility is a feature, not a bug
+- Ship smaller, ship more often — don't let local commits accumulate
+- Even consolidation ships need explicit verification gates
 
 ---
 

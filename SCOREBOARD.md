@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 12 |
-| Total Commits | 245+ |
+| Projects Shipped | 13 |
+| Total Commits | 246+ |
 | PRs Merged | 26+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 9 |
+| Marcus retrospectives | 10 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -39,6 +39,7 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| finish-plugins | 2026-04-12 | Consolidation ship: 4 files, 2 PRDs, status/scoreboard updates | memory/finish-plugins-retrospective.md |
 | agentbench | 2026-04-12 | Ship report, retrospective, process adherence | memory/agentbench-retrospective.md |
 | project-audit | 2026-04-09 | Templates cleanup, daemon migration docs, AGENTS.md runtime update | memory/project-audit-retrospective.md |
 | emdash-marketplace | 2026-04-09 | Document transformation CLI, 5 design themes, dialectic process, board review | memory/emdash-marketplace-retrospective.md |
@@ -68,7 +69,7 @@
 | promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
 | finish-plugins | 2026-04-11 | Infrastructure enables velocity | memory/finish-plugins-retrospective.md |
 
-**Score: 9 retrospectives, 9 principles extracted**
+**Score: 10 retrospectives, 10 principles extracted**
 
 ---
 
