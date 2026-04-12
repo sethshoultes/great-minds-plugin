@@ -1,8 +1,8 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** emdash-marketplace
-**Last Ship Date:** 2026-04-11
+**Last Ship:** agentbench
+**Last Ship Date:** 2026-04-12
 
 ---
 
@@ -10,6 +10,7 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| agentbench | Shipped | 2026-04-12 |
 | emdash-marketplace (Wardrobe) | Shipped | 2026-04-11 |
 | finish-plugins | Shipped | 2026-04-11 |
 | promptops | Shipped | 2026-04-11 |
@@ -119,5 +120,5 @@ Full-featured benchmarking system with composable services, clean TypeScript arc
 
 ---
 
-**Last Updated:** 2026-04-11
+**Last Updated:** 2026-04-12
 **Updated By:** Phil Jackson (orchestrator)

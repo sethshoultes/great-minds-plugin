@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-11
+**Last Updated:** 2026-04-12
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 11 |
-| Total Commits | 244+ |
+| Projects Shipped | 12 |
+| Total Commits | 245+ |
 | PRs Merged | 26+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 8 |
+| Marcus retrospectives | 9 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -39,6 +39,7 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| agentbench | 2026-04-12 | Ship report, retrospective, process adherence | memory/agentbench-retrospective.md |
 | project-audit | 2026-04-09 | Templates cleanup, daemon migration docs, AGENTS.md runtime update | memory/project-audit-retrospective.md |
 | emdash-marketplace | 2026-04-09 | Document transformation CLI, 5 design themes, dialectic process, board review | memory/emdash-marketplace-retrospective.md |
 | systemd-daemon | 2026-04-09 | tmux→systemd migration, archived launch.sh, updated AGENTS.md runtime docs | memory/systemd-daemon-retrospective.md |
@@ -57,6 +58,7 @@
 
 | Project | Date | Key Principle | Location |
 |---------|------|--------------|----------|
+| agentbench | 2026-04-12 | Small discipline is not small | memory/agentbench-retrospective.md |
 | project-audit | 2026-04-09 | Maintenance is infrastructure, not overhead | memory/project-audit-retrospective.md |
 | anti-hallucination | 2026-04-08 | Systems beat willpower | memory/anti-hallucination-retrospective.md |
 | plugin-audit | 2026-04-09 | Path references are infrastructure decisions | memory/plugin-audit-retrospective.md |
@@ -66,7 +68,7 @@
 | promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
 | finish-plugins | 2026-04-11 | Infrastructure enables velocity | memory/finish-plugins-retrospective.md |
 
-**Score: 8 retrospectives, 8 principles extracted**
+**Score: 9 retrospectives, 9 principles extracted**
 
 ---
 
