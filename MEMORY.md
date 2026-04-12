@@ -1,6 +1,6 @@
 # Great Minds Agency — Memory Index
 
-**Last Updated:** 2026-04-11
+**Last Updated:** 2026-04-12
 **Purpose:** Index of project learnings for future reference
 
 ---
@@ -9,6 +9,7 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
+| agentbench | 2026-04-12 | [memory/agentbench-retrospective.md](memory/agentbench-retrospective.md) | 8/10 |
 | finish-plugins | 2026-04-11 | [memory/finish-plugins-retrospective.md](memory/finish-plugins-retrospective.md) | 8/10 |
 | promptops | 2026-04-11 | [memory/promptops-retrospective.md](memory/promptops-retrospective.md) | 8/10 |
 | emdash-marketplace (Wardrobe) | 2026-04-09 | [memory/emdash-marketplace-retrospective.md](memory/emdash-marketplace-retrospective.md) | 6/10 |
@@ -24,7 +25,8 @@
 
 ### Process Learnings
 
-1. **Front-load strategic questions** — moat, revenue, compounding before creative investment
+1. **Small discipline is not small** — the agency that commits cleanly to small projects commits cleanly to large ones (agentbench)
+2. **Front-load strategic questions** — moat, revenue, compounding before creative investment
 2. **Require technical spike** — 2-hour PoC before multi-day deliberation
 3. **Involve creative reviewers early** — at outline stage, not finished artifacts
 4. **Assign owners to deferrals** — name, date, kill condition for every "v2" item
@@ -71,6 +73,7 @@
 
 ```
 memory/
+  agentbench-retrospective.md          # Small discipline — 8/10 process score
   finish-plugins-retrospective.md      # Consolidation — 8/10 process score
   promptops-retrospective.md           # Daemon ops — 8/10 process score
   emdash-marketplace-retrospective.md  # Wardrobe — 6/10 process score
