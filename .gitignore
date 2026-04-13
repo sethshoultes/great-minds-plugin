@@ -7,4 +7,14 @@ dreams/
 Sites/
 memory/
 scripts/
+prds/
 *.db
+
+# Brainstorming session files
+.superpowers/
+
+# TypeScript compilation artifacts
+memory-store/tests/*.js
+memory-store/tests/*.d.ts
+memory-store/vitest.config.js
+memory-store/vitest.config.d.ts
