@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-12
+**Last Updated:** 2026-04-13
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 13 |
-| Total Commits | 246+ |
+| Projects Shipped | 16 |
+| Total Commits | 249+ |
 | PRs Merged | 26+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 11 |
+| Marcus retrospectives | 14 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -39,6 +39,9 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| daemon-fixes | 2026-04-13 | Auto-commit wiring, GitHub label query fix, daemon stability | memory/daemon-fixes-retrospective.md |
+| agentlog | 2026-04-13 | Consolidation ship: metrics formalization, scoreboard updates, process tracking | memory/agentlog-retrospective.md |
+| membership-fix | 2026-04-12 | MemberShip plugin pattern fixes: 228 violations corrected, 3 files | memory/membership-fix-retrospective.md |
 | finish-plugins | 2026-04-12 | Consolidation ship: 4 files, 2 PRDs, status/scoreboard updates | memory/finish-plugins-retrospective.md |
 | agentbench | 2026-04-12 | Ship report, retrospective, process adherence | memory/agentbench-retrospective.md |
 | project-audit | 2026-04-09 | Templates cleanup, daemon migration docs, AGENTS.md runtime update | memory/project-audit-retrospective.md |
@@ -59,6 +62,9 @@
 
 | Project | Date | Key Principle | Location |
 |---------|------|--------------|----------|
+| daemon-fixes | 2026-04-13 | A plan is not a fix. A fix is not shipped. | memory/daemon-fixes-retrospective.md |
+| agentlog | 2026-04-13 | What you measure is what you become | memory/agentlog-retrospective.md |
+| membership-fix | 2026-04-12 | Systematic passes beat incremental fixes | memory/membership-fix-retrospective.md |
 | agentbench | 2026-04-12 | Small discipline is not small | memory/agentbench-retrospective.md |
 | project-audit | 2026-04-09 | Maintenance is infrastructure, not overhead | memory/project-audit-retrospective.md |
 | anti-hallucination | 2026-04-08 | Systems beat willpower | memory/anti-hallucination-retrospective.md |
