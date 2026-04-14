@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 16 |
-| Total Commits | 249+ |
+| Projects Shipped | 17 |
+| Total Commits | 250+ |
 | PRs Merged | 26+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 14 |
+| Marcus retrospectives | 15 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |

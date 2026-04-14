@@ -87,3 +87,7 @@ export const MEMORY_STORE_DIR = resolve(REPO_PATH, "memory-store");
 
 /** Skills directory in the plugin */
 export const SKILLS_DIR = resolve(PLUGIN_PATH, "skills");
+
+/** Priority labels for GitHub issue intake (configurable via env var) */
+export const INTAKE_PRIORITY_LABELS =
+  process.env.INTAKE_PRIORITY_LABELS?.split(",").map(s => s.trim()) || ["p0", "p1", "p2"];

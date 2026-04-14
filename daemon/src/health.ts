@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, statSync, existsSync } from "fs";
 import { resolve } from "path";
 import {
   SITES, GIT_REPOS, GITHUB_REPOS, MEMORY_FILE,
-  MEMORY_STORE_DIR, REPO_PATH, PRDS_DIR,
+  MEMORY_STORE_DIR, REPO_PATH, PRDS_DIR, INTAKE_PRIORITY_LABELS,
 } from "./config.js";
 import { log, logError } from "./logger.js";
 
@@ -160,7 +160,7 @@ function markIssueConverted(state: IntakeState, repo: string, number: number): v
 // ─── Intake Polling ─────────────────────────────────────────
 
 export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
-  log("INTAKE: Polling GitHub for p0/p1 issues");
+  log(`INTAKE: Polling GitHub for ${INTAKE_PRIORITY_LABELS.join("/")} issues`);
 
   const fetchRepo = async (repo: string): Promise<IntakeIssue[]> => {
     // Helper: fetch issues by a single label
@@ -183,13 +183,14 @@ export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
     };
 
     try {
-      // Fetch p0 and p1 separately (gh CLI --label a,b syntax is unreliable)
+      // Fetch p0, p1, and p2 separately (gh CLI --label a,b syntax is unreliable)
       const p0Issues = fetchByLabel("p0");
       const p1Issues = fetchByLabel("p1");
+      const p2Issues = fetchByLabel("p2");
 
-      // Deduplicate by issue number (issues with both labels appear in both results)
+      // Deduplicate by issue number (issues with multiple labels appear in multiple results)
       const seen = new Set<number>();
-      const merged = [...p0Issues, ...p1Issues].filter((issue) => {
+      const merged = [...p0Issues, ...p1Issues, ...p2Issues].filter((issue) => {
         if (seen.has(issue.number)) return false;
         seen.add(issue.number);
         return true;
@@ -217,7 +218,7 @@ export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
 
   const results = await Promise.all(GITHUB_REPOS.map(fetchRepo));
   const issues = results.flat();
-  log(`INTAKE: Found ${issues.length} p0/p1 issue(s) across ${GITHUB_REPOS.length} repos`);
+  log(`INTAKE: Found ${issues.length} ${INTAKE_PRIORITY_LABELS.join("/")} issue(s) across ${GITHUB_REPOS.length} repos`);
   return issues;
 }
 
