@@ -51,8 +51,8 @@ const ALLOWED_TOOLS = ["Read", "Write", "Edit", "Bash", "Agent", "Glob", "Grep"]
  * This is the inner function; use runAgentWithRetry() or runAgentWithTimeout()
  * as the public entry points.
  */
-async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
-  log(`AGENT START: ${name}`);
+async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = "", model?: string): Promise<string> {
+  log(`AGENT START: ${name} (model: ${model || "default"})`);
   const startTime = Date.now();
 
   let result = "";
@@ -67,6 +67,7 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
         allowedTools: ALLOWED_TOOLS,
         permissionMode: "bypassPermissions" as const,
         cwd: REPO_PATH,
+        ...(model ? { model } : {}),
       },
     })) {
       if (message.type === "result") {
@@ -143,10 +144,11 @@ async function runAgentWithRetry(
   maxTurns = DEFAULT_MAX_TURNS,
   maxRetries = 2,
   phase = "",
+  model?: string,
 ): Promise<string> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await runAgentCore(name, prompt, maxTurns, phase);
+      return await runAgentCore(name, prompt, maxTurns, phase, model);
     } catch (err) {
       log(`AGENT FAILED: ${name} attempt ${attempt}/${maxRetries} — ${err}`);
       if (attempt === maxRetries) {
@@ -179,6 +181,7 @@ async function runAgentWithTimeout(
   timeoutMs = AGENT_TIMEOUT_MS,
   maxRetries = 2,
   phase = "",
+  model?: string,
 ): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     const timer = setTimeout(() => {
@@ -188,7 +191,7 @@ async function runAgentWithTimeout(
       reject(new Error(msg));
     }, timeoutMs);
 
-    runAgentWithRetry(name, prompt, maxTurns, maxRetries, phase)
+    runAgentWithRetry(name, prompt, maxTurns, maxRetries, phase, model)
       .then((result) => {
         clearTimeout(timer);
         resolve(result);
@@ -206,8 +209,8 @@ async function runAgentWithTimeout(
  * Run an agent with timeout protection and automatic retry.
  * This is the function all pipeline phases should call.
  */
-export async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = ""): Promise<string> {
-  return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 2, phase);
+export async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = "", model?: string): Promise<string> {
+  return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 2, phase, model);
 }
 
 // ─── Pipeline Phases ────────────────────────────────────────
@@ -226,8 +229,8 @@ export async function runDebate(prdPath: string, project: string): Promise<void>
 
   log("DEBATE R1: Steve + Elon in parallel");
   await Promise.all([
-    runAgent("steve-jobs-r1", steveJobsDebateR1(prd, r1Steve)),
-    runAgent("elon-musk-r1", elonMuskDebateR1(prd, r1Elon)),
+    runAgent("steve-jobs-r1", steveJobsDebateR1(prd, r1Steve), DEFAULT_MAX_TURNS, "debate", "sonnet"),
+    runAgent("elon-musk-r1", elonMuskDebateR1(prd, r1Elon), DEFAULT_MAX_TURNS, "debate", "sonnet"),
   ]);
 
   // Round 2 — Challenge each other (run in parallel)
@@ -236,19 +239,19 @@ export async function runDebate(prdPath: string, project: string): Promise<void>
 
   log("DEBATE R2: Steve + Elon challenge each other");
   await Promise.all([
-    runAgent("steve-jobs-r2", steveJobsDebateR2(r1Steve, r1Elon, r2Steve)),
-    runAgent("elon-musk-r2", elonMuskDebateR2(r1Steve, r1Elon, r2Elon)),
+    runAgent("steve-jobs-r2", steveJobsDebateR2(r1Steve, r1Elon, r2Steve), DEFAULT_MAX_TURNS, "debate", "sonnet"),
+    runAgent("elon-musk-r2", elonMuskDebateR2(r1Steve, r1Elon, r2Elon), DEFAULT_MAX_TURNS, "debate", "sonnet"),
   ]);
 
   // Rick Rubin distills the essence
   const essencePath = resolve(roundsDir, "essence.md");
   log("DEBATE: Rick Rubin essence");
-  await runAgent("rick-rubin-essence", rickRubinEssence(roundsDir, essencePath), 15);
+  await runAgent("rick-rubin-essence", rickRubinEssence(roundsDir, essencePath), 15, "debate", "haiku");
 
   // Phil Jackson consolidates decisions
   const decisionsPath = resolve(roundsDir, "decisions.md");
   log("DEBATE: Phil Jackson consolidation");
-  await runAgent("phil-jackson-consolidation", philJacksonConsolidation(roundsDir, decisionsPath));
+  await runAgent("phil-jackson-consolidation", philJacksonConsolidation(roundsDir, decisionsPath), DEFAULT_MAX_TURNS, "debate", "sonnet");
 
   log("PHASE DONE: debate");
 }
@@ -271,12 +274,12 @@ If the project involves a framework or external API, read the relevant docs in t
 Verify your technical approach by reading actual documentation or source code — do NOT guess at API surfaces.
 If docs exist (e.g., docs/EMDASH-GUIDE.md), cite specific sections in your plan to prove you read them.
 
-Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`);
+Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`, DEFAULT_MAX_TURNS, "plan", "sonnet");
 
   // Sara Blakely gut-check
   const planPath = resolve(planDir, "phase-1-plan.md");
   const saraPath = resolve(planDir, "sara-blakely-review.md");
-  await runAgent("sara-blakely-gutcheck", saraBlakelyGutCheck(planPath, saraPath), 15);
+  await runAgent("sara-blakely-gutcheck", saraBlakelyGutCheck(planPath, saraPath), 15, "plan", "haiku");
 
   log("PHASE DONE: plan");
 }
@@ -304,7 +307,7 @@ CRITICAL — RULES THAT WILL FAIL YOUR BUILD IF VIOLATED:
 7. COMMIT EVERYTHING. Run git add -A && git commit before you finish. QA will check git status and BLOCK if there are uncommitted files.
 
 Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.
-Commit everything on a feature branch and push.`);
+Commit everything on a feature branch and push.`, DEFAULT_MAX_TURNS, "build", "sonnet");
 
   // H1: Deterministic post-build commit — don't trust agent to commit
   log("BUILD: Verifying all files committed");
@@ -345,7 +348,7 @@ export async function runQA(project: string, passNumber: number): Promise<"PASS"
         await writeFile(outputPath, `# QA Pass ${passNumber} — AUTOMATIC BLOCK\n\nPlaceholder content detected:\n\`\`\`\n${placeholderCheck}\n\`\`\`\n`);
         // Still run auto-fix
         await runAgent("qa-fixer", `Read the QA report at ${outputPath}.
-Fix every placeholder found — replace with REAL content. No "coming soon", no TODO, no stubs. Edit files directly in ${delDir}/. Commit fixes.`);
+Fix every placeholder found — replace with REAL content. No "coming soon", no TODO, no stubs. Edit files directly in ${delDir}/. Commit fixes.`, DEFAULT_MAX_TURNS, "qa", "sonnet");
         return "BLOCK";
       }
     } catch {}
@@ -354,6 +357,7 @@ Fix every placeholder found — replace with REAL content. No "coming soon", no 
   const result = await runAgent(
     `margaret-hamilton-qa-${passNumber}`,
     margaretHamiltonQA(project, passNumber, delDir, reqPath, outputPath),
+    DEFAULT_MAX_TURNS, "qa", "sonnet",
   );
 
   // H3: Strict verdict parsing — require explicit format, default to BLOCK
@@ -372,7 +376,7 @@ Fix every placeholder found — replace with REAL content. No "coming soon", no 
     // Auto-fix: have the builder address QA issues
     log(`QA-${passNumber}: BLOCK detected — running auto-fix`);
     await runAgent("qa-fixer", `Read the QA report at ${outputPath}.
-Fix every issue listed. Edit files directly in ${delDir}/. Commit fixes.`);
+Fix every issue listed. Edit files directly in ${delDir}/. Commit fixes.`, DEFAULT_MAX_TURNS, "qa", "sonnet");
   }
 
   log(`PHASE DONE: qa-${passNumber}`);
@@ -386,12 +390,12 @@ export async function runCreativeReview(project: string): Promise<void> {
 
   // Batch 1: Jony + Maya (visual + copy)
   await Promise.all([
-    runAgent("jony-ive-review", jonyIveVisualReview(delDir, resolve(roundsDir, "review-jony-ive.md")), 15),
-    runAgent("maya-angelou-review", mayaAngelouCopyReview(delDir, resolve(roundsDir, "review-maya-angelou.md")), 15),
+    runAgent("jony-ive-review", jonyIveVisualReview(delDir, resolve(roundsDir, "review-jony-ive.md")), 15, "creative", "haiku"),
+    runAgent("maya-angelou-review", mayaAngelouCopyReview(delDir, resolve(roundsDir, "review-maya-angelou.md")), 15, "creative", "haiku"),
   ]);
 
   // Batch 2: Aaron solo (demo script is independent)
-  await runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20);
+  await runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20, "creative", "haiku");
 
   log("PHASE DONE: creative-review");
 }
@@ -404,14 +408,14 @@ export async function runBoardReview(project: string): Promise<void> {
 
   // Batch 1: Jensen + Oprah
   await Promise.all([
-    runAgent("jensen-huang-review", jensenHuangBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-jensen.md")), 20),
-    runAgent("oprah-winfrey-review", oprahWinfreyBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-oprah.md")), 20),
+    runAgent("jensen-huang-review", jensenHuangBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-jensen.md")), 20, "board", "haiku"),
+    runAgent("oprah-winfrey-review", oprahWinfreyBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-oprah.md")), 20, "board", "haiku"),
   ]);
 
   // Batch 2: Warren + Shonda
   await Promise.all([
-    runAgent("warren-buffett-review", warrenBuffettBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-buffett.md")), 20),
-    runAgent("shonda-rhimes-review", shondaRhimesBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-shonda.md")), 20),
+    runAgent("warren-buffett-review", warrenBuffettBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-buffett.md")), 20, "board", "haiku"),
+    runAgent("shonda-rhimes-review", shondaRhimesBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-shonda.md")), 20, "board", "haiku"),
   ]);
 
   // Consolidate board verdict
@@ -422,7 +426,7 @@ Write ${resolve(roundsDir, "board-verdict.md")} — consolidated verdict:
 - Overall verdict: PROCEED, HOLD, or REJECT
 - Conditions for proceeding (if any)
 
-Also write ${resolve(roundsDir, "shonda-retention-roadmap.md")} — what keeps users coming back, v1.1 features.`);
+Also write ${resolve(roundsDir, "shonda-retention-roadmap.md")} — what keeps users coming back, v1.1 features.`, DEFAULT_MAX_TURNS, "board", "haiku");
 
   log("PHASE DONE: board-review");
 }
@@ -441,11 +445,11 @@ CRITICAL: You MUST commit ALL files before finishing. Run:
 2. git commit -m "Ship ${project}: all deliverables"
 3. Verify with git status that working tree is clean
 
-Do NOT push yet — the merge step handles that.`);
+Do NOT push yet — the merge step handles that.`, DEFAULT_MAX_TURNS, "ship", "haiku");
 
   // Marcus Aurelius retrospective
   const retroPath = resolve(roundsDir, "retrospective.md");
-  await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20);
+  await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20, "ship", "haiku");
 
   // C3: Deterministic merge-and-push via execSync — no agent guessing
   log("SHIP: Running deterministic merge-and-push via bash");
