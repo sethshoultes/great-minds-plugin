@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-10
+**Last Updated:** 2026-04-14
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,16 +9,16 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 11 |
-| Total Commits | 21+ |
+| Projects Shipped | 13 |
+| Total Commits | 23+ |
 | PRs Merged | 4 |
-| Test Specs Added | 0 |
-| Source Files Added | 17+ |
-| Documentation Files | 48+ |
+| Test Specs Added | 2 |
+| Source Files Added | 19+ |
+| Documentation Files | 53+ |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 12 |
+| Retrospectives | 14 |
 
 ---
 
@@ -26,6 +26,7 @@
 
 | Project | Date | Score | Key Achievement |
 |---------|------|-------|-----------------|
+| **shipyard-maintenance** | 2026-04-12 | 5/10 | Infrastructure audit, tracker-reality sync |
 | **localgenius-interactive-demo** | 2026-04-10 | N/A | Direct ship cycle, demonstration framework |
 | **shipyard-portfolio** | 2026-04-10 | 5/10 | Ship phase validation, process discipline |
 | **localgenius-lite** | 2026-04-09 | N/A | Direct ship cycle, retrospective discipline |
@@ -258,5 +259,38 @@ When authority will eventually ask "What's the moat? What's the revenue path?" �
 
 ---
 
+## Shipyard Maintenance Learnings (from Marcus Aurelius)
+
+### Key Principle: Verify the Verifier
+The system that checks whether work is done must itself be checked. Trust but verify applies to your own infrastructure.
+
+### What Worked
+1. **Honest inventory** — Looked at what existed vs. what was claimed
+2. **Scope discipline** — Maintenance only, no feature creep
+3. **Pipeline integrity** — 11 projects shipped means the pipeline works
+
+### What Didn't Work
+1. **Memory files never created** — Declared done but not done
+2. **Deferred cleanup accumulated** — 13 feature branches unmerged
+3. **No verification step for infrastructure** — We verify code but not agency systems
+
+### Infrastructure Gaps Discovered
+- MEMORY.md referenced 8 retrospective files; memory/ directory was empty
+- 13 feature branches accumulated without review
+- Tracker indices diverged from reality
+
+### Recommendations
+1. Add infrastructure audit to monthly review
+2. Require file creation before index update
+3. Set 14-day branch age limit with review
+4. Automate tracker validation
+
+### Key Quote
+> "The impediment to action advances action. What stands in the way becomes the way." — Marcus Aurelius
+
+**Process Score:** 5/10
+
+---
+
 **Scoreboard Maintained By:** Phil Jackson
-**Version:** 1.0
+**Version:** 1.1
