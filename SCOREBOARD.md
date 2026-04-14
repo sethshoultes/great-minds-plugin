@@ -75,8 +75,9 @@
 | promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
 | finish-plugins | 2026-04-11 | Infrastructure enables velocity | memory/finish-plugins-retrospective.md |
 | finish-plugins | 2026-04-12 | Clean the metadata before declaring victory | memory/finish-plugins-retrospective.md |
+| localgenius-benchmark-engine | 2026-04-09 | Separate the verdict from the conditions | memory/localgenius-benchmark-engine-retrospective.md |
 
-**Score: 11 retrospectives, 11 principles extracted**
+**Score: 14 retrospectives, 14 principles extracted**
 
 ---
 
