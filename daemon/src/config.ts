@@ -29,9 +29,8 @@ export const SITES = [
 
 /** Related git repos to monitor for uncommitted changes */
 export const GIT_REPOS = [
-  { name: "great-minds", path: REPO_PATH },
+  { name: "shipyard-ai", path: REPO_PATH },
   { name: "great-minds-plugin", path: PLUGIN_PATH },
-  { name: "localgenius", path: resolve(REPO_PATH, "../localgenius") },
 ];
 
 /** Intervals (in milliseconds) */
