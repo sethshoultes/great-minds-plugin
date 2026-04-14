@@ -246,7 +246,7 @@ export async function runDebate(prdPath: string, project: string): Promise<void>
   // Rick Rubin distills the essence
   const essencePath = resolve(roundsDir, "essence.md");
   log("DEBATE: Rick Rubin essence");
-  await runAgent("rick-rubin-essence", rickRubinEssence(roundsDir, essencePath), 15, "debate", "haiku");
+  await runAgent("rick-rubin-essence", rickRubinEssence(roundsDir, essencePath), 15, "debate", "sonnet");
 
   // Phil Jackson consolidates decisions
   const decisionsPath = resolve(roundsDir, "decisions.md");
@@ -279,7 +279,7 @@ Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`, DEF
   // Sara Blakely gut-check
   const planPath = resolve(planDir, "phase-1-plan.md");
   const saraPath = resolve(planDir, "sara-blakely-review.md");
-  await runAgent("sara-blakely-gutcheck", saraBlakelyGutCheck(planPath, saraPath), 15, "plan", "haiku");
+  await runAgent("sara-blakely-gutcheck", saraBlakelyGutCheck(planPath, saraPath), 15, "plan", "sonnet");
 
   log("PHASE DONE: plan");
 }
@@ -390,12 +390,12 @@ export async function runCreativeReview(project: string): Promise<void> {
 
   // Batch 1: Jony + Maya (visual + copy)
   await Promise.all([
-    runAgent("jony-ive-review", jonyIveVisualReview(delDir, resolve(roundsDir, "review-jony-ive.md")), 15, "creative", "haiku"),
-    runAgent("maya-angelou-review", mayaAngelouCopyReview(delDir, resolve(roundsDir, "review-maya-angelou.md")), 15, "creative", "haiku"),
+    runAgent("jony-ive-review", jonyIveVisualReview(delDir, resolve(roundsDir, "review-jony-ive.md")), 15, "creative", "sonnet"),
+    runAgent("maya-angelou-review", mayaAngelouCopyReview(delDir, resolve(roundsDir, "review-maya-angelou.md")), 15, "creative", "sonnet"),
   ]);
 
   // Batch 2: Aaron solo (demo script is independent)
-  await runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20, "creative", "haiku");
+  await runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20, "creative", "sonnet");
 
   log("PHASE DONE: creative-review");
 }
@@ -408,14 +408,14 @@ export async function runBoardReview(project: string): Promise<void> {
 
   // Batch 1: Jensen + Oprah
   await Promise.all([
-    runAgent("jensen-huang-review", jensenHuangBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-jensen.md")), 20, "board", "haiku"),
-    runAgent("oprah-winfrey-review", oprahWinfreyBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-oprah.md")), 20, "board", "haiku"),
+    runAgent("jensen-huang-review", jensenHuangBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-jensen.md")), 20, "board", "sonnet"),
+    runAgent("oprah-winfrey-review", oprahWinfreyBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-oprah.md")), 20, "board", "sonnet"),
   ]);
 
   // Batch 2: Warren + Shonda
   await Promise.all([
-    runAgent("warren-buffett-review", warrenBuffettBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-buffett.md")), 20, "board", "haiku"),
-    runAgent("shonda-rhimes-review", shondaRhimesBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-shonda.md")), 20, "board", "haiku"),
+    runAgent("warren-buffett-review", warrenBuffettBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-buffett.md")), 20, "board", "sonnet"),
+    runAgent("shonda-rhimes-review", shondaRhimesBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-shonda.md")), 20, "board", "sonnet"),
   ]);
 
   // Consolidate board verdict
@@ -426,7 +426,7 @@ Write ${resolve(roundsDir, "board-verdict.md")} — consolidated verdict:
 - Overall verdict: PROCEED, HOLD, or REJECT
 - Conditions for proceeding (if any)
 
-Also write ${resolve(roundsDir, "shonda-retention-roadmap.md")} — what keeps users coming back, v1.1 features.`, DEFAULT_MAX_TURNS, "board", "haiku");
+Also write ${resolve(roundsDir, "shonda-retention-roadmap.md")} — what keeps users coming back, v1.1 features.`, DEFAULT_MAX_TURNS, "board", "sonnet");
 
   log("PHASE DONE: board-review");
 }
@@ -449,7 +449,7 @@ Do NOT push yet — the merge step handles that.`, DEFAULT_MAX_TURNS, "ship", "h
 
   // Marcus Aurelius retrospective
   const retroPath = resolve(roundsDir, "retrospective.md");
-  await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20, "ship", "haiku");
+  await runAgent("marcus-aurelius-retro", marcusAureliusRetrospective(project, roundsDir, retroPath), 20, "retro", "sonnet");
 
   // C3: Deterministic merge-and-push via execSync — no agent guessing
   log("SHIP: Running deterministic merge-and-push via bash");
