@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-13
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,35 +9,130 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 13 |
-| Total Commits | 23+ |
-| PRs Merged | 4 |
-| Test Specs Added | 2 |
-| Source Files Added | 19+ |
-| Documentation Files | 53+ |
+| Projects Shipped | 16 |
+| Total Commits | 249+ |
+| PRs Merged | 26+ |
+| Source files (LocalGenius) | 270+ |
+| Source files (GM Website) | 35+ |
+| Source files (Plugin) | 50+ |
+| Test specs (LocalGenius) | 770+ |
+| Test specs (Sites) | 83 |
+| GitHub repos | 3 (localgenius, great-minds, great-minds-plugin) |
+| Archived repos | 2 (localgenius-sites, greatminds-website) |
+| Live deployments | 2 (localgenius.company, greatminds.company) |
+| Agent personas | 14 + 2 internal consolidation functions |
+| Jensen board reviews | 22 |
+| Margaret QA reports | 80+ |
+| Workshop video | Rendered (2 MP4s) |
+| Blog posts | 6 |
+| VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
+| Shipyard AI | New company on DO — website, pipeline, credit system |
+| GSD integration | 3 skills + context-guard hook in plugin |
+| Marcus retrospectives | 14 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
-| Retrospectives | 14 |
 
 ---
 
 ## Projects Completed
 
-| Project | Date | Score | Key Achievement |
-|---------|------|-------|-----------------|
-| **shipyard-maintenance** | 2026-04-12 | 5/10 | Infrastructure audit, tracker-reality sync |
-| **localgenius-interactive-demo** | 2026-04-10 | N/A | Direct ship cycle, demonstration framework |
-| **shipyard-portfolio** | 2026-04-10 | 5/10 | Ship phase validation, process discipline |
-| **localgenius-lite** | 2026-04-09 | N/A | Direct ship cycle, retrospective discipline |
-| **demo-video** | 2026-04-09 | 6/10 | Pipeline validation, 7 projects shipped, process proven |
-| **promptforge-prd** | 2026-04-09 | 5/10 | PRD tracking initialization, process infrastructure |
-| **workshop-tutorial** | 2026-04-09 | N/A | Ship pipeline tutorial, process demonstration |
-| **Pulse (localgenius-benchmark-engine)** | 2026-04-09 | N/A | 4,447 LOC benchmarking system, clean architecture |
-| **Hindsight (git-intelligence)** | 2026-04-09 | 5.6/10 | 93-line core, mentor voice, zero config |
-| **pipeline-test** | 2026-04-09 | N/A | Pipeline validation, smoke test |
-| plugin-audit | 2026-04-08 | N/A | Critical security fixes |
-| anti-hallucination | 2026-04-07 | N/A | Doc reading enforcement |
+| Project | Date | Key Deliverables | Retrospective |
+|---------|------|-----------------|---------------|
+| daemon-fixes | 2026-04-13 | Auto-commit wiring, GitHub label query fix, daemon stability | memory/daemon-fixes-retrospective.md |
+| agentlog | 2026-04-13 | Consolidation ship: metrics formalization, scoreboard updates, process tracking | memory/agentlog-retrospective.md |
+| membership-fix | 2026-04-12 | MemberShip plugin pattern fixes: 228 violations corrected, 3 files | memory/membership-fix-retrospective.md |
+| finish-plugins | 2026-04-12 | Consolidation ship: 4 files, 2 PRDs, status/scoreboard updates | memory/finish-plugins-retrospective.md |
+| agentbench | 2026-04-12 | Ship report, retrospective, process adherence | memory/agentbench-retrospective.md |
+| project-audit | 2026-04-09 | Templates cleanup, daemon migration docs, AGENTS.md runtime update | memory/project-audit-retrospective.md |
+| emdash-marketplace | 2026-04-09 | Document transformation CLI, 5 design themes, dialectic process, board review | memory/emdash-marketplace-retrospective.md |
+| systemd-daemon | 2026-04-09 | tmux→systemd migration, archived launch.sh, updated AGENTS.md runtime docs | memory/systemd-daemon-retrospective.md |
+| readme-update | 2026-04-09 | README overhaul, 14 agents documented, 17 skills, daemon architecture, honest constraints | memory/readme-update-retrospective.md |
+| workshop-tutorial | 2026-04-09 | Ship pipeline tutorial, process demonstration | N/A |
+| Pulse (localgenius-benchmark-engine) | 2026-04-09 | 4,447 LOC benchmarking system, clean architecture | N/A |
+| Hindsight (git-intelligence) | 2026-04-09 | 93-line core, mentor voice, zero config | N/A |
+| plugin-audit | 2026-04-08 | Remove hardcoded paths, fix daemon deps, update docs | memory/plugin-audit-retrospective.md |
+| promptops | 2026-04-11 | Daemon v2.0, PID lockfile, queue persistence, deterministic ops | memory/promptops-retrospective.md |
+| finish-plugins | 2026-04-11 | Consolidation ship: 32 files, 2,842 lines, daemon v2.0, debate artifacts | memory/finish-plugins-retrospective.md |
+| anti-hallucination | 2026-04-07 | BANNED-PATTERNS, DO-NOT-REPEAT, doc reading enforcement | memory/anti-hallucination-retrospective.md |
+
+---
+
+## Marcus Aurelius Retrospectives
+
+| Project | Date | Key Principle | Location |
+|---------|------|--------------|----------|
+| daemon-fixes | 2026-04-13 | A plan is not a fix. A fix is not shipped. | memory/daemon-fixes-retrospective.md |
+| agentlog | 2026-04-13 | What you measure is what you become | memory/agentlog-retrospective.md |
+| membership-fix | 2026-04-12 | Systematic passes beat incremental fixes | memory/membership-fix-retrospective.md |
+| agentbench | 2026-04-12 | Small discipline is not small | memory/agentbench-retrospective.md |
+| project-audit | 2026-04-09 | Maintenance is infrastructure, not overhead | memory/project-audit-retrospective.md |
+| anti-hallucination | 2026-04-08 | Systems beat willpower | memory/anti-hallucination-retrospective.md |
+| plugin-audit | 2026-04-09 | Path references are infrastructure decisions | memory/plugin-audit-retrospective.md |
+| readme-update | 2026-04-09 | Comprehensibility before completeness | memory/readme-update-retrospective.md |
+| systemd-daemon | 2026-04-09 | Visibility beats elegance | memory/systemd-daemon-retrospective.md |
+| emdash-marketplace | 2026-04-09 | Discovery is architecture, not marketing | memory/emdash-marketplace-retrospective.md |
+| promptops | 2026-04-11 | Trust bash, not instructions | memory/promptops-retrospective.md |
+| finish-plugins | 2026-04-11 | Infrastructure enables velocity | memory/finish-plugins-retrospective.md |
+| finish-plugins | 2026-04-12 | Clean the metadata before declaring victory | memory/finish-plugins-retrospective.md |
+
+**Score: 11 retrospectives, 11 principles extracted**
+
+---
+
+## Project Metrics (promptops)
+
+| Metric | Value |
+|--------|-------|
+| Tasks Completed | 4/4 |
+| Files Changed | 4 |
+| Risk Mitigations | 4 (PID lockfile, queue persistence, abort flag, strict parsing) |
+| Process Score | 8/10 (Marcus Aurelius) |
+| Ship Report | deliverables/promptops/ship-report.md |
+| Retrospective | memory/promptops-retrospective.md |
+| Key Principle | Trust bash, not instructions |
+
+---
+
+## Pipeline Summary (promptops)
+
+| Phase | Status | Date |
+|-------|--------|------|
+| Execute | Complete | 2026-04-11 |
+| Verify | Complete (manual) | 2026-04-11 |
+| Ship | Complete | 2026-04-11 |
+
+---
+
+## Key Decisions Made (promptops)
+
+| # | Decision | Rationale |
+|---|----------|-----------|
+| 1 | Deterministic git operations | `execSync('git add -A')` always works; agent prompts sometimes don't |
+| 2 | Defense in depth | Multiple layers (PID, queue, abort, parsing) each catch what previous missed |
+| 3 | Strict verdict parsing | Require `## Verdict: PASS/BLOCK` format to eliminate ambiguity |
+| 4 | Minimal scope | Four files changed, no new dependencies |
+
+---
+
+## promptops Learnings
+
+### Key Principle: Trust Bash, Not Instructions
+When an operation must happen, make it happen with code. Agent prompts are requests; shell commands are demands.
+
+### What Worked
+1. **Deterministic operations beat agent instructions** — bash commands execute reliably
+2. **Defense in depth** — PID lockfiles prevent duplicate daemons, queue persistence survives crashes
+3. **Strict verdict parsing** — explicit format eliminates ambiguous results
+4. **Small surface area** — four files, no new dependencies, robust without complexity
+
+### What to Improve
+1. No formal test suite for daemon behavior
+2. Documentation lag (changes not yet reflected in README)
+3. Testing in production (no staging environment for daemon)
+
+### Key Quote
+> "The impediment to action advances action. What stands in the way becomes the way." — Marcus Aurelius retrospective
 
 ---
 
@@ -159,25 +254,80 @@
 
 ---
 
-## LocalGenius Lite Learnings
+## Agent Participation (emdash-marketplace / Wardrobe)
 
-### Key Principle: Verify Before You Ship
-Ship fast and ship well are not opposites—they are sequential. Fast deliberation → fast building → rigorous verification → shipped product. Skip verification and you ship fast *today* and slowly forever after.
+| Agent | Role | Contributions |
+|-------|------|---------------|
+| **Steve Jobs** | Creative Director | Won naming "Wardrobe," five themes, transformation language |
+| **Elon Musk** | Technical Director | Won no live preview, static infrastructure, <3s install |
+| **Maya Angelou** | Copy Review | 3 key lines rewritten, established voice |
+| **Warren Buffett** | Board Review | 5/10, "Feature masquerading as business" |
+| **Oprah Winfrey** | Board Review | 7.5/10, trust signals advocacy |
+| **Shonda Rhimes** | Board Review | 4/10, 8-page retention roadmap |
+| **Jensen Huang** | Board Review | Platform architecture concerns |
+| **Marcus Aurelius** | Retrospective | 6/10 process score, 403-line retrospective |
+| **Phil Jackson** | Orchestrator | 370-line decisions document |
+
+---
+
+## Quality Gate Results (emdash-marketplace)
+
+| Gate | Result | Details |
+|------|--------|---------|
+| **Maya Angelou Copy Review** | PASS | 3 lines rewritten, voice established |
+| **Board Verdict** | HOLD | Discovery/retention/monetization gaps |
+| **Dialectic Synthesis** | PASS | Steve vs Elon produced genuine synthesis |
+
+---
+
+## Board Verdict Summary (emdash-marketplace)
+
+**Composite Score:** 5.4/10
+
+| Reviewer | Score | Key Quote |
+|----------|-------|-----------|
+| Warren Buffett | 5/10 | "You built a feature masquerading as a business." |
+| Shonda Rhimes | 4/10 | "No retention mechanics = no engagement." |
+| Oprah Winfrey | 7.5/10 | "Trust signals present, but transformation proof missing." |
+
+**Verdict**: HOLD — awaiting discovery, retention, and monetization work.
+
+---
+
+## Key Decisions Made (emdash-marketplace)
+
+| # | Decision | Winner | Key Quote |
+|---|----------|--------|-----------|
+| 1 | Product name "Wardrobe" | Steve Jobs | "Names outlast code." |
+| 2 | Five themes vs three | Steve Jobs | "Emotional range worth the engineering." |
+| 3 | No live preview | Elon Musk | "30 days engineering for zero users." |
+| 4 | Static infrastructure | Elon Musk | "CLI-first, R2 distribution, no ops." |
+| 5 | Transformation copy | Steve Jobs | "Your site is now wearing Ember." |
+| 6 | <3 second install | Consensus | "If it's slow, we've failed." |
+
+---
+
+## Emdash Marketplace (Wardrobe) Learnings
+
+### Key Principle: Discovery is Architecture, Not Marketing
+If users can't find your product, the product doesn't exist. Discovery is as important as the CLI itself.
 
 ### What Worked
-1. **Ship discipline proved itself** — Clear objective, no scope creep, delivered working product
-2. **Constraints became the moat** — Pre-written FAQ templates eliminate hallucination risk
-3. **Decisions stayed locked** — Once decided, no second-guessing during build
-4. **Execution over deliberation** — Philosophy without action is useless
+1. **Dialectic produced synthesis** — Steve vs Elon opposition created better product than either alone
+2. **Scope discipline under pressure** — Board HOLD became specification, not rejection
+3. **Five themes were distinct** — Ember, Forge, Slate, Drift, Bloom each have emotional clarity
+4. **Copy treated as first-class work** — Maya Angelou's review defined the voice
+5. **Board diversity revealed blind spots** — Four reviewers, four different axes
 
 ### What to Improve
-1. **Skipped board verification** — Fast but risky; conditions not verified before ship
-2. **Missed institutional memory** — Implemented decisions without understanding reasons
-3. **Pipeline stages exist for a reason** — Each reveals different truths
-4. **Ship-only cycles lack conviction** — Conviction comes from surviving challenge
+1. **Board review at PRD stage** — structural concerns should be caught before build
+2. **Distinguish MVP from launchable** — MVP proves value; launchable includes discovery
+3. **Risk mitigations enforced** — if you say "three themes," ship three
+4. **Measurement infrastructure built** — even if features are deferred
+5. **Discovery is Phase 1, not Phase 2** — never defer how users find you
 
 ### Key Quote
-> "Verify before you ship. Build only what is verified. Verify only what is built." — Marcus Aurelius retrospective
+> "You can build a perfect transformation and still fail if no one knows where to find it." — Marcus Aurelius retrospective
 
 ---
 
@@ -227,68 +377,12 @@ When authority says "proceed with conditions," add those conditions to the requi
 
 ---
 
-## Demo-Video Learnings (from Marcus Aurelius)
-
-### Key Principle: Front-load the Hard Questions
-When authority will eventually ask "What's the moat? What's the revenue path?" — ask those questions at PRD time, not verdict time.
-
-### What Worked
-1. **Pipeline survived contact with reality** — Complete GSD cycle executed without deviation
-2. **Documentation became first-class** — 300+ lines of documentation per project
-3. **Dialectic produced genuine synthesis** — Steve vs Elon decisions were not compromises
-4. **Constraints forced clarity** — Hindsight stayed at 93 LOC, Pulse maintained clean architecture at 9x scope
-5. **Board review was honest** — 5.6/10 composite score revealed strategic gaps
-
-### What to Improve
-1. Move board engagement forward to planning, not verdict
-2. Treat "proceed with conditions" as binding requirements, not deferrals
-3. Assign named owners to every deferred item
-4. Involve creative reviewers at outline stage, before architecture
-5. Couple process score to product outcomes
-
-### Key Quote
-> "Front-load the hard questions. Distribute the burden of truth-telling early." — Marcus Aurelius retrospective
-
-**Process Score:** 6/10
-
----
-
 ## Live Deployments
 
-*No live URLs for git-intelligence (local tool, not deployed service)*
-
----
-
-## Shipyard Maintenance Learnings (from Marcus Aurelius)
-
-### Key Principle: Verify the Verifier
-The system that checks whether work is done must itself be checked. Trust but verify applies to your own infrastructure.
-
-### What Worked
-1. **Honest inventory** — Looked at what existed vs. what was claimed
-2. **Scope discipline** — Maintenance only, no feature creep
-3. **Pipeline integrity** — 11 projects shipped means the pipeline works
-
-### What Didn't Work
-1. **Memory files never created** — Declared done but not done
-2. **Deferred cleanup accumulated** — 13 feature branches unmerged
-3. **No verification step for infrastructure** — We verify code but not agency systems
-
-### Infrastructure Gaps Discovered
-- MEMORY.md referenced 8 retrospective files; memory/ directory was empty
-- 13 feature branches accumulated without review
-- Tracker indices diverged from reality
-
-### Recommendations
-1. Add infrastructure audit to monthly review
-2. Require file creation before index update
-3. Set 14-day branch age limit with review
-4. Automate tracker validation
-
-### Key Quote
-> "The impediment to action advances action. What stands in the way becomes the way." — Marcus Aurelius
-
-**Process Score:** 5/10
+| Service | URL | Status |
+|---------|-----|--------|
+| LocalGenius | localgenius.company | Live |
+| Great Minds | greatminds.company | Live |
 
 ---
 

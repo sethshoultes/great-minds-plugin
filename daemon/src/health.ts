@@ -163,14 +163,39 @@ export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
   log("INTAKE: Polling GitHub for p0/p1 issues");
 
   const fetchRepo = async (repo: string): Promise<IntakeIssue[]> => {
+    // Helper: fetch issues by a single label
+    const fetchByLabel = (label: string): any[] => {
+      try {
+        const output = execSync(
+          `gh issue list --repo "${repo}" --state open --label "${label}" --json number,title,body,labels,author,createdAt,url 2>&1`,
+          { encoding: "utf-8", timeout: 15_000 }
+        );
+        return JSON.parse(output || "[]");
+      } catch (err) {
+        const errMsg = String(err);
+        if (errMsg.includes("auth") || errMsg.includes("login") || errMsg.includes("401")) {
+          log("INTAKE ERROR: gh CLI not authenticated. Run 'gh auth login' to configure.");
+          throw new Error("gh CLI not authenticated");
+        }
+        log(`INTAKE: Error fetching ${repo} label=${label}: ${errMsg}`);
+        return [];
+      }
+    };
+
     try {
-      // Note: gh CLI --label uses OR logic by default when multiple labels specified
-      const output = execSync(
-        `gh issue list --repo "${repo}" --state open --label p0,p1 --json number,title,body,labels,author,createdAt,url 2>&1`,
-        { encoding: "utf-8", timeout: 15_000 }
-      );
-      const parsed = JSON.parse(output || "[]");
-      return parsed.map((issue: any) => ({
+      // Fetch p0 and p1 separately (gh CLI --label a,b syntax is unreliable)
+      const p0Issues = fetchByLabel("p0");
+      const p1Issues = fetchByLabel("p1");
+
+      // Deduplicate by issue number (issues with both labels appear in both results)
+      const seen = new Set<number>();
+      const merged = [...p0Issues, ...p1Issues].filter((issue) => {
+        if (seen.has(issue.number)) return false;
+        seen.add(issue.number);
+        return true;
+      });
+
+      return merged.map((issue: any) => ({
         repo,
         number: issue.number,
         title: issue.title,
@@ -181,12 +206,11 @@ export async function pollGitHubIssuesWithLabels(): Promise<IntakeIssue[]> {
         url: issue.url,
       }));
     } catch (err) {
-      const errMsg = String(err);
-      if (errMsg.includes("auth") || errMsg.includes("login") || errMsg.includes("401")) {
-        log("INTAKE ERROR: gh CLI not authenticated. Run 'gh auth login' to configure.");
-        throw new Error("gh CLI not authenticated");
+      // Re-throw auth errors, swallow others
+      if (err instanceof Error && err.message === "gh CLI not authenticated") {
+        throw err;
       }
-      log(`INTAKE: Error fetching ${repo}: ${errMsg}`);
+      log(`INTAKE: Error fetching ${repo}: ${err}`);
       return [];
     }
   };
@@ -388,6 +412,9 @@ export async function runHeartbeat(): Promise<string[]> {
   } else {
     log(`HEARTBEAT: ${problems.length} problem(s): ${problems.join(", ")}`);
   }
+
+  // Auto-commit and push any dirty files across configured repos
+  gitAutoCommit();
 
   return problems;
 }

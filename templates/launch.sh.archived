@@ -1,5 +1,23 @@
 #!/bin/bash
-# Great Minds Agency — Launch Script
+# ARCHIVED: Great Minds Agency — Legacy tmux Launch Script
+#
+# DEPRECATION NOTICE:
+# This script has been ARCHIVED as part of the systemd migration.
+# The daemon now runs via systemd instead of tmux.
+#
+# NEW CANONICAL COMMANDS:
+#   Start:   sudo systemctl start shipyard-daemon
+#   Stop:    sudo systemctl stop shipyard-daemon
+#   Status:  systemctl status shipyard-daemon
+#   Logs:    journalctl -u shipyard-daemon -f
+#
+# This file is kept for historical reference only.
+# DO NOT USE THIS SCRIPT IN PRODUCTION.
+#
+# Original file: /home/agent/great-minds-plugin/templates/launch.sh
+# Archived: 2026-04-09 during systemd migration
+# ============================================================================
+#
 # Usage: ./launch.sh [project-name] [num-extra-workers]
 #
 # This wraps claude-swarm for the Great Minds agency workflow.

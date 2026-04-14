@@ -384,12 +384,14 @@ export async function runCreativeReview(project: string): Promise<void> {
   const delDir = resolve(DELIVERABLES_DIR, project);
   const roundsDir = resolve(ROUNDS_DIR, project);
 
-  // Jony Ive + Maya Angelou + Aaron Sorkin in parallel
+  // Batch 1: Jony + Maya (visual + copy)
   await Promise.all([
     runAgent("jony-ive-review", jonyIveVisualReview(delDir, resolve(roundsDir, "review-jony-ive.md")), 15),
     runAgent("maya-angelou-review", mayaAngelouCopyReview(delDir, resolve(roundsDir, "review-maya-angelou.md")), 15),
-    runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20),
   ]);
+
+  // Batch 2: Aaron solo (demo script is independent)
+  await runAgent("aaron-sorkin-demo", aaronSorkinDemoScript(project, delDir, resolve(roundsDir, "demo-script.md")), 20);
 
   log("PHASE DONE: creative-review");
 }
@@ -400,10 +402,14 @@ export async function runBoardReview(project: string): Promise<void> {
   const roundsDir = resolve(ROUNDS_DIR, project);
   const prdPath = resolve(PRDS_DIR, `${project}.md`);
 
-  // All 4 board members review in parallel
+  // Batch 1: Jensen + Oprah
   await Promise.all([
     runAgent("jensen-huang-review", jensenHuangBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-jensen.md")), 20),
     runAgent("oprah-winfrey-review", oprahWinfreyBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-oprah.md")), 20),
+  ]);
+
+  // Batch 2: Warren + Shonda
+  await Promise.all([
     runAgent("warren-buffett-review", warrenBuffettBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-buffett.md")), 20),
     runAgent("shonda-rhimes-review", shondaRhimesBoardReview(project, delDir, prdPath, resolve(roundsDir, "board-review-shonda.md")), 20),
   ]);

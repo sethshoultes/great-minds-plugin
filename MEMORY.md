@@ -1,6 +1,6 @@
 # Great Minds Agency — Memory Index
 
-**Last Updated:** 2026-04-09
+**Last Updated:** 2026-04-13
 **Purpose:** Index of project learnings for future reference
 
 ---
@@ -9,12 +9,14 @@
 
 | Project | Date | File | Process Score |
 |---------|------|------|---------------|
-| localgenius-lite | 2026-04-09 | [memory/localgenius-lite-retrospective.md](memory/localgenius-lite-retrospective.md) | N/A |
-| demo-video | 2026-04-09 | [memory/demo-video-retrospective.md](memory/demo-video-retrospective.md) | 6/10 |
+| agentlog | 2026-04-13 | [memory/agentlog-retrospective.md](memory/agentlog-retrospective.md) | 8/10 |
+| agentbench | 2026-04-12 | [memory/agentbench-retrospective.md](memory/agentbench-retrospective.md) | 8/10 |
+| finish-plugins | 2026-04-11 | [memory/finish-plugins-retrospective.md](memory/finish-plugins-retrospective.md) | 8/10 |
+| promptops | 2026-04-11 | [memory/promptops-retrospective.md](memory/promptops-retrospective.md) | 8/10 |
+| emdash-marketplace (Wardrobe) | 2026-04-09 | [memory/emdash-marketplace-retrospective.md](memory/emdash-marketplace-retrospective.md) | 6/10 |
 | git-intelligence (Hindsight) | 2026-04-09 | [memory/git-intelligence-retrospective.md](memory/git-intelligence-retrospective.md) | 7/10 |
 | github-intake | 2026-04-09 | [memory/github-intake-retrospective.md](memory/github-intake-retrospective.md) | N/A |
 | localgenius-benchmark-engine | 2026-04-09 | [memory/localgenius-benchmark-engine-retrospective.md](memory/localgenius-benchmark-engine-retrospective.md) | N/A |
-| pipeline-test | 2026-04-09 | [memory/pipeline-test-retrospective.md](memory/pipeline-test-retrospective.md) | N/A |
 | plugin-audit | 2026-04-08 | [memory/plugin-audit-retrospective.md](memory/plugin-audit-retrospective.md) | N/A |
 | anti-hallucination | 2026-04-07 | [memory/anti-hallucination-retrospective.md](memory/anti-hallucination-retrospective.md) | N/A |
 
@@ -24,11 +26,15 @@
 
 ### Process Learnings
 
-1. **Front-load strategic questions** — moat, revenue, compounding before creative investment
+1. **What you measure is what you become** — the scoreboard disciplines toward honest evaluation (agentlog)
+2. **Small discipline is not small** — the agency that commits cleanly to small projects commits cleanly to large ones (agentbench)
+2. **Front-load strategic questions** — moat, revenue, compounding before creative investment
 2. **Require technical spike** — 2-hour PoC before multi-day deliberation
 3. **Involve creative reviewers early** — at outline stage, not finished artifacts
 4. **Assign owners to deferrals** — name, date, kill condition for every "v2" item
 5. **Reconcile divergent scores** — 3+ point spread needs explicit resolution
+6. **Discovery is architecture, not marketing** — if users can't find it, it doesn't exist (emdash-marketplace)
+7. **Distinguish MVP from launchable** — MVP proves value; launchable includes discovery/retention (emdash-marketplace)
 
 ### Technical Learnings
 
@@ -37,6 +43,9 @@
 3. **Parallel execution matters** — Promise.all() for independent git commands
 4. **Mentor voice > alarm voice** — "Tread carefully" not "WARNING: DANGER"
 5. **Named constants improve maintainability** — extract magic numbers to config objects
+6. **Trust bash, not instructions** — agent prompts are requests; shell commands are demands (promptops)
+7. **Defense in depth** — PID lockfiles, queue persistence, abort flags: each layer catches what previous missed (promptops)
+8. **Strict verdict parsing** — require explicit format to eliminate ambiguity (promptops)
 
 ### Agency Learnings
 
@@ -66,11 +75,14 @@
 
 ```
 memory/
-  demo-video-retrospective.md          # Pipeline demonstration — 6/10 process score
+  agentlog-retrospective.md            # What you measure — 8/10 process score
+  agentbench-retrospective.md          # Small discipline — 8/10 process score
+  finish-plugins-retrospective.md      # Consolidation — 8/10 process score
+  promptops-retrospective.md           # Daemon ops — 8/10 process score
+  emdash-marketplace-retrospective.md  # Wardrobe — 6/10 process score
   git-intelligence-retrospective.md    # Hindsight — 7/10 process score
   github-intake-retrospective.md       # GitHub intake project
   localgenius-benchmark-engine-retrospective.md
-  pipeline-test-retrospective.md       # Pipeline validation smoke test
   plugin-audit-retrospective.md        # Security fixes
   anti-hallucination-retrospective.md  # Doc reading enforcement
 ```
