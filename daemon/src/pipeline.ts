@@ -22,7 +22,7 @@ import {
   warrenBuffettBoardReview, shondaRhimesBoardReview,
   marcusAureliusRetrospective,
 } from "./agents.js";
-import { log } from "./logger.js";
+import { log, logError } from "./logger.js";
 import { TokenLedger, estimateCost } from "./token-ledger.js";
 
 // ─── Token Ledger ───────────────────────────────────────────
