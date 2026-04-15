@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 19 |
-| Total Commits | 253+ |
+| Projects Shipped | 20 |
+| Total Commits | 254+ |
 | PRs Merged | 28+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 16 |
+| Marcus retrospectives | 17 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -39,6 +39,7 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| scoreboard-update | 2026-04-15 | Security guardrails formalization: secrets detection patterns (cfat_, sk-, gho_), bash scanning commands, PRD doctrine | memory/scoreboard-update-retrospective.md |
 | localgenius-frontend-launch | 2026-04-15 | Consolidation ship: project structure, ship methodology, pipeline integration | memory/localgenius-frontend-launch-retrospective.md |
 | blog-model-selection | 2026-04-15 | Model allocation strategy, token efficiency optimization, daemon batching | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | Auto-commit wiring, GitHub label query fix, daemon stability | memory/daemon-fixes-retrospective.md |
@@ -64,6 +65,7 @@
 
 | Project | Date | Key Principle | Location |
 |---------|------|--------------|----------|
+| scoreboard-update | 2026-04-15 | Doctrine is preventive medicine | memory/scoreboard-update-retrospective.md |
 | localgenius-frontend-launch | 2026-04-15 | An organized beginning is half the success | memory/localgenius-frontend-launch-retrospective.md |
 | blog-model-selection | 2026-04-15 | Match the tool to the work, not the work to the tool | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | A plan is not a fix. A fix is not shipped. | memory/daemon-fixes-retrospective.md |
@@ -81,7 +83,7 @@
 | finish-plugins | 2026-04-12 | Clean the metadata before declaring victory | memory/finish-plugins-retrospective.md |
 | localgenius-benchmark-engine | 2026-04-09 | Separate the verdict from the conditions | memory/localgenius-benchmark-engine-retrospective.md |
 
-**Score: 16 retrospectives, 16 principles extracted**
+**Score: 17 retrospectives, 17 principles extracted**
 
 ---
 
