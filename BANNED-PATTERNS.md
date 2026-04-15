@@ -41,3 +41,26 @@ grep -rn '/Users/' agents/ crons/ skills/ templates/ --include="*.md" --include=
 ```
 
 Any match = BLOCK. Replace with environment variables or auto-detection before merging.
+
+## Secrets in Files
+
+| Pattern | Why It's Wrong | Correct Alternative |
+|---------|---------------|-------------------|
+| `cfat_` (Cloudflare API token) | Secrets in code/docs trigger GitHub push protection and leak credentials | Use `$CLOUDFLARE_API_TOKEN` env var reference |
+| `sk-` followed by 20+ chars | OpenAI/Anthropic API key | Use `$API_KEY` or `$ANTHROPIC_API_KEY` env var |
+| `gho_` (GitHub OAuth token) | GitHub token | Use `gh auth` or `$GITHUB_TOKEN` env var |
+| Any 32+ char hex string that looks like an account ID | Hardcoded account identifiers | Use `$CLOUDFLARE_ACCOUNT_ID` or similar env var |
+
+### How to Check
+
+```bash
+grep -rn "cfat_\|sk-[a-zA-Z0-9]\{20,\}\|gho_" --include="*.md" --include="*.ts" --include="*.sh" .
+```
+
+Any match = BLOCK. Replace with env var references.
+
+### PRD Rule
+
+**NEVER include actual API tokens, keys, or secrets in PRDs.** Always reference environment variables:
+- Deploy command: `CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN npx wrangler pages deploy out`
+- Or simply: `npx wrangler pages deploy out` (token is in the daemon systemd env)
