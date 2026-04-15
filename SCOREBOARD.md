@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 18 |
-| Total Commits | 252+ |
+| Projects Shipped | 19 |
+| Total Commits | 253+ |
 | PRs Merged | 28+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
@@ -28,7 +28,7 @@
 | VPS | DigitalOcean droplet (164.90.151.82) — 8GB/4vCPU |
 | Shipyard AI | New company on DO — website, pipeline, credit system |
 | GSD integration | 3 skills + context-guard hook in plugin |
-| Marcus retrospectives | 15 |
+| Marcus retrospectives | 16 |
 | Debate Rounds | 6 |
 | Board Reviews | 5 |
 | Creative Reviews | 2 |
@@ -39,6 +39,7 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| localgenius-frontend-launch | 2026-04-15 | Consolidation ship: project structure, ship methodology, pipeline integration | memory/localgenius-frontend-launch-retrospective.md |
 | blog-model-selection | 2026-04-15 | Model allocation strategy, token efficiency optimization, daemon batching | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | Auto-commit wiring, GitHub label query fix, daemon stability | memory/daemon-fixes-retrospective.md |
 | agentlog | 2026-04-13 | Consolidation ship: metrics formalization, scoreboard updates, process tracking | memory/agentlog-retrospective.md |
@@ -63,6 +64,7 @@
 
 | Project | Date | Key Principle | Location |
 |---------|------|--------------|----------|
+| localgenius-frontend-launch | 2026-04-15 | An organized beginning is half the success | memory/localgenius-frontend-launch-retrospective.md |
 | blog-model-selection | 2026-04-15 | Match the tool to the work, not the work to the tool | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | A plan is not a fix. A fix is not shipped. | memory/daemon-fixes-retrospective.md |
 | agentlog | 2026-04-13 | What you measure is what you become | memory/agentlog-retrospective.md |
@@ -79,7 +81,45 @@
 | finish-plugins | 2026-04-12 | Clean the metadata before declaring victory | memory/finish-plugins-retrospective.md |
 | localgenius-benchmark-engine | 2026-04-09 | Separate the verdict from the conditions | memory/localgenius-benchmark-engine-retrospective.md |
 
-**Score: 14 retrospectives, 14 principles extracted**
+**Score: 16 retrospectives, 16 principles extracted**
+
+---
+
+## Project Metrics (localgenius-frontend-launch)
+
+| Metric | Value |
+|--------|-------|
+| Tasks Completed | 1/1 |
+| Files Changed | 4 |
+| Commits | 1 |
+| Process Score | 9/10 (Marcus Aurelius) |
+| Ship Report | deliverables/localgenius-frontend-launch/ship-report.md |
+| Retrospective | memory/localgenius-frontend-launch-retrospective.md |
+| Key Principle | An organized beginning is half the success |
+
+---
+
+## Pipeline Summary (localgenius-frontend-launch)
+
+| Phase | Status | Date |
+|-------|--------|------|
+| Ship | Complete | 2026-04-15 |
+
+---
+
+## LocalGenius Frontend Launch Learnings
+
+### Key Principle: An Organized Beginning is Half the Success
+Don't defer the infrastructure of your project. Establish it cleanly, document it completely, verify it works. Infrastructure enables velocity.
+
+### What Worked
+1. **Consolidation ship approach** — Formalizing project setup before execution begins
+2. **Clear process gates** — Every step documented, every requirement explicit
+3. **Single-day delivery** — Proves the infrastructure works immediately
+4. **Replicable model** — Other launches can follow the same pattern
+
+### Key Quote
+> "The next time you're tempted to just start building, remember that 8 hours of process setup prevents 40 hours of mid-project chaos." — Marcus Aurelius retrospective
 
 ---
 
