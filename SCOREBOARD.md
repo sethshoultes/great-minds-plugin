@@ -1,6 +1,6 @@
 # Great Minds Agency — Scoreboard
 
-**Last Updated:** 2026-04-13
+**Last Updated:** 2026-04-15
 **Updated By:** Phil Jackson (orchestrator)
 
 ---
@@ -9,9 +9,9 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 17 |
-| Total Commits | 250+ |
-| PRs Merged | 26+ |
+| Projects Shipped | 18 |
+| Total Commits | 252+ |
+| PRs Merged | 28+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
 | Source files (Plugin) | 50+ |
@@ -39,6 +39,7 @@
 
 | Project | Date | Key Deliverables | Retrospective |
 |---------|------|-----------------|---------------|
+| blog-model-selection | 2026-04-15 | Model allocation strategy, token efficiency optimization, daemon batching | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | Auto-commit wiring, GitHub label query fix, daemon stability | memory/daemon-fixes-retrospective.md |
 | agentlog | 2026-04-13 | Consolidation ship: metrics formalization, scoreboard updates, process tracking | memory/agentlog-retrospective.md |
 | membership-fix | 2026-04-12 | MemberShip plugin pattern fixes: 228 violations corrected, 3 files | memory/membership-fix-retrospective.md |
@@ -62,6 +63,7 @@
 
 | Project | Date | Key Principle | Location |
 |---------|------|--------------|----------|
+| blog-model-selection | 2026-04-15 | Match the tool to the work, not the work to the tool | memory/blog-model-selection-retrospective.md |
 | daemon-fixes | 2026-04-13 | A plan is not a fix. A fix is not shipped. | memory/daemon-fixes-retrospective.md |
 | agentlog | 2026-04-13 | What you measure is what you become | memory/agentlog-retrospective.md |
 | membership-fix | 2026-04-12 | Systematic passes beat incremental fixes | memory/membership-fix-retrospective.md |
