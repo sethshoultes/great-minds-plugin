@@ -175,7 +175,7 @@ issues_major: {count}
 issues_minor: {count}
 ```
 
-If SHIP: Tell the user they can run `/agency-review` for a Jensen board review, then ship.
+If SHIP: Tell the user they can run `/agency-board-review` for a Jensen board review, then ship.
 If FIX FIRST: List the fixes. User can fix and re-run `/agency-verify`.
 If BLOCK: Escalate. May need `/agency-plan` re-run.
 
@@ -212,7 +212,7 @@ Agent(model: "haiku", subagent_type: "aaron-sorkin-screenwriter",
 
 The demo script serves dual purpose: it validates that the feature tells a coherent story, and it becomes raw material for marketing/docs.
 
-## QA Pipeline Checks (merged from /agency-qa)
+## QA Pipeline Checks
 
 In addition to the requirements-based UAT above, run these QA checks as part of Step 2:
 

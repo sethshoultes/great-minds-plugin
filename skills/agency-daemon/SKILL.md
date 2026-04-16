@@ -24,7 +24,9 @@ Or directly:
 cd "${PIPELINE_REPO:-$(git rev-parse --show-toplevel)}/daemon" && npx tsx src/daemon.ts
 ```
 
-## What It Replaces
+## What It Replaces (or Complements)
+
+The daemon can replace cron scripts for full pipeline automation, or run alongside them. Use crons (`/agency-crons`) for simpler setups or as a fallback if the daemon isn't running.
 
 | Old Cron Script | Daemon Equivalent |
 |----------------|-------------------|
@@ -72,6 +74,59 @@ Agent calls automatically retry up to 2 times with exponential backoff. If a pip
 ### Hung Agent Detection
 - **Agent timeout** (`AGENT_TIMEOUT_MS`, default 20 min): kills and retries individual agent calls that exceed the limit.
 - **Pipeline watchdog** (`PIPELINE_TIMEOUT_MS`, default 60 min): force-skips entire pipelines that run too long.
+
+## Hotfix Fast Path
+
+PRDs with `hotfix: true` in frontmatter or "fix/hotfix/patch/config" in the title are auto-detected and run through a fast pipeline:
+
+```
+plan → structured-build → QA × 1 → ship
+```
+
+Skips: debate, QA-2, creative review, board review. Completes in ~15min vs 60min.
+
+To trigger, add frontmatter to your PRD:
+```markdown
+---
+hotfix: true
+---
+# PRD: Fix Something
+```
+
+Or just include "fix", "hotfix", "patch", or "config" in the PRD title.
+
+## Structured Build
+
+All builds (hotfix and full) use a 3-step structured approach:
+
+1. **build-setup** — creates `spec.md` (goals + verification criteria), `todo.md` (atomic subtasks with checkboxes), and `tests/` (verification scripts) before any code is written
+2. **builder** — works through `todo.md` item by item, running tests after each, checking off completed tasks
+3. **build-reviewer** (full pipeline only) — fresh sub-agent adversarially reviews spec vs implementation, triggers fix pass if BLOCK
+
+This prevents builder hangs by giving the agent structure, progress tracking, and self-verification.
+
+## GitHub Issue Intake
+
+The daemon polls GitHub every 5 minutes for issues labeled `p0`, `p1`, or `p2` across configured repos (see `config.ts` `GITHUB_REPOS`). New issues are auto-converted to PRDs in `prds/` and queued for pipeline processing.
+
+Converted issues are tracked in `.github-intake-state.json` to prevent duplicates. Configure which labels trigger intake via `INTAKE_PRIORITY_LABELS` env var.
+
+## Feature Dream Cycle
+
+When idle for 4+ hours, the daemon runs `featureDream()` — an autonomous improvement cycle where board member agents (Jensen, Warren, Oprah, Shonda) review the current product portfolio and suggest improvements. Output goes to `dreams/`.
+
+Dream types:
+- **IMPROVE** — board reviews current state, suggests optimizations
+- **DREAM** — Steve + Elon brainstorm new product ideas, voted on by the board
+
+## Pipeline Watchdog
+
+The daemon monitors running pipelines for hangs:
+
+- **Agent timeout** (`AGENT_TIMEOUT_MS`, default 20 min) — kills individual agent calls that exceed the limit, triggers retry (up to 2 attempts with exponential backoff)
+- **Pipeline watchdog** (`PIPELINE_TIMEOUT_MS`, default 60 min) — sets abort flag checked between phases; pipeline throws and archives PRD to `prds/failed/`
+
+Failed PRDs are moved to `prds/failed/`. To retry, move them back to `prds/`.
 
 ## Configuration
 
