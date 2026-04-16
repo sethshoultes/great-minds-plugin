@@ -5,7 +5,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 import { resolve } from "path";
 import { mkdir, writeFile } from "fs/promises";
 import { execSync } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import {
   REPO_PATH, PLUGIN_PATH, PRDS_DIR, ROUNDS_DIR, DELIVERABLES_DIR,
   SKILLS_DIR, DEFAULT_MAX_TURNS, AGENT_TIMEOUT_MS,
@@ -284,32 +284,121 @@ Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`, DEF
   log("PHASE DONE: plan");
 }
 
-export async function runBuild(project: string): Promise<void> {
-  log(`PHASE: build — project=${project}`);
+export async function runBuild(project: string, isHotfix = false): Promise<void> {
+  log(`PHASE: build${isHotfix ? " (HOTFIX)" : ""} — project=${project}`);
   const delDir = resolve(DELIVERABLES_DIR, project);
   await mkdir(delDir, { recursive: true });
 
-  const skillPath = resolve(SKILLS_DIR, "agency-execute/SKILL.md");
+  const prdPath = resolve(PRDS_DIR, `${project}.md`);
   const planPath = resolve(REPO_PATH, ".planning/phase-1-plan.md");
   const roundsDir = resolve(ROUNDS_DIR, project);
   const decisionsPath = resolve(roundsDir, "decisions.md");
+  const specPath = resolve(delDir, "spec.md");
+  const todoPath = resolve(delDir, "todo.md");
+  const testsDir = resolve(delDir, "tests");
 
-  await runAgent("builder", `Read and follow the instructions in ${skillPath}.
-Use project slug '${project}'. Read ${planPath} and ${decisionsPath} as inputs.
+  // ── Step 1: Create spec.md + todo.md + tests/ ──────────────
+  log("BUILD STEP 1: Creating spec.md, todo.md, tests/");
+  await runAgent("build-setup", `You are preparing a structured build.
 
-CRITICAL — RULES THAT WILL FAIL YOUR BUILD IF VIOLATED:
-1. Read CLAUDE.md in the repo root FIRST for project-specific rules and constraints.
-2. If building an Emdash plugin/theme/site, read docs/EMDASH-GUIDE.md BEFORE writing any code.
-3. If calling any external API or framework, verify the API exists by reading actual source code or docs — do NOT generate code from memory.
-4. Read BANNED-PATTERNS.md if it exists — any banned pattern in your code means automatic QA failure.
-5. After writing code, grep your own output for banned patterns before committing.
-6. NO PLACEHOLDER CONTENT. No "coming soon", no "TODO", no empty function bodies, no stub files. Every file you create must have COMPLETE, REAL, USABLE content. If you can't finish it, don't create it.
-7. COMMIT EVERYTHING. Run git add -A && git commit before you finish. QA will check git status and BLOCK if there are uncommitted files.
+Read the PRD at ${prdPath}${existsSync(planPath) ? ` and the plan at ${planPath}` : ""}.
+${existsSync(decisionsPath) ? `Read debate decisions at ${decisionsPath}.` : ""}
+Read CLAUDE.md in the repo root for project rules.
+${!isHotfix && existsSync(resolve(REPO_PATH, "BANNED-PATTERNS.md")) ? "Read BANNED-PATTERNS.md for patterns that will fail QA." : ""}
 
-Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.
-Commit everything on a feature branch and push.`, DEFAULT_MAX_TURNS, "build", "sonnet");
+Create these three files:
 
-  // H1: Deterministic post-build commit — don't trust agent to commit
+1. ${specPath} — A complete spec with:
+   - Goals (from the PRD)
+   - Implementation approach${existsSync(planPath) ? " (from the plan)" : ""}
+   - Verification criteria: exactly how to prove each piece works
+   - List every file that will be created or modified
+
+2. ${todoPath} — A running to-do list with checkboxes:
+   - Break the work into atomic, verifiable sub-tasks
+   - Each task should be completable in <5 minutes
+   - Each task should have a verification step
+   - Format: "- [ ] Task description — verify: how to check it worked"
+   ${isHotfix ? "- For hotfixes, this should be 3-5 tasks max" : ""}
+
+3. Create directory ${testsDir}/ with at least one test script:
+   - Shell scripts that verify the build output
+   - Example: grep for banned patterns, check file existence, run type checks
+   - Each test should exit 0 on pass, non-zero on fail
+   - Make scripts executable (chmod +x)
+
+Do NOT write any implementation code yet. Only create spec.md, todo.md, and tests/.`,
+    15, "build", "sonnet");
+
+  // ── Step 2: Execute todo.md tasks ──────────────────────────
+  log("BUILD STEP 2: Executing todo.md tasks");
+  const builderPrompt = isHotfix
+    ? `You are fixing a bug. Your spec is at ${specPath}. Your todo list is at ${todoPath}.
+
+For each unchecked task in todo.md:
+1. Read spec.md to confirm the approach
+2. Make the change
+3. Run the test scripts in ${testsDir}/ to verify
+4. Edit todo.md to check off the completed task: change "- [ ]" to "- [x]"
+5. Move to the next task
+
+Do NOT explore the codebase beyond what spec.md says is needed.
+Read CLAUDE.md first for project rules.
+When all tasks are checked off, commit: git add -A && git commit -m "hotfix: ${project}".`
+    : `You are building a feature. Your spec is at ${specPath}. Your todo list is at ${todoPath}.
+
+CRITICAL RULES:
+1. Before EVERY change, re-read spec.md to confirm alignment.
+2. After EVERY task, run test scripts in ${testsDir}/ and fix failures before moving on.
+3. After completing each task, edit todo.md: change "- [ ]" to "- [x]".
+4. If you discover a new sub-task, ADD it to todo.md before doing it.
+5. Read CLAUDE.md for project rules. Read BANNED-PATTERNS.md if it exists.
+6. NO PLACEHOLDER CONTENT. No "coming soon", no "TODO", no empty function bodies, no stub files.
+7. Commit on a feature branch when done: git checkout -b feature/${project} && git add -A && git commit.
+
+Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.`;
+
+  await runAgent("builder", builderPrompt,
+    isHotfix ? 15 : DEFAULT_MAX_TURNS, "build", "sonnet");
+
+  // ── Step 3: Mid-build adversarial review (full pipeline only) ──
+  if (!isHotfix) {
+    log("BUILD STEP 3: Adversarial review");
+    const reviewPath = resolve(delDir, "build-review.md");
+    await runAgent("build-reviewer", `You are an adversarial reviewer with fresh context — no knowledge of the build process.
+
+Read these files:
+- Spec: ${specPath}
+- Todo: ${todoPath}
+- All files in ${delDir}/
+
+Check for:
+1. Gaps between spec.md goals and what was actually built
+2. Unchecked items in todo.md
+3. Test failures — run scripts in ${testsDir}/ and report results
+4. Banned patterns (if BANNED-PATTERNS.md exists in the repo root, read it and grep deliverables)
+5. Placeholder content ("TODO", "coming soon", stub functions)
+
+Write ${reviewPath} with:
+- PASS if everything aligns
+- BLOCK with specific issues if gaps found — list exact files and line numbers`,
+      15, "build", "sonnet");
+
+    // If reviewer found issues, run a fix pass
+    if (existsSync(reviewPath)) {
+      const reviewContent = readFileSync(reviewPath, "utf-8");
+      if (/BLOCK/i.test(reviewContent)) {
+        log("BUILD: Adversarial review BLOCKED — running fix pass");
+        await runAgent("build-fixer", `Read the build review at ${reviewPath}.
+Fix every issue listed. Re-read spec.md at ${specPath} for correct approach.
+Run tests in ${testsDir}/ after each fix.
+Update todo.md at ${todoPath} with any new tasks. Check them off when done.
+Commit fixes.`, DEFAULT_MAX_TURNS, "build", "sonnet");
+      }
+    }
+  }
+
+  // ── Deterministic post-build commit ──────────────────────────
   log("BUILD: Verifying all files committed");
   try {
     const opts = { cwd: REPO_PATH, encoding: "utf-8" as const, timeout: 30_000 };
@@ -500,13 +589,13 @@ Do NOT push yet — the merge step handles that.`, DEFAULT_MAX_TURNS, "ship", "h
 
 // ─── Full Pipeline ──────────────────────────────────────────
 
-export async function runPipeline(prdFile: string, project: string): Promise<void> {
+export async function runPipeline(prdFile: string, project: string, isHotfix = false): Promise<void> {
   log(`═══════════════════════════════════════════════════`);
-  log(`PIPELINE START: ${project} (PRD: ${prdFile})`);
+  log(`PIPELINE START${isHotfix ? " (HOTFIX)" : ""}: ${project} (PRD: ${prdFile})`);
   log(`═══════════════════════════════════════════════════`);
   const startTime = Date.now();
 
-  await notify(`Pipeline *started* for project *${project}*\nPRD: \`${prdFile}\``, "info");
+  await notify(`Pipeline *started*${isHotfix ? " (HOTFIX)" : ""} for project *${project}*\nPRD: \`${prdFile}\``, "info");
 
   // C4: Import abort check from daemon
   const { isPipelineAborted } = await import("./daemon.js");
@@ -515,10 +604,16 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
   };
 
   try {
-    checkAbort();
-    await notifyPhase(project, "debate", "start");
-    await runDebate(prdFile, project);
-    await notifyPhase(project, "debate", "done");
+    // Debate — skip for hotfixes
+    if (!isHotfix) {
+      checkAbort();
+      await notifyPhase(project, "debate", "start");
+      await runDebate(prdFile, project);
+      await notifyPhase(project, "debate", "done");
+    } else {
+      log("HOTFIX: Skipping debate phase");
+      setCurrentProject(project);
+    }
 
     checkAbort();
     await notifyPhase(project, "plan", "start");
@@ -527,7 +622,7 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
 
     checkAbort();
     await notifyPhase(project, "build", "start");
-    await runBuild(project);
+    await runBuild(project, isHotfix);
     await notifyPhase(project, "build", "done");
 
     checkAbort();
@@ -536,23 +631,25 @@ export async function runPipeline(prdFile: string, project: string): Promise<voi
     const qa1 = await runQA(project, 1);
     await notify(`*${project}* | QA-1 verdict: *${qa1}*`, qa1 === "PASS" ? "info" : "warning");
 
-    checkAbort();
-    // QA pass 2
-    await notifyPhase(project, "qa-2", "start");
-    const qa2 = await runQA(project, 2);
-    await notify(`*${project}* | QA-2 verdict: *${qa2}*`, qa2 === "PASS" ? "info" : "warning");
+    // QA pass 2, creative review, board review — skip for hotfixes
+    if (!isHotfix) {
+      checkAbort();
+      await notifyPhase(project, "qa-2", "start");
+      const qa2 = await runQA(project, 2);
+      await notify(`*${project}* | QA-2 verdict: *${qa2}*`, qa2 === "PASS" ? "info" : "warning");
 
-    checkAbort();
-    // Creative review
-    await notifyPhase(project, "creative-review", "start");
-    await runCreativeReview(project);
-    await notifyPhase(project, "creative-review", "done");
+      checkAbort();
+      await notifyPhase(project, "creative-review", "start");
+      await runCreativeReview(project);
+      await notifyPhase(project, "creative-review", "done");
 
-    checkAbort();
-    // Board review
-    await notifyPhase(project, "board-review", "start");
-    await runBoardReview(project);
-    await notifyPhase(project, "board-review", "done");
+      checkAbort();
+      await notifyPhase(project, "board-review", "start");
+      await runBoardReview(project);
+      await notifyPhase(project, "board-review", "done");
+    } else {
+      log("HOTFIX: Skipping QA-2, creative review, board review");
+    }
 
     checkAbort();
     // Ship

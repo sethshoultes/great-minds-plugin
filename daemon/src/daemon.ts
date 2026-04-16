@@ -82,6 +82,16 @@ function loadQueue(): void {
   } catch {}
 }
 
+// ─── Hotfix Detection ──────────────────────────────────────
+
+function detectHotfix(prdContent: string): boolean {
+  // Check frontmatter flag
+  if (/^hotfix:\s*true/m.test(prdContent)) return true;
+  // Check title for fix/hotfix/patch/config keywords
+  if (/^#.*\b(fix|hotfix|patch|config)\b/im.test(prdContent)) return true;
+  return false;
+}
+
 // ─── Duplicate Detection ────────────────────────────────────
 
 function isAlreadyProcessed(prdFile: string): boolean {
@@ -178,13 +188,22 @@ async function processNextPrd(): Promise<void> {
     return;
   }
 
+  // Detect hotfix from PRD content
+  const prdPath = resolve(PRDS_DIR, prdFile);
+  let isHotfix = false;
+  try {
+    const prdContent = readFileSync(prdPath, "utf-8");
+    isHotfix = detectHotfix(prdContent);
+    if (isHotfix) log(`HOTFIX DETECTED: "${project}" — using fast pipeline path`);
+  } catch {}
+
   currentlyProcessing = project;
   pipelineRunning = true;
   pipelineAborted = false;
   pipelineStartTime = Date.now();
 
   try {
-    await runPipeline(prdFile, project);
+    await runPipeline(prdFile, project, isHotfix);
   } catch (err) {
     logError(`Pipeline failed for "${project}"`, err);
 
