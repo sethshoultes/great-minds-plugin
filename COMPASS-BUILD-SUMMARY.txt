@@ -1,0 +1,339 @@
+╔═════════════════════════════════════════════════════════════════════════════╗
+║                     COMPASS CODEBASE SCOUT SUMMARY                          ║
+║                    Portfolio Analytics Foundation                           ║
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+PROJECT: Building Compass (SQLite-based analytics for 5 products)
+STATUS: Codebase mapping complete, ready for build
+DATE: 2026-04-16
+
+────────────────────────────────────────────────────────────────────────────────
+ARCHITECTURE DECISION (LOCKED)
+────────────────────────────────────────────────────────────────────────────────
+
+✅ SQLite (not PostHog, not ClickHouse)
+✅ HTTP POST endpoint (/wp-json/compass/v1/events)
+✅ Daily text summaries (Week 1)
+✅ Dashboard UI (Week 12, not Week 1)
+✅ 20 events across 5 products
+✅ 3 metrics per product: DAU, 7d retention, revenue/user
+✅ Brand voice: Brutal honesty ("Pinned is dying" not "suboptimal metrics")
+
+────────────────────────────────────────────────────────────────────────────────
+EXISTING PATTERNS IN CODEBASE
+────────────────────────────────────────────────────────────────────────────────
+
+PATTERN 1: SQLite Database
+  Location: memory-store/src/store.ts
+  Provides: WAL mode, indexes, prepared statements, aggregations
+  Apply to: Compass database initialization
+
+PATTERN 2: REST Endpoint (WordPress)
+  Location: deliverables/wp-autopilot/wp-autopilot/includes/class-chat-handler.php
+  Provides: register_rest_route, permission_callback, input sanitization
+  Apply to: /wp-json/compass/v1/events endpoint
+
+PATTERN 3: SQL Aggregations
+  Location: daemon/src/token-ledger.ts
+  Provides: GROUP BY, COALESCE(SUM, 0), date-based queries
+  Apply to: DAU, retention, revenue calculations
+
+PATTERN 4: Configuration Management
+  Location: daemon/src/config.ts, daemon/.env.example
+  Provides: Environment variables, path resolution, intervals
+  Apply to: Compass configuration (.env, config.ts)
+
+PATTERN 5: Scheduled Tasks
+  Location: daemon/src/daemon.ts
+  Provides: Main event loop, interval tracking, queue persistence
+  Apply to: Daily summary generation scheduling
+
+────────────────────────────────────────────────────────────────────────────────
+RECOMMENDED FILE STRUCTURE
+────────────────────────────────────────────────────────────────────────────────
+
+compass/
+  ├── compass.php                          Main plugin entry
+  ├── .env.example                         Config template
+  ├── README.md
+  ├── includes/
+  │   ├── class-database.php              SQLite wrapper
+  │   ├── class-event-handler.php         REST endpoint
+  │   └── class-validator.php             Event validation
+  ├── admin/
+  │   ├── class-settings-page.php         Admin UI
+  │   └── views/settings.php
+  ├── templates/
+  │   └── daily-summary.txt
+  └── tests/
+
+────────────────────────────────────────────────────────────────────────────────
+DATABASE SCHEMA (Create This First)
+────────────────────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product TEXT NOT NULL,                -- pinned|dash|localgenius|great-minds|shipyard
+  event TEXT NOT NULL,                  -- note_created|command_executed|etc
+  user_hash TEXT NOT NULL,              -- anonymized user identifier
+  timestamp TEXT NOT NULL,              -- ISO8601 format
+  properties TEXT,                      -- JSON object
+  revenue_cents INTEGER DEFAULT 0,      -- for revenue tracking
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX idx_product ON events(product);
+CREATE INDEX idx_timestamp ON events(timestamp);
+CREATE INDEX idx_event ON events(event);
+CREATE INDEX idx_user_hash ON events(user_hash);
+
+────────────────────────────────────────────────────────────────────────────────
+REST ENDPOINT (What You Need to Build)
+────────────────────────────────────────────────────────────────────────────────
+
+Namespace: compass/v1
+Route: /events
+Method: POST
+Permission: Public (anyone can send events)
+
+Input:
+{
+  "product": "pinned|dash|localgenius|great-minds|shipyard",
+  "event": "note_created|command_executed|...",
+  "user_hash": "sha256_hash_of_user_id",
+  "timestamp": "2026-04-16T10:30:45Z",
+  "properties": { /* optional JSON object */ },
+  "revenue_cents": 0
+}
+
+Output (Success - 201):
+{
+  "success": true,
+  "id": 1
+}
+
+Output (Error - 400):
+{
+  "success": false,
+  "error": "Invalid event schema"
+}
+
+────────────────────────────────────────────────────────────────────────────────
+CRITICAL QUERIES (For Daily Summary)
+────────────────────────────────────────────────────────────────────────────────
+
+DAU (Daily Active Users):
+  SELECT COUNT(DISTINCT user_hash) 
+  FROM events 
+  WHERE product = ? AND timestamp >= datetime('now', '-1 day')
+
+7-Day Retention:
+  SELECT
+    COUNT(DISTINCT CASE WHEN timestamp BETWEEN 
+      datetime('now', '-14 day') AND datetime('now', '-7 day') 
+      THEN user_hash END) as cohort_size,
+    COUNT(DISTINCT CASE WHEN timestamp >= datetime('now', '-7 day') 
+      THEN user_hash END) as returned
+  FROM events
+  WHERE product = ?
+  -- retention = (returned / cohort_size) * 100
+
+Revenue Per User (7 days):
+  SELECT revenue_cents FROM events
+  WHERE product = ? AND timestamp >= datetime('now', '-7 day')
+  -- calculate: SUM(revenue_cents) / COUNT(DISTINCT user_hash)
+
+────────────────────────────────────────────────────────────────────────────────
+DAILY SUMMARY OUTPUT (What Users See)
+────────────────────────────────────────────────────────────────────────────────
+
+Compass Daily Brief — 2026-04-16
+
+PINNED: 47 DAU, 7d retention: 62%, Healthy.
+DASH: 12 DAU, 7d retention: 8%, Dying. Most users never return.
+LOCALGENIUS: 203 DAU, 7d retention: 71%, Healthy.
+GREAT-MINDS: 5 DAU, 7d retention: 40%, Unhealthy. Retention needs work.
+SHIPYARD: 89 DAU, 7d retention: 55%, Healthy.
+
+────────────────────────────────────────────────────────────────────────────────
+PRODUCT INTEGRATION CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+Events to track per product:
+
+PINNED:
+  ☐ note_created
+  ☐ note_acknowledged
+  ☐ mention_sent
+  ☐ session_start
+
+DASH:
+  ☐ command_executed
+  ☐ search_performed
+  ☐ shortcut_used
+  ☐ session_duration
+
+LOCALGENIUS:
+  ☐ trial_start
+  ☐ subscription_start
+  ☐ post_generated
+  ☐ report_viewed
+
+GREAT-MINDS:
+  ☐ prd_submitted
+  ☐ debate_completed
+  ☐ plan_approved
+  ☐ project_shipped
+
+SHIPYARD:
+  ☐ project_started
+  ☐ stage_completed
+  ☐ project_delivered
+  ☐ revision_requested
+
+────────────────────────────────────────────────────────────────────────────────
+TESTING LOCALLY (curl)
+────────────────────────────────────────────────────────────────────────────────
+
+# Send a test event
+curl -X POST http://localhost:8000/wp-json/compass/v1/events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product": "pinned",
+    "event": "note_created",
+    "user_hash": "abc123hash",
+    "timestamp": "2026-04-16T10:30:45Z",
+    "properties": {"note_length": 250}
+  }'
+
+# Expected: {"success": true, "id": 1}
+
+────────────────────────────────────────────────────────────────────────────────
+WEEK 1 BUILD CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+Day 1 (Database + Endpoint):
+  ☐ Create compass/ directory structure
+  ☐ Implement SQLite database class
+  ☐ Create events table + indexes
+  ☐ Build REST endpoint handler
+  ☐ Add event validation logic
+
+Day 2 (Summary Generation):
+  ☐ Implement DAU calculation
+  ☐ Implement 7d retention calculation
+  ☐ Build daily summary template
+  ☐ Add WordPress scheduled event hook
+  ☐ Generate sample summary
+
+Day 3 (Testing + First Integration):
+  ☐ Test endpoint with curl
+  ☐ Test summary generation
+  ☐ Integrate Pinned notes (1st product)
+  ☐ Verify events flowing to database
+  ☐ Verify summary calculations
+
+Days 4-5 (Full Integration):
+  ☐ Integrate Dash
+  ☐ Integrate LocalGenius
+  ☐ Integrate Great Minds
+  ☐ Integrate Shipyard
+  ☐ End-to-end testing
+
+Days 6-7 (Polish):
+  ☐ Security review (no PII leaks)
+  ☐ Documentation
+  ☐ Edge case handling
+  ☐ Performance optimization
+
+────────────────────────────────────────────────────────────────────────────────
+DEPENDENCIES TO ADD
+────────────────────────────────────────────────────────────────────────────────
+
+For WordPress/PHP Plugin:
+  • WordPress 6.0+ (already available)
+  • PHP 7.4+ (already available)
+  • SQLite (built-in to WordPress 6.2+, or use SQLite Database Integration plugin)
+
+For Node.js/TypeScript (optional, if standalone):
+  • better-sqlite3 (^11.7.0)
+  • express (^4.18.0) for HTTP server
+  • dotenv (^16.0.0) for config
+
+For Future Phases:
+  • Resend or SendGrid (email summaries)
+  • Telegram Bot API (real-time notifications)
+
+────────────────────────────────────────────────────────────────────────────────
+PRIVACY & SECURITY CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+  ☐ No PII stored (no email addresses, no IP addresses, no names)
+  ☐ User IDs hashed (sha256 of email + salt)
+  ☐ HTTPS only for external apps (LocalGenius, Shipyard)
+  ☐ Input sanitization on REST endpoint
+  ☐ Data retention policy (purge events >90 days old)
+  ☐ User opt-out mechanism
+  ☐ Encryption of sensitive config (API keys)
+
+────────────────────────────────────────────────────────────────────────────────
+SUCCESS CRITERIA (Week 1)
+────────────────────────────────────────────────────────────────────────────────
+
+  ✅ REST endpoint accepts POST requests
+  ✅ Events inserted into database
+  ✅ Daily summary query runs without errors
+  ✅ At least 1 product sending test events
+  ✅ Summary output matches voice guidelines
+  ✅ No hardcoded paths in code
+  ✅ Schema validates all incoming events
+  ✅ Database has proper indexes
+
+────────────────────────────────────────────────────────────────────────────────
+RESOURCES & REFERENCE FILES
+────────────────────────────────────────────────────────────────────────────────
+
+Full Scout Report:
+  /Users/sethshoultes/Local Sites/great-minds-plugin/COMPASS-CODEBASE-SCOUT-REPORT.md
+
+Quick Start Guide:
+  /Users/sethshoultes/Local Sites/great-minds-plugin/COMPASS-QUICK-START.md
+
+PRD & Decisions:
+  /Users/sethshoultes/Local Sites/great-minds-plugin/prds/portfolio-analytics-foundation.md
+  /Users/sethshoultes/Local Sites/great-minds-plugin/rounds/portfolio-analytics-foundation/decisions.md
+
+Code to Copy:
+  SQLite: memory-store/src/store.ts
+  Endpoint: deliverables/wp-autopilot/wp-autopilot/includes/class-chat-handler.php
+  Queries: daemon/src/token-ledger.ts
+  Config: daemon/src/config.ts
+
+────────────────────────────────────────────────────────────────────────────────
+NEXT STEPS
+────────────────────────────────────────────────────────────────────────────────
+
+1. Read COMPASS-CODEBASE-SCOUT-REPORT.md (Part 1-8 for architecture)
+2. Read COMPASS-QUICK-START.md (for copy-paste code)
+3. Create compass/ directory at specified location
+4. Implement database schema (Part 8 of Scout Report)
+5. Implement REST endpoint (Part 3 of Scout Report)
+6. Test with curl commands
+7. Integrate first product (Pinned)
+8. Generate daily summary
+9. Integrate remaining 4 products
+
+────────────────────────────────────────────────────────────────────────────────
+ESTIMATED BUILD TIME
+────────────────────────────────────────────────────────────────────────────────
+
+Database + Endpoint:           4 hours
+Summary Generator:            3 hours
+Testing + Validation:         2 hours
+Product Integration:          8 hours
+Polish + Docs:                4 hours
+─────────────────────────────────────
+TOTAL:                       21 hours (3 business days)
+
+────────────────────────────────────────────────────────────────────────────────
+"You are flying on data now." — Compass
