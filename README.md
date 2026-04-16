@@ -110,6 +110,52 @@ You (Phil Jackson — Orchestrator)
 
 The daemon (`/agency-daemon`) is an Agent SDK-based long-running process that replaces the cron pipeline. It handles dispatch, health checks, dream consolidation, and memory maintenance in a single persistent process.
 
+## Daemon Sync
+
+⚠️ **TEMPORARY TOOL — Scheduled for deprecation once daemon is extracted to shared package.**
+
+This tool syncs daemon code from `great-minds-plugin` to the `great-minds` repository. It is a surgical band-aid until the daemon becomes a standalone npm package.
+
+### First Time Setup
+
+Edit hardcoded paths in `sync.sh` (lines 11-12) for your environment:
+
+```bash
+PLUGIN_ROOT="/Users/sethshoultes/Local Sites/great-minds-plugin"
+GREAT_MINDS_ROOT="/home/agent/great-minds"
+```
+
+Examples:
+- macOS: `/Users/yourname/path/to/repo`
+- Linux: `/home/yourname/path/to/repo`
+- Docker: `/app/repo`
+
+### Usage
+
+Run after editing daemon code in the plugin repo:
+
+```bash
+npm run sync
+```
+
+What it does:
+1. Validates destination repo has no uncommitted changes
+2. Copies 11 TypeScript files from `daemon/src/`
+3. Copies `daemon/package.json` and `daemon/README.md`
+4. Copies `BANNED-PATTERNS.md` and `DO-NOT-REPEAT.md`
+5. Updates `CLAUDE.md` with sync protocol and anti-hallucination rules
+6. Runs `npm install` in destination
+7. Commits and pushes changes
+
+Execution time: <5 seconds (excluding git push network time)
+
+**Binary outcome:** Script exits 0 on success, 1 on failure. No partial syncs.
+
+### Deprecation Timeline
+
+- **3 months:** Extract daemon to shared npm package
+- **6 months:** Delete sync.sh if extraction complete, otherwise escalate as architectural debt
+
 ### Daemon Resilience
 
 The daemon includes production-grade resilience features:

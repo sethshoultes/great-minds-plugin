@@ -27,7 +27,7 @@ fi
 
 # Validation 2: Check source daemon/src exists
 if [[ ! -d "$PLUGIN_ROOT/daemon/src" ]]; then
-  echo "❌ ERROR: Source daemon/src not found at $PLUGIN_ROOT/daemon/src"
+  echo "❌ ERROR: Source daemon/src not found at \"$PLUGIN_ROOT/daemon/src\""
   exit 1
 fi
 
@@ -39,7 +39,7 @@ fi
 
 # Validation 4: Check destination structure exists
 if [[ ! -d "$GREAT_MINDS_ROOT/daemon/src" ]]; then
-  echo "❌ ERROR: Wrong destination path — $GREAT_MINDS_ROOT/daemon/src does not exist"
+  echo "❌ ERROR: Wrong destination path — \"$GREAT_MINDS_ROOT/daemon/src\" does not exist"
   exit 1
 fi
 
