@@ -24,6 +24,7 @@ import {
 } from "./agents.js";
 import { log, logError } from "./logger.js";
 import { TokenLedger, estimateCost } from "./token-ledger.js";
+import { generateProjectHindsight, hindsightPlannerContext, hindsightExecutorContext } from "./git-intelligence-integration.js";
 
 // ─── Token Ledger ───────────────────────────────────────────
 
@@ -260,21 +261,37 @@ export async function runPlan(project: string): Promise<void> {
   log(`PHASE: plan — project=${project}`);
   const roundsDir = resolve(ROUNDS_DIR, project);
   const planDir = resolve(REPO_PATH, ".planning");
+  const greatMindsDir = resolve(REPO_PATH, ".great-minds");
   await mkdir(planDir, { recursive: true });
+  await mkdir(greatMindsDir, { recursive: true });
 
   const skillPath = resolve(SKILLS_DIR, "agency-plan/SKILL.md");
   const decisionsPath = resolve(roundsDir, "decisions.md");
   const prdPath = resolve(PRDS_DIR, `${project}.md`);
 
-  await runAgent("planner", `Read and follow the instructions in ${skillPath}.
+  // Generate Hindsight report
+  const hindsightPath = resolve(greatMindsDir, "hindsight.md");
+  try {
+    log("PLAN: Generating Hindsight report");
+    await generateProjectHindsight(REPO_PATH, greatMindsDir);
+    log("PLAN: Hindsight report generated at .great-minds/hindsight.md");
+  } catch (err) {
+    log(`PLAN: Hindsight generation failed (non-blocking): ${err}`);
+  }
+
+  const planPrompt = `Read and follow the instructions in ${skillPath}.
 Use project slug '${project}'. Read ${decisionsPath} and ${prdPath} as inputs.
+
+${hindsightPlannerContext(hindsightPath)}
 
 IMPORTANT: Before creating the task plan, read CLAUDE.md in the repo root for project-specific rules.
 If the project involves a framework or external API, read the relevant docs in the docs/ directory FIRST.
 Verify your technical approach by reading actual documentation or source code — do NOT guess at API surfaces.
 If docs exist (e.g., docs/EMDASH-GUIDE.md), cite specific sections in your plan to prove you read them.
 
-Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`, DEFAULT_MAX_TURNS, "plan", "sonnet");
+Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`;
+
+  await runAgent("planner", planPrompt, DEFAULT_MAX_TURNS, "plan", "sonnet");
 
   // Sara Blakely gut-check
   const planPath = resolve(planDir, "phase-1-plan.md");
@@ -287,7 +304,9 @@ Write output to ${planDir}/phase-1-plan.md and ${planDir}/REQUIREMENTS.md.`, DEF
 export async function runBuild(project: string, isHotfix = false): Promise<void> {
   log(`PHASE: build${isHotfix ? " (HOTFIX)" : ""} — project=${project}`);
   const delDir = resolve(DELIVERABLES_DIR, project);
+  const greatMindsDir = resolve(REPO_PATH, ".great-minds");
   await mkdir(delDir, { recursive: true });
+  await mkdir(greatMindsDir, { recursive: true });
 
   const prdPath = resolve(PRDS_DIR, `${project}.md`);
   const planPath = resolve(REPO_PATH, ".planning/phase-1-plan.md");
@@ -296,6 +315,16 @@ export async function runBuild(project: string, isHotfix = false): Promise<void>
   const specPath = resolve(delDir, "spec.md");
   const todoPath = resolve(delDir, "todo.md");
   const testsDir = resolve(delDir, "tests");
+
+  // Generate Hindsight report
+  const hindsightPath = resolve(greatMindsDir, "hindsight.md");
+  try {
+    log("BUILD: Generating Hindsight report");
+    await generateProjectHindsight(REPO_PATH, greatMindsDir);
+    log("BUILD: Hindsight report generated at .great-minds/hindsight.md");
+  } catch (err) {
+    log(`BUILD: Hindsight generation failed (non-blocking): ${err}`);
+  }
 
   // ── Step 1: Create spec.md + todo.md + tests/ ──────────────
   log("BUILD STEP 1: Creating spec.md, todo.md, tests/");
