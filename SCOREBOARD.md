@@ -9,8 +9,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Projects Shipped | 17 |
-| Total Commits | 250+ |
+| Projects Shipped | 18 |
+| Total Commits | 253+ |
 | PRs Merged | 26+ |
 | Source files (LocalGenius) | 270+ |
 | Source files (GM Website) | 35+ |
