@@ -1,8 +1,8 @@
 # Great Minds Agency — Status
 
 **Current State:** idle
-**Last Ship:** localgenius-sites
-**Last Ship Date:** 2026-04-14
+**Last Ship:** blog-gsd-pipeline-evolution
+**Last Ship Date:** 2026-04-16
 
 ---
 
@@ -10,6 +10,8 @@
 
 | Project | Status | Shipped |
 |---------|--------|---------|
+| blog-gsd-pipeline-evolution (Phoenix) | Shipped | 2026-04-16 |
+| localgenius-sites | Shipped | 2026-04-14 |
 | daemon-fixes | Shipped | 2026-04-13 |
 | agentlog | Shipped | 2026-04-13 |
 | finish-plugins | Shipped | 2026-04-12 |
@@ -19,6 +21,42 @@
 | workshop-tutorial | Shipped | 2026-04-09 |
 | localgenius-benchmark-engine (Pulse) | Shipped | 2026-04-09 |
 | git-intelligence (Hindsight) | Shipped | 2026-04-09 |
+
+---
+
+## Project Metrics (blog-gsd-pipeline-evolution — Phoenix)
+
+| Metric | Value |
+|--------|-------|
+| Project Name | Phoenix: Building a System That Won't Stay Dead |
+| Word Count | ~2,200 |
+| Files Delivered | 4 (post, spec, todo, test suite) |
+| Debate Rounds | 2 (Steve vs Elon) |
+| Board Reviews | 4 (Oprah, Jensen, Warren, Shonda) |
+| Process Score | 7.5/10 (Marcus Aurelius) |
+| Board Score | 5.5/10 composite |
+| Board Verdict | PROCEED WITH CONDITIONS |
+| Ship Report | deliverables/blog-gsd-pipeline-evolution/ship-report.md |
+| Retrospective | memory/blog-gsd-pipeline-evolution-retrospective.md |
+| Key Principle | Authenticity scales where polish doesn't |
+
+---
+
+## Ship Summary (blog-gsd-pipeline-evolution — Phoenix)
+
+**Project:** blog-gsd-pipeline-evolution
+**Codename:** Phoenix
+**Pipeline:** PRD -> Debate -> Plan -> Execute -> Verify -> Ship
+**Shipped At:** 2026-04-16
+**Shipped By:** Phil Jackson (orchestrator)
+
+### What Was Built
+Technical blog post documenting Great Minds pipeline evolution from fragile cron scripts to self-healing systemd daemon. "Phoenix" narrative frames 48 production restarts as the core story: each death a failure, each restart a lesson. Structured chronologically (tmux → failure cascade → systemd solution) with battle-scarred honesty voice: real stack traces, real error logs, zero marketing polish.
+
+### Key Learnings (from Marcus Aurelius)
+- **Authenticity scales where polish doesn't** — One real failure example teaches more than ten generic reliability claims
+- **Debate resolves design tension when constraints are tight** — Steve's metaphor + Elon's structure + 25-minute deadline = synthesis, not compromise
+- **Choose points of intervention, surrender everywhere else** — Control what's in your sphere (honesty, structure, clarity); accept what isn't (engagement, revenue)
 
 ---
 
