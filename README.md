@@ -1,14 +1,51 @@
-# Great Minds — Claude Code Plugin
+# Great Minds
 
-A multi-agent AI agency that takes a product idea from concept to deployed software.
+14 legendary personas (Jobs, Musk, Buffett, Ive, Rubin, Huang, Winfrey, Rhimes, Blakely, Hamilton, Angelou, Sorkin, Aurelius, Jackson) that debate, review, plan, and build — available in three install formats to match how you work.
 
-Drop in a PRD. The agents debate strategy, plan in waves, build in parallel with isolated worktrees, verify with QA, and ship.
+## Contents
+
+- [Pick your format](#pick-your-format)
+- [Install](#install)
+- [What You Get (full agency)](#what-you-get)
+- [Agents](#14-agent-personas--2-internal-consolidation-functions)
+- [Skills](#17-skills-slash-commands)
+- [Contributor setup](#contributor-setup)
+
+## Pick your format
+
+| Format | Install target | Best for | Where |
+|--------|---------------|----------|-------|
+| **`great-minds`** (full) | Claude Code | Power users running the autonomous PRD → ship pipeline (cron, daemon, worktrees) | this repo root |
+| **`great-minds-lite`** | Claude Cowork + Claude Code | Teams that want personas + co-work skills (debate, board review, plan) without the swarm | `distribution/plugin/` |
+| **DXT bundle** | Claude Desktop app | Non-technical teammates, one-click install | `distribution/dxt/` |
+
+All three share the same 14 personas. Edit once in `agents/` at repo root — a pre-commit hook syncs to the other targets.
 
 ## Install
 
+**Full agency (Claude Code):**
 ```bash
-npx plugins add sethshoultes/great-minds-plugin
+/plugin marketplace add sethshoultes/great-minds-plugin
+/plugin install great-minds@sethshoultes
 ```
+
+**Lite (Cowork or Code):**
+```bash
+/plugin marketplace add sethshoultes/great-minds-plugin
+/plugin install great-minds-lite@sethshoultes
+```
+
+**DXT (Desktop app):**
+```bash
+cd distribution/dxt && npm install && npx @anthropic-ai/dxt pack
+# Share the generated great-minds.dxt — teammates double-click to install.
+```
+
+See [`distribution/README.md`](distribution/README.md) for full details on the lite + DXT options.
+
+## What You Get
+
+_(The sections below document the **full** `great-minds` agency. For the slim lite plugin or DXT tool list, see [`distribution/README.md`](distribution/README.md).)_
 
 ## What You Get
 
@@ -337,6 +374,16 @@ See `prds/TEMPLATE.md` for the full template.
 - [great-minds](https://github.com/sethshoultes/great-minds) — The agency repo
 - [shipyard-ai](https://github.com/sethshoultes/shipyard-ai) — Autonomous site builder (spun out)
 - [localgenius](https://github.com/sethshoultes/localgenius) — First product built by the agency
+
+## Contributor setup
+
+One-time, after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This enables a pre-commit hook that auto-syncs `agents/*.md` edits into `distribution/plugin/` and `distribution/dxt/` so the three formats never drift. Manual sync: `./distribution/sync-distribution.sh`.
 
 ## License
 

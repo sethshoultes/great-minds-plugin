@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "great-minds",
+  "description": "14 legendary personas (Jobs, Musk, Buffett, Ive, Hamilton, Angelou, Rubin, Huang, Winfrey, Rhimes, Blakely, Aurelius, Jackson, Sorkin) for debate, board reviews, planning, and creative work. Available as a full autonomous agency or a lightweight co-work plugin.",
+  "owner": {
+    "name": "Seth Shoultes",
+    "url": "https://github.com/sethshoultes"
+  },
+  "plugins": [
+    {
+      "name": "great-minds",
+      "description": "Full autonomous agency — 14 personas + cron-driven pipeline, daemon memory, worktree isolation, end-to-end PRD-to-ship. For Claude Code power users.",
+      "source": "./",
+      "category": "productivity"
+    },
+    {
+      "name": "great-minds-lite",
+      "description": "14 personas + co-work skills (debate, board review, plan, publish, video, anatomy, scope-check, brain). Single-session, no cron, no daemon. For Cowork + Claude Code.",
+      "source": "./distribution/plugin",
+      "category": "productivity"
+    }
+  ]
+}

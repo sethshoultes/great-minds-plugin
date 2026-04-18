@@ -1,0 +1,13 @@
+{
+  "name": "great-minds-lite",
+  "version": "1.0.0",
+  "description": "14 legendary personas (Jobs, Musk, Buffett, Ive, Hamilton, Angelou, Rubin, Huang, Winfrey, Rhimes, Blakely, Aurelius, Jackson, Sorkin) plus co-work skills: structured debate, full board review, content publishing pipeline, video pipeline, codebase anatomy, and scope drift check.",
+  "author": {
+    "name": "Seth Shoultes",
+    "email": "seth@caseproof.com"
+  },
+  "homepage": "https://github.com/sethshoultes/great-minds-plugin",
+  "repository": "https://github.com/sethshoultes/great-minds-plugin",
+  "license": "MIT",
+  "keywords": ["personas", "board-review", "debate", "creative-direction", "product-critique"]
+}

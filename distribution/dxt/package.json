@@ -1,0 +1,14 @@
+{
+  "name": "great-minds-dxt",
+  "version": "1.0.0",
+  "description": "Great Minds MCP server for Claude Desktop",
+  "main": "server/index.js",
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "pack": "npx @anthropic-ai/dxt pack"
+  }
+}

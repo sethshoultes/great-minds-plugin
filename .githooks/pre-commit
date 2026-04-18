@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Auto-sync personas to distribution targets when agents/*.md is staged.
+# Install once: git config core.hooksPath .githooks
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+# Only run if any agents/*.md is staged.
+if ! git diff --cached --name-only | grep -q '^agents/.*\.md$'; then
+  exit 0
+fi
+
+echo "pre-commit: agents/ changed — syncing distribution..."
+"$ROOT/distribution/sync-distribution.sh"
+
+# Re-stage the synced files so they land in the same commit.
+git add "$ROOT/distribution/plugin/agents" "$ROOT/distribution/dxt/server/personas"
+echo "pre-commit: distribution targets re-staged."

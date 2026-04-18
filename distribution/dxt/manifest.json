@@ -1,0 +1,56 @@
+{
+  "dxt_version": "0.1",
+  "name": "great-minds",
+  "display_name": "Great Minds",
+  "version": "1.0.0",
+  "description": "14 legendary personas (Jobs, Musk, Buffett, Ive, Hamilton, Angelou, Rubin, Huang, Winfrey, Rhimes, Blakely, Aurelius, Jackson, Sorkin) plus structured debate, board review, and planning skills.",
+  "long_description": "Channel first-principles thinking from Jobs, Musk, Buffett, and more. Run structured 2-round debates to lock strategic decisions. Spawn parallel board reviews from 4 perspectives. Generate atomic task plans with dependency waves. Every tool returns a structured prompt — Claude does the reasoning using your own subscription, no API key or hosting needed.",
+  "author": {
+    "name": "Seth Shoultes",
+    "email": "seth@caseproof.com"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"]
+    }
+  },
+  "tools": [
+    {
+      "name": "persona_critique",
+      "description": "Get a critique from one of 14 legendary personas (steve-jobs, elon-musk, jony-ive, rick-rubin, warren-buffett, jensen-huang, oprah-winfrey, shonda-rhimes, sara-blakely, maya-angelou, aaron-sorkin, margaret-hamilton, marcus-aurelius, phil-jackson). Returns a structured prompt for Claude to role-play that persona."
+    },
+    {
+      "name": "debate",
+      "description": "Run a structured 2-round debate between Steve Jobs and Elon Musk on a topic or PRD, with a Rick Rubin essence distillation at the end. Returns a 3-step prompt sequence."
+    },
+    {
+      "name": "board_review",
+      "description": "Spawn 4 board members (Jensen Huang, Oprah Winfrey, Warren Buffett, Shonda Rhimes) to review a topic from strategic, audience, business, and retention angles in parallel. Returns a consolidated review prompt."
+    },
+    {
+      "name": "plan",
+      "description": "Generate a structured task plan from a requirement or PRD. Produces atomic XML task cards organized into dependency waves with verification checks."
+    },
+    {
+      "name": "list_personas",
+      "description": "List all 14 available personas with a one-line description of each."
+    },
+    {
+      "name": "brain_save",
+      "description": "Commit a file (debate round, board verdict, persona critique, shared note) to the team's shared brain GitHub repo. Requires env vars GREAT_MINDS_GITHUB_TOKEN and GREAT_MINDS_GITHUB_REPO."
+    },
+    {
+      "name": "brain_load",
+      "description": "Fetch and return the decoded content of a file from the shared brain GitHub repo."
+    },
+    {
+      "name": "brain_list",
+      "description": "List files in a directory of the shared brain GitHub repo."
+    }
+  ],
+  "keywords": ["personas", "debate", "board-review", "product-critique", "planning", "brainstorming"],
+  "license": "MIT"
+}
