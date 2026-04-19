@@ -2,6 +2,8 @@
 
 Two distributions, same personas and skills, different install paths.
 
+> **New to Great Minds?** See [TEAM-QUICKSTART.md](TEAM-QUICKSTART.md) for a 5-minute onboarding recipe.
+
 ## Contributor setup (one-time)
 
 Enable the pre-commit hook so edits to `agents/*.md` auto-sync to `distribution/plugin/agents/` and `distribution/dxt/server/personas/`:
