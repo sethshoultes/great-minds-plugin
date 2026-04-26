@@ -15,6 +15,27 @@ The three-layer architecture is now explicit and shipping. Grounded in 2026 rese
 
 The directors at Layer 1 now know which kind of work to dispatch to which layer — codified in their persona files and in `AGENTS.md`. Steve and Elon dispatch to Layer 2 for craft and Layer 3 for code; Margaret dispatches to Layer 3 for QA work; Aurelius coordinates across layers. Three-layer model documented in `MANUAL.md` Section 4 and `docs/OPERATIONS.md`.
 
+## Recommended companion: Superpowers
+
+Great Minds and the [Superpowers](https://github.com/anthropics/skills) plugin operate at **different altitudes** and compose well:
+
+- **GSD (built into Great Minds)** — the agency-level pipeline: PRD → debate → plan → execute → verify → ship. Coordinates *which kind of work happens when* across multiple agents over a multi-day project.
+- **Superpowers** — the engineer-level discipline within each task: TDD, systematic debugging, plan-then-execute, worktree isolation, pre-merge verification, code review patterns.
+
+Use them together: GSD orchestrates the agency; Superpowers gives the Layer 3 code-writers and reviewers the engineering discipline they need within each dispatch. The directors at Layer 1 don't follow Superpowers TDD discipline (their work isn't TDD-shaped), but the `backend-engineer`, `frontend-developer`, `test-engineer`, `code-reviewer`, and `security-auditor` agents do.
+
+Specific composition:
+
+| GSD pipeline phase | Apply Superpowers skill |
+|--------------------|-------------------------|
+| `/agency-plan` | `writing-plans`, `brainstorming` |
+| `/agency-execute` | `subagent-driven-development`, `using-git-worktrees`, `dispatching-parallel-agents` |
+| `/agency-verify` | `verification-before-completion`, `systematic-debugging` |
+| Layer 3 code-writer dispatch | `test-driven-development`, `requesting-code-review` |
+| Pre-merge | `receiving-code-review`, `finishing-a-development-branch` |
+
+Install Superpowers if you want the engineering-discipline layer beneath the agency-pipeline layer. Both plugins keep their own identities and update cadences — they're composed, not merged.
+
 
 
 ## Contents

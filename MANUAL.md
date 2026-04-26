@@ -117,6 +117,28 @@ Most projects benefit from running great-minds alongside great-authors and great
 
 Each plugin's personas know about the others. Phil Jackson (in great-minds) is the orchestrator who can dispatch into great-authors or great-filmmakers when the work needs a specialist voice.
 
+### Companion plugin: Superpowers (engineering discipline)
+
+Great Minds operates at the **agency altitude** — its built-in GSD pipeline orchestrates which kind of work happens when across the whole team. The [Superpowers](https://github.com/anthropics/skills) plugin operates at the **engineering altitude** — TDD, systematic debugging, plan-then-execute, worktree isolation, pre-merge verification, code review patterns.
+
+The two compose well. Install Superpowers alongside Great Minds when you want the engineering-discipline layer beneath the agency-pipeline layer:
+
+```bash
+/plugin install superpowers
+```
+
+The directors at Layer 1 don't follow Superpowers TDD discipline (their work isn't TDD-shaped). But the Layer 3 functional implementers benefit from it directly:
+
+| GSD pipeline phase | Apply Superpowers skill |
+|--------------------|-------------------------|
+| `/agency-plan` | `writing-plans`, `brainstorming` |
+| `/agency-execute` | `subagent-driven-development`, `using-git-worktrees`, `dispatching-parallel-agents` |
+| `/agency-verify` | `verification-before-completion`, `systematic-debugging` |
+| Layer 3 code-writer dispatch (`backend-engineer`, `frontend-developer`, `test-engineer`, `database-architect`, `devops-engineer`) | `test-driven-development`, `requesting-code-review` |
+| Pre-merge review (`code-reviewer`) | `receiving-code-review`, `finishing-a-development-branch` |
+
+The two plugins keep their own identities and update cadences. Don't try to fork or merge them — that creates drift. Just install both, and the implementers pick up the engineering discipline automatically.
+
 ---
 
 ## 4. The mental model

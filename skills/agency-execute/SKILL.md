@@ -1,6 +1,6 @@
 ---
 name: agency-execute
-description: Wave-based parallel execution of XML task plans. Spawns fresh-context sub-agents for each task, runs independent tasks in parallel waves, and creates atomic git commits per task. Inspired by GSD (Get Shit Done) methodology.
+description: Wave-based parallel execution of XML task plans. Spawns fresh-context sub-agents for each task, runs independent tasks in parallel waves, and creates atomic git commits per task. Inspired by GSD (Get Shit Done) methodology. When the Superpowers plugin is installed, this skill composes with `superpowers:subagent-driven-development`, `superpowers:using-git-worktrees`, and `superpowers:dispatching-parallel-agents` for the engineering discipline within each dispatched task.
 argument-hint: <phase-number>
 allowed-tools: [Read, Write, Bash, Glob, Grep, Agent, Edit]
 ---
