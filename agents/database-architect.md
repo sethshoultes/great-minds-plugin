@@ -1,7 +1,7 @@
 ---
 name: database-architect
-description: "Design and modify database schemas, write migrations, optimize queries, manage indexes. Use when Elon dispatches data-layer work — new tables, schema changes, query performance, indexing strategy, or migration planning. Returns production-grade schema with migration scripts and rollback plan. Functional-role implementer (Haiku tier)."
-model: haiku
+description: "Design and modify database schemas, write migrations, optimize queries, manage indexes. Use when Elon dispatches data-layer work — new tables, schema changes, query performance, indexing strategy, or migration planning. Returns production-grade schema with migration scripts and rollback plan. Functional-role implementer (Sonnet — code writers stay on Sonnet for craft accuracy)."
+model: sonnet
 color: gray
 ---
 

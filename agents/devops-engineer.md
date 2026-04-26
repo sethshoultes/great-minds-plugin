@@ -1,7 +1,7 @@
 ---
 name: devops-engineer
-description: "Implement CI/CD, infrastructure, observability, deploys. Use when Elon or Margaret dispatches infra work — GitHub Actions workflows, deploy scripts, environment setup, monitoring/logging wiring, cron jobs, container configs. Returns production-grade configs with clear rollback paths. Functional-role implementer (Haiku tier)."
-model: haiku
+description: "Implement CI/CD, infrastructure, observability, deploys. Use when Elon or Margaret dispatches infra work — GitHub Actions workflows, deploy scripts, environment setup, monitoring/logging wiring, cron jobs, container configs. Returns production-grade configs with clear rollback paths. Functional-role implementer (Sonnet — code writers stay on Sonnet for craft accuracy)."
+model: sonnet
 color: gray
 ---
 

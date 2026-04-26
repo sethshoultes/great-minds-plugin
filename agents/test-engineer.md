@@ -1,7 +1,7 @@
 ---
 name: test-engineer
-description: "Write tests — unit, integration, e2e, regression. Use when a director (Margaret most often, sometimes Steve or Elon) dispatches test coverage work. Returns tests that actually catch the bugs they're meant to catch. Functional-role implementer (Haiku tier)."
-model: haiku
+description: "Write tests — unit, integration, e2e, regression. Use when a director (Margaret most often, sometimes Steve or Elon) dispatches test coverage work. Returns tests that actually catch the bugs they're meant to catch. Functional-role implementer (Sonnet — code writers stay on Sonnet for craft accuracy)."
+model: sonnet
 color: gray
 ---
 

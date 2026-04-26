@@ -1,7 +1,7 @@
 ---
 name: frontend-developer
-description: "Implement frontend code — React components, UI logic, accessibility wiring, responsive layouts, client-side state. Use when a director (Steve, Elon, Margaret) dispatches implementation work that involves UI code, component composition, styling, accessibility, or browser-side behavior. Returns production-ready code matching existing component patterns. Functional-role implementer (Haiku tier)."
-model: haiku
+description: "Implement frontend code — React components, UI logic, accessibility wiring, responsive layouts, client-side state. Use when a director (Steve, Elon, Margaret) dispatches implementation work that involves UI code, component composition, styling, accessibility, or browser-side behavior. Returns production-ready code matching existing component patterns. Functional-role implementer (Sonnet — code writers stay on Sonnet for craft accuracy)."
+model: sonnet
 color: gray
 ---
 

@@ -163,7 +163,8 @@ Each layer is best at different work. The split is grounded in 2026 research (Wh
 |-------|----------------------|-------|---------|
 | **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, the Board) | Sonnet | Vision, judgment, conflict mediation, *what kind of thing is this* |
 | **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copy voice, growth psychology |
-| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`) | Haiku | Correctness — code that compiles, tests that catch bugs, queries that return the right rows |
+| **3a. Functional code-writers** | Job titles only (`backend-engineer`, `frontend-developer`, `database-architect`, `devops-engineer`, `test-engineer`) | Sonnet | Writing code that integrates with a real codebase — correctness work that needs Sonnet's reasoning even without a named voice |
+| **3b. Functional reviewers / doc-writers** | Job titles only (`code-reviewer`, `security-auditor`, `documentation-writer`) | Haiku | Reviewing existing code, auditing for issues, writing docs — pattern-matching and recall tasks where Haiku's speed wins |
 
 **The dispatch rule:** when judgment matters more than rote correctness, use Layer 1 or 2 (named persona). When correctness matters more than voice, use Layer 3 (functional role).
 
@@ -315,16 +316,23 @@ The agency runs on these three.
 
 ### Functional implementers (8) — Layer 3
 
-Functional-role agents that directors dispatch for correctness work. All on Haiku, no biographical voice. Use when the work is fundamentally about *getting it right* rather than *getting the voice right*.
+Functional-role agents that directors dispatch for correctness work. None have biographical voice. The five who write code use Sonnet because writing code that integrates with a real codebase needs the better model; the three who review or write docs use Haiku because their work is pattern-matching and recall.
+
+**Code-writers (Sonnet):**
 
 | Agent | Dispatched by | What they do |
 |-------|---------------|--------------|
 | `backend-engineer` | Elon | API logic, services, business logic, third-party integrations |
 | `frontend-developer` | Steve | UI components, accessibility wiring, responsive layouts |
 | `database-architect` | Elon | Schema design, migrations, query optimization, indexing |
-| `security-auditor` | Margaret | Pre-deploy security review — auth, input validation, secrets exposure |
-| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
 | `devops-engineer` | Elon | CI/CD, IaC, observability, deploy pipelines |
+| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
+
+**Reviewers and doc-writers (Haiku):**
+
+| Agent | Dispatched by | What they do |
+|-------|---------------|--------------|
+| `security-auditor` | Margaret | Pre-deploy security review — auth, input validation, secrets exposure |
 | `code-reviewer` | Margaret | Pre-merge review for craft, convention, obvious correctness |
 | `documentation-writer` | Steve | Technical docs, API references, README updates (NOT brand voice — that's Maya) |
 
@@ -497,7 +505,7 @@ The agency mode discipline is documented in `docs/OPERATIONS.md`. Three rules in
 
 **1. Directors must delegate to the right layer.** Steve and Elon are Layer 1 directors. When the work is craft with character (visual design, copy voice, growth psychology), they dispatch to a Layer 2 named specialist (Ive, Angelou, Rubin, Sorkin, Blakely) on Sonnet. When the work is correctness (code, tests, infra, security), they dispatch to a Layer 3 functional implementer (`backend-engineer`, `frontend-developer`, `test-engineer`, etc.) on Haiku. They do not write code or run tests themselves — and they do not collapse Layer 2 voice work into a Layer 3 functional role.
 
-**2. Sonnet for judgment, Haiku for correctness.** Layer 1 directors and Layer 2 named specialists use Sonnet because their work is judgment, voice, and craft with character. Layer 3 functional implementers use Haiku because their work is correctness, and Haiku is ~5× cheaper without losing accuracy on the kind of work they do. The exception: Margaret Hamilton (QA Director, Layer 1) is Sonnet because her judgment about *will-this-fail-in-production* is gatekeeping the release.
+**2. Sonnet for everything that produces output; Haiku for review and recall.** Layer 1 directors, Layer 2 named specialists, and Layer 3 code-writers all use Sonnet because writing — whether code, copy, or judgment — needs the reasoning headroom. Only the three Layer 3 reviewer/doc-writer agents use Haiku, because their work (pattern-matching against existing code, surfacing known security issues, writing docs from settled facts) is recall-heavy in a way that benefits from Haiku's speed and cost. Don't try to save money by putting Haiku on a code-writer; you'll spend the savings (and more) re-running and debugging output that doesn't compile.
 
 **3. Honesty pass before shipping.** Margaret Hamilton's QA pass must verify the work before `/agency-ship`. No fake API documentation. No fake statistics. No claiming features that don't work. If the AI can't verify an action was performed, don't claim it was.
 

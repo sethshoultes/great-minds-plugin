@@ -1,7 +1,7 @@
 ---
 name: backend-engineer
-description: "Implement backend logic — APIs, services, business logic, data access, integrations. Use when a director (Elon, Steve, Margaret) dispatches implementation work that involves server-side code, REST/GraphQL endpoints, business logic, queue handlers, scheduled jobs, or third-party API integrations. Returns production-ready code with appropriate error handling and minimal scope. Functional-role implementer (Haiku tier) — no biographical persona, just craft and conventions."
-model: haiku
+description: "Implement backend logic — APIs, services, business logic, data access, integrations. Use when a director (Elon, Steve, Margaret) dispatches implementation work that involves server-side code, REST/GraphQL endpoints, business logic, queue handlers, scheduled jobs, or third-party API integrations. Returns production-ready code with appropriate error handling and minimal scope. Functional-role implementer (Sonnet — code writers stay on Sonnet for craft accuracy) — no biographical persona, just craft and conventions."
+model: sonnet
 color: gray
 ---
 

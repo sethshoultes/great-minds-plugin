@@ -56,7 +56,8 @@ The agency uses three layers, each best at different work — grounded in 2026 r
 |-------|--------|-------|------------------------|
 | **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, Board) | Sonnet | Vision, judgment, conflict mediation, "what kind of thing is this" |
 | **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copywriting voice, growth psychology |
-| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`, etc.) | Haiku | Correctness — code that compiles, tests that pass, queries that return the right rows |
+| **3a. Functional code-writers** | Job titles only (`backend-engineer`, `frontend-developer`, `database-architect`, `devops-engineer`, `test-engineer`) | Sonnet | Code that compiles, tests that pass, queries that return the right rows — code work needs Sonnet's reasoning even without a named voice |
+| **3b. Functional reviewers / doc-writers** | Job titles only (`code-reviewer`, `security-auditor`, `documentation-writer`) | Haiku | Reviewing code, auditing for issues, writing docs from settled facts — recall and pattern-matching work where Haiku's speed and cost win |
 
 **The dispatch rule:** when judgment matters more than rote correctness, use Layer 1 or 2. When correctness matters more than voice, use Layer 3.
 
@@ -69,20 +70,27 @@ The agency uses three layers, each best at different work — grounded in 2026 r
 
 ### Layer 3 Implementers (v1.2)
 
-Eight functional-role agents, all on Haiku, all dispatched by directors:
+Eight functional-role agents, all dispatched by directors. Five code-writers on Sonnet (correctness in real codebases needs the better model), three reviewers/doc-writers on Haiku (recall and pattern-matching tasks where Haiku's speed and cost win).
+
+**Code-writers (Sonnet):**
 
 | Agent | Dispatched by | What they do |
 |-------|---------------|--------------|
 | `backend-engineer` | Elon | API logic, services, business logic, integrations |
 | `frontend-developer` | Steve | UI components, accessibility, responsive layouts |
 | `database-architect` | Elon | Schema, migrations, query optimization |
-| `security-auditor` | Margaret | Pre-deploy security review, threat modeling |
-| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
 | `devops-engineer` | Elon | CI/CD, infra, observability, deploys |
+| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
+
+**Reviewers and doc-writers (Haiku):**
+
+| Agent | Dispatched by | What they do |
+|-------|---------------|--------------|
+| `security-auditor` | Margaret | Pre-deploy security review, threat modeling |
 | `code-reviewer` | Margaret | Pre-merge craft and convention review |
 | `documentation-writer` | Steve | Technical docs, API references, README updates |
 
-These agents have no biographical voice — they're craft and conventions only. They use Haiku because correctness work doesn't benefit from a Sonnet-tier persona, and Haiku is ~5× cheaper. Directors stay on Sonnet because their judgment work does benefit.
+None of these agents have biographical voice — they're craft and conventions only. The model split (Sonnet for writing, Haiku for reviewing) reflects the actual difficulty of the work: writing code that integrates with a real codebase is judgment-heavy in a way that reviewing existing code isn't.
 
 ### Git Workflow (PR-Based)
 Never push directly to main. Always:

@@ -15,17 +15,17 @@ Human (Seth)
        │    ├─ Maya Angelou — Copywriting                [Layer 2 — named specialist, Sonnet]
        │    ├─ Rick Rubin — Creative Direction           [Layer 2 — named specialist, Sonnet]
        │    ├─ Aaron Sorkin — Screenwriting              [Layer 2 — named specialist, Sonnet]
-       │    ├─ frontend-developer                        [Layer 3 — functional, Haiku]
-       │    └─ documentation-writer                      [Layer 3 — functional, Haiku]
+       │    ├─ frontend-developer                        [Layer 3 — functional code-writer, Sonnet]
+       │    └─ documentation-writer                      [Layer 3 — functional doc-writer, Haiku]
        ├─ Elon Musk — Product Director                   [Layer 1 — named, Sonnet]
        │    ├─ Sara Blakely — Growth Strategy            [Layer 2 — named specialist, Sonnet]
-       │    ├─ backend-engineer                          [Layer 3 — functional, Haiku]
-       │    ├─ database-architect                        [Layer 3 — functional, Haiku]
-       │    └─ devops-engineer                           [Layer 3 — functional, Haiku]
+       │    ├─ backend-engineer                          [Layer 3 — functional code-writer, Sonnet]
+       │    ├─ database-architect                        [Layer 3 — functional code-writer, Sonnet]
+       │    └─ devops-engineer                           [Layer 3 — functional code-writer, Sonnet]
        └─ Margaret Hamilton — QA Director                [Layer 1 — named, Sonnet]
-            ├─ test-engineer                             [Layer 3 — functional, Haiku]
-            ├─ security-auditor                          [Layer 3 — functional, Haiku]
-            └─ code-reviewer                             [Layer 3 — functional, Haiku]
+            ├─ test-engineer                             [Layer 3 — functional code-writer, Sonnet]
+            ├─ security-auditor                          [Layer 3 — functional reviewer, Haiku]
+            └─ code-reviewer                             [Layer 3 — functional reviewer, Haiku]
 ```
 
 ## The three layers — what goes where
@@ -36,7 +36,8 @@ The hierarchy is structured around **what kind of work each layer is best at**, 
 |-------|--------|-------|---------|-----|
 | **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, Board) | Sonnet | Judgment, vision, conflict mediation, the *what kind of thing is this* call | Named personas excel at open-ended creative/strategic tasks where tone and judgment matter |
 | **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copywriting voice, growth psychology | Same reason as Layer 1: these are voice/judgment/taste roles |
-| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`, etc.) | Haiku | Correctness — code that compiles, tests that catch bugs, queries that return the right rows | Research shows named expert personas reduce factual accuracy by 3–4 points on knowledge-heavy tasks. Functional roles avoid this trap. |
+| **3a. Functional code-writers** | Job titles only (`backend-engineer`, `frontend-developer`, `database-architect`, `devops-engineer`, `test-engineer`) | Sonnet | Code that has to be correct, run, and integrate — accuracy demands the better model even without a named voice | Code generation is a craft accuracy problem; Haiku struggles with complex multi-file work. Sonnet without a named persona is the right combination. |
+| **3b. Functional reviewers / doc-writers** | Job titles only (`code-reviewer`, `security-auditor`, `documentation-writer`) | Haiku | Reviewing existing code, auditing for security issues, writing docs from settled facts | These are pattern-matching and recall-heavy tasks where Haiku's speed and cost matter more than Sonnet-tier reasoning |
 
 **The rule:** when judgment matters more than rote correctness, use a named persona. When correctness matters more than voice, use a functional role. The directors at Layer 1 enforce this by knowing which kind of work to dispatch where.
 
@@ -50,7 +51,8 @@ The hierarchy is structured around **what kind of work each layer is best at**, 
 - **Steve ↔ Elon**: Direct debate during debate phase. Moderator observes and logs decisions.
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
 - **Layer-2 specialists** use Sonnet (voice work needs judgment).
-- **Layer-3 implementers** use Haiku (~5× cheaper, well-suited to correctness work).
+- **Layer-3 code-writers** use Sonnet (writing correct code that integrates with a real codebase needs the better model).
+- **Layer-3 reviewers / doc-writers** use Haiku (~5× cheaper, well-suited to recall and pattern-matching work).
 
 ## Active Agents (14)
 
