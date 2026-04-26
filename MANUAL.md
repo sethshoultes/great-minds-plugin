@@ -2,7 +2,13 @@
 
 **Audience:** developers, teams, and individual builders who want fourteen world-class advisors at the command line — debating, reviewing, planning, and (in agency mode) shipping work end-to-end.
 
-This is the long-form reference. For a quick overview see the [README](../README.md). For the underlying design philosophy across the trilogy see [Three Shapes of the Same Pattern](https://sethshoultes.com/blog/three-shapes.html).
+This is the long-form reference. For a quick overview see the [README](README.md). For the underlying design philosophy across the trilogy see [Three Shapes of the Same Pattern](https://sethshoultes.com/blog/three-shapes.html).
+
+## Companion manuals in the trilogy
+
+- **Great Minds — User Manual (this document)** — fourteen strategic decision-makers (Jobs, Musk, Buffett, Ive, Rubin, Huang, Winfrey, Rhimes, Blakely, Hamilton, Angelou, Sorkin, Aurelius, Jackson)
+- [Great Authors — User Manual](https://github.com/sethshoultes/great-authors-plugin/blob/main/MANUAL.md) — eleven prose craft personas (Hemingway, Didion, McCarthy, Morrison, Wallace, etc., plus Gottlieb the editor)
+- [Great Filmmakers — User Manual](https://github.com/sethshoultes/great-filmmakers-plugin/blob/main/MANUAL.md) — twelve film craft personas (Scorsese, Kubrick, Kurosawa, Hitchcock, Spielberg, Lynch, Rhimes, Kaufman, Deakins, Schoonmaker, Zimmer, Ferretti)
 
 ---
 
@@ -850,7 +856,7 @@ If you have access to Seth's brain vault:
 
 ### License
 
-MIT. See [LICENSE](../LICENSE) at the repo root.
+MIT. See [LICENSE](LICENSE) at the repo root.
 
 ### Reporting issues
 
