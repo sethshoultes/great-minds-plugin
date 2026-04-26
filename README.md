@@ -1,8 +1,20 @@
 # Great Minds
 
-14 legendary personas (Jobs, Musk, Buffett, Ive, Rubin, Huang, Winfrey, Rhimes, Blakely, Hamilton, Angelou, Sorkin, Aurelius, Jackson) that debate, review, plan, and build — available in three install formats to match how you work.
+14 legendary personas (Jobs, Musk, Buffett, Ive, Rubin, Huang, Winfrey, Rhimes, Blakely, Hamilton, Angelou, Sorkin, Aurelius, Jackson) plus 8 functional-role implementers — that debate, review, plan, and build. Available in three install formats to match how you work.
 
-📖 **[Read the User Manual](MANUAL.md)** for the complete reference — install paths, all 14 personas, all 17 skills, lite vs full agency workflows, project structure, memory store, three end-to-end walkthroughs, patterns, and troubleshooting.
+📖 **[Read the User Manual](MANUAL.md)** for the complete reference — install paths, all 22 agents (14 named + 8 functional), all 17 skills, lite vs full agency workflows, project structure, memory store, three end-to-end walkthroughs, patterns, and troubleshooting.
+
+## What's new in v1.2
+
+The three-layer architecture is now explicit and shipping. Grounded in 2026 research (Wharton, USC) on persona prompting — named expert personas excel at judgment but reduce factual accuracy on knowledge-heavy tasks; functional roles avoid that trap.
+
+- **Layer 1 — Named directors (Sonnet):** Jobs, Musk, Hamilton, Aurelius, the Board. Vision, judgment, mediation.
+- **Layer 2 — Named specialists (Sonnet):** Ive, Angelou, Rubin, Sorkin, Blakely. Domain craft with character.
+- **Layer 3 — Functional implementers (Haiku, NEW):** `backend-engineer`, `frontend-developer`, `database-architect`, `security-auditor`, `test-engineer`, `devops-engineer`, `code-reviewer`, `documentation-writer`. Correctness work without a fighting voice.
+
+The directors at Layer 1 now know which kind of work to dispatch to which layer — codified in their persona files and in `AGENTS.md`. Steve and Elon dispatch to Layer 2 for craft and Layer 3 for code; Margaret dispatches to Layer 3 for QA work; Aurelius coordinates across layers. Three-layer model documented in `MANUAL.md` Section 4 and `docs/OPERATIONS.md`.
+
+
 
 ## Contents
 

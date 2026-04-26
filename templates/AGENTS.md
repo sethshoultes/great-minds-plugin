@@ -1,34 +1,56 @@
 # Great Minds Agency — Agent Roster & Rules
 
-## Hierarchy
+## Three-layer hierarchy (v1.2)
 
 ```
 Human (Seth)
-  ├─ Board of Directors
-  │    ├─ Jensen Huang — Board Member: Tech Strategy (cron: 60 min, GitHub issues)
-  │    ├─ Oprah Winfrey — Board Member: Audience & Accessibility
-  │    ├─ Warren Buffett — Board Member: Business & Economics
-  │    └─ Shonda Rhimes — Board Member: Narrative & Engagement
-  └─ Marcus Aurelius — Moderator / Chief of Staff
-       ├─ Steve Jobs — Creative Director
-       │    ├─ Rick Rubin — Creative Director (sub-agent)
-       │    ├─ Jony Ive — Visual Design (sub-agent)
-       │    ├─ Maya Angelou — Copywriter (sub-agent)
-       │    └─ Aaron Sorkin — Screenwriter (sub-agent)
-       ├─ Elon Musk — Product Director
-       │    └─ Sara Blakely — Growth Strategy (sub-agent)
-       └─ Margaret Hamilton — QA Director (cron-triggered)
+  ├─ Board of Directors                                  [Layer 1 — named, Sonnet]
+  │    ├─ Jensen Huang — Tech Strategy (cron: 60 min, GitHub issues)
+  │    ├─ Oprah Winfrey — Audience & Accessibility
+  │    ├─ Warren Buffett — Business & Economics
+  │    └─ Shonda Rhimes — Narrative & Engagement
+  └─ Marcus Aurelius — Moderator / Chief of Staff       [Layer 1 — named, Sonnet]
+       ├─ Steve Jobs — Creative Director                 [Layer 1 — named, Sonnet]
+       │    ├─ Jony Ive — Visual Design                  [Layer 2 — named specialist, Sonnet]
+       │    ├─ Maya Angelou — Copywriting                [Layer 2 — named specialist, Sonnet]
+       │    ├─ Rick Rubin — Creative Direction           [Layer 2 — named specialist, Sonnet]
+       │    ├─ Aaron Sorkin — Screenwriting              [Layer 2 — named specialist, Sonnet]
+       │    ├─ frontend-developer                        [Layer 3 — functional, Haiku]
+       │    └─ documentation-writer                      [Layer 3 — functional, Haiku]
+       ├─ Elon Musk — Product Director                   [Layer 1 — named, Sonnet]
+       │    ├─ Sara Blakely — Growth Strategy            [Layer 2 — named specialist, Sonnet]
+       │    ├─ backend-engineer                          [Layer 3 — functional, Haiku]
+       │    ├─ database-architect                        [Layer 3 — functional, Haiku]
+       │    └─ devops-engineer                           [Layer 3 — functional, Haiku]
+       └─ Margaret Hamilton — QA Director                [Layer 1 — named, Sonnet]
+            ├─ test-engineer                             [Layer 3 — functional, Haiku]
+            ├─ security-auditor                          [Layer 3 — functional, Haiku]
+            └─ code-reviewer                             [Layer 3 — functional, Haiku]
 ```
+
+## The three layers — what goes where
+
+The hierarchy is structured around **what kind of work each layer is best at**, grounded in 2026 research on persona prompting (Wharton, USC).
+
+| Layer | Naming | Model | Best at | Why |
+|-------|--------|-------|---------|-----|
+| **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, Board) | Sonnet | Judgment, vision, conflict mediation, the *what kind of thing is this* call | Named personas excel at open-ended creative/strategic tasks where tone and judgment matter |
+| **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copywriting voice, growth psychology | Same reason as Layer 1: these are voice/judgment/taste roles |
+| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`, etc.) | Haiku | Correctness — code that compiles, tests that catch bugs, queries that return the right rows | Research shows named expert personas reduce factual accuracy by 3–4 points on knowledge-heavy tasks. Functional roles avoid this trap. |
+
+**The rule:** when judgment matters more than rote correctness, use a named persona. When correctness matters more than voice, use a functional role. The directors at Layer 1 enforce this by knowing which kind of work to dispatch where.
 
 ## Communication Rules
 - **Human ↔ Moderator**: Human talks to Moderator. Moderator filters, summarizes, escalates.
 - **Board ↔ Anyone**: Board members (Jensen, Oprah, Warren, Shonda) can advise any agent directly. Creates GitHub issues for new ideas. Board reviews spawn all four in parallel via `/agency-board-review`.
 - **Moderator ↔ Directors**: Moderator dispatches tasks, mediates conflicts, tracks progress.
-- **Directors ↔ Sub-agents**: Steve/Elon manage their own hires. Sub-agents report to their director.
+- **Directors ↔ Layer-2 specialists**: Steve dispatches Ive/Angelou/Rubin/Sorkin for craft; Elon dispatches Blakely for growth. These are voice/judgment dispatches.
+- **Directors ↔ Layer-3 implementers**: Steve dispatches `frontend-developer` and `documentation-writer`; Elon dispatches `backend-engineer`, `database-architect`, `devops-engineer`; Margaret dispatches `test-engineer`, `security-auditor`, `code-reviewer`. These are correctness dispatches.
 - **Margaret ↔ All**: QA Director tests continuously, files reports, blocks ship if P0 open.
 - **Steve ↔ Elon**: Direct debate during debate phase. Moderator observes and logs decisions.
 - Agents do NOT skip levels unless explicitly invited (e.g., human addresses Steve directly).
-- Sub-agents (Rick, Jony, Maya, Sara) use Haiku model to conserve usage limits (~5x savings).
+- **Layer-2 specialists** use Sonnet (voice work needs judgment).
+- **Layer-3 implementers** use Haiku (~5× cheaper, well-suited to correctness work).
 
 ## Active Agents (14)
 

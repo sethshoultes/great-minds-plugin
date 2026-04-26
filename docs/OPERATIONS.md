@@ -44,12 +44,45 @@ Updates AGENTS.md, STATUS.md, MEMORY.md, SCOREBOARD.md with current reality. Syn
 ### Directors Must Delegate
 Steve and Elon are DIRECTORS, not individual contributors. They should:
 - Break tasks into sub-tasks
-- Spawn sub-agents (model: haiku) for parallel work
-- Do highest-judgment work themselves
+- Dispatch via the Agent tool (Layer 2 named specialists or Layer 3 functional implementers — see "The three-layer model" below)
+- Do highest-judgment work themselves (vision, critique, decisions)
 - Have 2-3 sub-agents running at all times during BUILD phases
 
-### Haiku for Sub-Agents
-All sub-agents must use `model: "haiku"` to conserve usage limits (~5x cheaper). Only directors and moderator use Sonnet.
+### The Three-Layer Model (v1.2)
+
+The agency uses three layers, each best at different work — grounded in 2026 research on persona prompting (Wharton, USC). Named expert personas excel at open-ended judgment but reduce factual accuracy by 3–4 points on knowledge-heavy tasks. Functional roles excel at correctness but lack the judgment voice.
+
+| Layer | Naming | Model | What this layer is for |
+|-------|--------|-------|------------------------|
+| **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, Board) | Sonnet | Vision, judgment, conflict mediation, "what kind of thing is this" |
+| **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copywriting voice, growth psychology |
+| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`, etc.) | Haiku | Correctness — code that compiles, tests that pass, queries that return the right rows |
+
+**The dispatch rule:** when judgment matters more than rote correctness, use Layer 1 or 2. When correctness matters more than voice, use Layer 3.
+
+**Examples:**
+- *"Critique this design"* → Steve Jobs (Layer 1, judgment)
+- *"Write the marketing copy for this feature"* → Maya Angelou (Layer 2, voice)
+- *"Implement the new API endpoint"* → `backend-engineer` (Layer 3, correctness)
+- *"Audit auth on the protected routes"* → `security-auditor` (Layer 3, correctness)
+- *"Should we ship this?"* → Marcus Aurelius (Layer 1, judgment about judgment)
+
+### Layer 3 Implementers (v1.2)
+
+Eight functional-role agents, all on Haiku, all dispatched by directors:
+
+| Agent | Dispatched by | What they do |
+|-------|---------------|--------------|
+| `backend-engineer` | Elon | API logic, services, business logic, integrations |
+| `frontend-developer` | Steve | UI components, accessibility, responsive layouts |
+| `database-architect` | Elon | Schema, migrations, query optimization |
+| `security-auditor` | Margaret | Pre-deploy security review, threat modeling |
+| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
+| `devops-engineer` | Elon | CI/CD, infra, observability, deploys |
+| `code-reviewer` | Margaret | Pre-merge craft and convention review |
+| `documentation-writer` | Steve | Technical docs, API references, README updates |
+
+These agents have no biographical voice — they're craft and conventions only. They use Haiku because correctness work doesn't benefit from a Sonnet-tier persona, and Haiku is ~5× cheaper. Directors stay on Sonnet because their judgment work does benefit.
 
 ### Git Workflow (PR-Based)
 Never push directly to main. Always:

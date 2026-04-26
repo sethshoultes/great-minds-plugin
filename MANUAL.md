@@ -121,31 +121,53 @@ Each plugin's personas know about the others. Phil Jackson (in great-minds) is t
 
 ## 4. The mental model
 
-Great Minds is built around three abstractions: **the agency**, **the board**, and **the orchestrator**. Understanding these three makes the seventeen skills self-explanatory.
+Great Minds is built around four abstractions: **the agency**, **the three layers**, **the board**, and **the orchestrator**. Understanding these makes the seventeen skills self-explanatory.
 
 ### The agency
 
-A project that uses Great Minds becomes a small AI agency. The structure mirrors a real creative shop:
+A project that uses Great Minds becomes a small AI agency. The structure mirrors a real creative shop with **three layers** of agents — directors at the top, named specialists in the middle, and functional implementers at the bottom:
 
 ```
 Human (you)
-  └── Marcus Aurelius — Moderator / Chief of Staff
-       ├── Board of Directors (4 members, parallel review)
+  └── Marcus Aurelius — Moderator                       [Layer 1: named director, Sonnet]
+       ├── Board of Directors (4 members, parallel)     [Layer 1: named directors]
        │    ├── Jensen Huang — Tech Strategy
        │    ├── Oprah Winfrey — Audience & Accessibility
        │    ├── Warren Buffett — Business & Economics
        │    └── Shonda Rhimes — Narrative & Engagement
-       ├── Steve Jobs — Creative Director
-       │    ├── Jony Ive — Visual Design (sub-agent)
-       │    ├── Maya Angelou — Copywriting (sub-agent)
-       │    ├── Rick Rubin — Creative Direction (sub-agent)
-       │    └── Aaron Sorkin — Screenwriting (sub-agent)
-       ├── Elon Musk — Product Director
-       │    └── Sara Blakely — Growth (sub-agent)
-       └── Margaret Hamilton — QA Director
+       ├── Steve Jobs — Creative Director               [Layer 1: named director]
+       │    ├── Jony Ive — Visual Design                [Layer 2: named specialist, Sonnet]
+       │    ├── Maya Angelou — Copywriting              [Layer 2: named specialist]
+       │    ├── Rick Rubin — Creative Direction         [Layer 2: named specialist]
+       │    ├── Aaron Sorkin — Screenwriting            [Layer 2: named specialist]
+       │    ├── frontend-developer                      [Layer 3: functional, Haiku]
+       │    └── documentation-writer                    [Layer 3: functional, Haiku]
+       ├── Elon Musk — Product Director                 [Layer 1: named director]
+       │    ├── Sara Blakely — Growth Strategy          [Layer 2: named specialist]
+       │    ├── backend-engineer                        [Layer 3: functional, Haiku]
+       │    ├── database-architect                      [Layer 3: functional, Haiku]
+       │    └── devops-engineer                         [Layer 3: functional, Haiku]
+       └── Margaret Hamilton — QA Director              [Layer 1: named director]
+            ├── test-engineer                           [Layer 3: functional, Haiku]
+            ├── security-auditor                        [Layer 3: functional, Haiku]
+            └── code-reviewer                           [Layer 3: functional, Haiku]
 ```
 
 Phil Jackson (orchestrator) operates one level above the moderator — coordinating dispatch and resource allocation, particularly in pipeline mode.
+
+### The three layers
+
+Each layer is best at different work. The split is grounded in 2026 research (Wharton, USC) showing that named expert personas excel at open-ended judgment but reduce factual accuracy by 3–4 points on knowledge-heavy tasks.
+
+| Layer | What it's named after | Model | Best at |
+|-------|----------------------|-------|---------|
+| **1. Named directors** | Real historical figures (Jobs, Musk, Hamilton, Aurelius, the Board) | Sonnet | Vision, judgment, conflict mediation, *what kind of thing is this* |
+| **2. Named specialists** | Real historical figures (Ive, Angelou, Rubin, Sorkin, Blakely) | Sonnet | Domain craft with character — visual design, copy voice, growth psychology |
+| **3. Functional implementers** | Job titles only (`backend-engineer`, `code-reviewer`) | Haiku | Correctness — code that compiles, tests that catch bugs, queries that return the right rows |
+
+**The dispatch rule:** when judgment matters more than rote correctness, use Layer 1 or 2 (named persona). When correctness matters more than voice, use Layer 3 (functional role).
+
+This isn't a stylistic preference — it's the architecture honoring what the research actually says about persona prompting. Named personas are good at being themselves; they're worse at recalling exact API signatures or running deterministic checks. Functional implementers are good at correctness because they don't have a voice fighting for attention.
 
 ### The board
 
@@ -290,6 +312,23 @@ The agency runs on these three.
 | Margaret Hamilton | `margaret-hamilton-qa` | QA — zero-defect methodology | Build verification, test coverage, "will this break in production?" |
 | Marcus Aurelius | `marcus-aurelius-mod` | Stoic moderator | Conflict mediation, quality gates, "is this ready to ship?" |
 | Phil Jackson | `phil-jackson-orchestrator` | Zen orchestrator | System coordination, dispatch, resource optimization |
+
+### Functional implementers (8) — Layer 3
+
+Functional-role agents that directors dispatch for correctness work. All on Haiku, no biographical voice. Use when the work is fundamentally about *getting it right* rather than *getting the voice right*.
+
+| Agent | Dispatched by | What they do |
+|-------|---------------|--------------|
+| `backend-engineer` | Elon | API logic, services, business logic, third-party integrations |
+| `frontend-developer` | Steve | UI components, accessibility wiring, responsive layouts |
+| `database-architect` | Elon | Schema design, migrations, query optimization, indexing |
+| `security-auditor` | Margaret | Pre-deploy security review — auth, input validation, secrets exposure |
+| `test-engineer` | Margaret | Unit, integration, e2e, regression tests |
+| `devops-engineer` | Elon | CI/CD, IaC, observability, deploy pipelines |
+| `code-reviewer` | Margaret | Pre-merge review for craft, convention, obvious correctness |
+| `documentation-writer` | Steve | Technical docs, API references, README updates (NOT brand voice — that's Maya) |
+
+You invoke these via the Agent tool the same way you'd invoke any subagent. They're typically dispatched by a Layer 1 director rather than directly by you, but you can invoke them directly when the work is purely correctness-focused.
 
 ### When you can't decide which persona to invoke
 
@@ -456,9 +495,9 @@ You can use either, not both. The daemon is more reliable for continuous operati
 
 The agency mode discipline is documented in `docs/OPERATIONS.md`. Three rules in particular matter:
 
-**1. Directors must delegate.** Steve and Elon are directors, not individual contributors. They break tasks into sub-tasks and spawn Haiku-model sub-agents. They do not write the code themselves.
+**1. Directors must delegate to the right layer.** Steve and Elon are Layer 1 directors. When the work is craft with character (visual design, copy voice, growth psychology), they dispatch to a Layer 2 named specialist (Ive, Angelou, Rubin, Sorkin, Blakely) on Sonnet. When the work is correctness (code, tests, infra, security), they dispatch to a Layer 3 functional implementer (`backend-engineer`, `frontend-developer`, `test-engineer`, etc.) on Haiku. They do not write code or run tests themselves — and they do not collapse Layer 2 voice work into a Layer 3 functional role.
 
-**2. Haiku for sub-agents.** All sub-agents use `model: haiku` to conserve usage limits (~5× cheaper). Only directors and the moderator use Sonnet.
+**2. Sonnet for judgment, Haiku for correctness.** Layer 1 directors and Layer 2 named specialists use Sonnet because their work is judgment, voice, and craft with character. Layer 3 functional implementers use Haiku because their work is correctness, and Haiku is ~5× cheaper without losing accuracy on the kind of work they do. The exception: Margaret Hamilton (QA Director, Layer 1) is Sonnet because her judgment about *will-this-fail-in-production* is gatekeeping the release.
 
 **3. Honesty pass before shipping.** Margaret Hamilton's QA pass must verify the work before `/agency-ship`. No fake API documentation. No fake statistics. No claiming features that don't work. If the AI can't verify an action was performed, don't claim it was.
 

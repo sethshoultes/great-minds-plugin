@@ -1,6 +1,6 @@
 {
   "name": "great-minds",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Multi-agent AI agency — deploy a team of AI personas (Steve Jobs, Elon Musk, Marcus Aurelius, Jensen Huang + design crew) that debate strategy, hire sub-agents, build deliverables, write code, and ship products from a single PRD.",
   "author": {
     "name": "Seth Shoultes",
