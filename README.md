@@ -2,6 +2,8 @@
 
 14 legendary personas (Jobs, Musk, Buffett, Ive, Rubin, Huang, Winfrey, Rhimes, Blakely, Hamilton, Angelou, Sorkin, Aurelius, Jackson) that debate, review, plan, and build — available in three install formats to match how you work.
 
+📖 **[Read the User Manual](docs/user-manual.md)** for the complete reference — install paths, all 14 personas, all 17 skills, lite vs full agency workflows, project structure, memory store, three end-to-end walkthroughs, patterns, and troubleshooting.
+
 ## Contents
 
 - [Pick your format](#pick-your-format)
