@@ -2,7 +2,7 @@
   "dxt_version": "0.1",
   "name": "great-minds",
   "display_name": "Great Minds",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "14 legendary personas (Jobs, Musk, Buffett, Ive, Hamilton, Angelou, Rubin, Huang, Winfrey, Rhimes, Blakely, Aurelius, Jackson, Sorkin) plus structured debate, board review, and planning skills.",
   "long_description": "Channel first-principles thinking from Jobs, Musk, Buffett, and more. Run structured 2-round debates to lock strategic decisions. Spawn parallel board reviews from 4 perspectives. Generate atomic task plans with dependency waves. Every tool returns a structured prompt — Claude does the reasoning using your own subscription, no API key or hosting needed.",
   "author": {
@@ -37,6 +37,10 @@
     {
       "name": "list_personas",
       "description": "List all 14 available personas with a one-line description of each."
+    },
+    {
+      "name": "constellation_start",
+      "description": "Discoverable entry point for newcomers to the Caseproof persona constellation. Asks 2-3 questions about project shape and routes to the right plugin's project-init skill (great-authors / great-filmmakers / great-publishers / great-marketers / great-minds agency-start) or channels Phil Jackson for ambiguous projects. Always ensures the bible at .great-authors/project.md exists. Use when starting any project and unsure where to begin."
     },
     {
       "name": "brain_save",

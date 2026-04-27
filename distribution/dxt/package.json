@@ -1,6 +1,6 @@
 {
   "name": "great-minds-dxt",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "description": "Great Minds MCP server for Claude Desktop",
   "main": "server/index.js",
   "type": "module",

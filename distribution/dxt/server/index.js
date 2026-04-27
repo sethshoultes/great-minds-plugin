@@ -180,6 +180,19 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       inputSchema: { type: "object", properties: {} },
     },
     {
+      name: "constellation_start",
+      description: "Discoverable entry point for newcomers to the Caseproof persona constellation. Asks 2-3 questions about project shape and routes to the right plugin's project-init skill or channels Phil Jackson for ambiguous projects. Always ensures the bible at .great-authors/project.md exists. Use when starting any project and unsure where to begin.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          project_description: {
+            type: "string",
+            description: "Optional one-line description of the project. If provided, the routing skips the first question and goes directly to the immediate-goal question.",
+          },
+        },
+      },
+    },
+    {
       name: "brain_save",
       description: "Commit a file to the shared brain GitHub repo (debate rounds, board verdicts, persona critiques, shared notes). Requires env vars GREAT_MINDS_GITHUB_TOKEN and GREAT_MINDS_GITHUB_REPO (owner/repo).",
       inputSchema: {
@@ -223,6 +236,13 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   if (name === "list_personas") {
     const lines = Object.entries(PERSONA_BLURBS).map(([k, v]) => `- **${k}** — ${v}`);
     return { content: [{ type: "text", text: `# Available Personas\n\n${lines.join("\n")}` }] };
+  }
+
+  if (name === "constellation_start") {
+    const phil = getPersona("phil-jackson");
+    const desc = args.project_description ? `\n\nUser's one-line description: ${args.project_description}` : "";
+    const text = `You are routing a newcomer through the Caseproof persona constellation entry point.${desc}\n\nThe constellation has five shipped plugins, each owning one craft:\n\n- great-minds (this plugin) — strategy + agency swarm pattern (skills: /agency-start, /agency-launch, etc.)\n- great-authors — prose / writing (skills: /authors-project-init, /authors-orchestrate-novel, /authors-channel)\n- great-filmmakers — film / video production (skills: /film-project-init, /film-crew, /filmmakers-build-keyframes)\n- great-publishers — publication form (skills: /publishers-project-init, /publishers-channel, /publishers-build-book-site)\n- great-marketers — marketing (skills: /marketers-project-init, /marketers-write-positioning, /marketers-write-launch-copy)\n\nYour job:\n\n1. **Check the working directory** — does \`.great-authors/project.md\` already exist? If yes, this is an existing project; surface what's done and propose the next move rather than starting over.\n\n2. **Ask the project-shape question** if this is genuinely a fresh start:\n\n   What kind of project is this?\n     1. Software product\n     2. Novel or long-form writing\n     3. Film or video\n     4. Publication of a finished manuscript\n     5. Marketing / launch for a finished artifact\n     6. Mixed creative project (book + film + launch)\n     7. Not yet sure / something else\n\n3. **Route based on the answer**:\n\n   - Software (1) → ask whether swarm pattern (/agency-start) or direct dispatch (Steve, Elon, Jony directly) fits\n   - Writing (2) → /authors-project-init, then /authors-orchestrate-novel\n   - Film (3) → /film-project-init, then /film-crew --backend <heygen|veo3|remotion>\n   - Publication (4) → /publishers-project-init, then /publishers-channel maxwell-perkins (threshold), chip-kidd (cover), tina-brown (jacket)\n   - Marketing (5) → /marketers-project-init, then /marketers-write-positioning, /marketers-write-launch-copy\n   - Mixed (6) or Not sure (7) → channel Phil Jackson (the constellation orchestrator) for deeper coordination\n\n4. **For options 6 and 7**, channel Phil Jackson now. His persona is constellation-aware (great-minds v1.3+); he'll ask clarifying questions, propose an orchestration plan, and dispatch sub-agents across plugin boundaries as the project unfolds.\n\nPhil Jackson's persona (use when channeling for ambiguous projects):\n\n---PERSONA: phil-jackson---\n${phil}\n---END PERSONA---\n\n5. **The bible is the spine**: every plugin reads .great-authors/project.md before deciding. If the chosen route doesn't scaffold the bible itself, ensure it exists with at minimum: title, genre, premise, voice rules, and a current-artifact slug.\n\n6. **After routing, step back.** This entry point's job is routing, not end-to-end orchestration. Once the user is dispatched to the right plugin's project-init or to Phil, the next phase belongs to the dispatched skill or persona.\n\nBegin by checking the working directory, then asking the shape question (or skipping to step 4 if the project is mixed or unclear from the description).`;
+    return { content: [{ type: "text", text }] };
   }
 
   if (name === "persona_critique") {

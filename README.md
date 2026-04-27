@@ -4,6 +4,27 @@
 
 📖 **[Read the User Manual](MANUAL.md)** for the complete reference — install paths, all 22 agents (14 named + 8 functional), all 17 skills, lite vs full agency workflows, project structure, memory store, three end-to-end walkthroughs, patterns, and troubleshooting.
 
+## Newcomer? Start here
+
+```
+/constellation-start
+```
+
+The discoverable entry point for the Caseproof persona constellation. Asks 2-3 questions about your project shape and routes to the right plugin's project-init skill — or channels Phil Jackson (constellation-aware as of v1.3) for ambiguous or mixed projects. Always ensures the bible at `.great-authors/project.md` exists, since that's the shared spine across all five plugins.
+
+If you already know which plugin you want, you can skip the entry point and run that plugin's project-init directly. `/constellation-start` exists for the case where you don't.
+
+## What's new in v1.3
+
+**Constellation-level entry point.** The plugin now has a discoverable starting point for newcomers to the entire Caseproof persona constellation (great-minds + great-authors + great-filmmakers + great-publishers + great-marketers — five plugins, each owning one craft).
+
+- **`/constellation-start`** (new skill) — asks project-shape questions, routes to the right plugin's project-init or channels Phil Jackson for mixed projects. Discoverable, lightweight, ~150 lines.
+- **`phil-jackson-orchestrator.md`** (expanded) — Phil's existing role (Zen-master swarm orchestrator within great-minds) is preserved unchanged; a new "Your Role at the Constellation Level" section adds the orchestration knowledge for cross-plugin work. Same triangle-offense logic; one level up. Eleven rings, not one.
+- **DXT bundle** — adds the `constellation_start` tool. Available in Claude Desktop alongside the existing tools.
+- **Version coherence** — DXT manifests caught up to plugin.json baseline (was 1.0.0; now 1.3.0 to match). Cleaner state for future smoke-test infrastructure.
+
+Doesn't break anything. `/agency-start` and the entire `agency-*` swarm-pattern family stay intact — they're the right answer for software-product swarm projects, and `/constellation-start` dispatches *to* them when the user picks that branch.
+
 ## What's new in v1.2
 
 The three-layer architecture is now explicit and shipping. Grounded in 2026 research (Wharton, USC) on persona prompting — named expert personas excel at judgment but reduce factual accuracy on knowledge-heavy tasks; functional roles avoid that trap.
