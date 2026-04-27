@@ -131,12 +131,12 @@ If yes, dispatch via `Agent({subagent_type: "great-authors:authors-project-init"
 ```
 A film or video project. The right opening move is:
 
-  /film-project-init
+  /filmmakers-project-init
 
 This scaffolds film/ (sibling to manuscript/ and the bible). Then the
 full production-doc pipeline:
 
-  /film-crew <source-file> --backend <heygen | veo3 | remotion>
+  /filmmakers-crew <source-file> --backend <heygen | veo3 | remotion>
 
 That dispatches the director, writer, and craft personas to produce
 a backend-ready production doc.
@@ -145,7 +145,7 @@ Note: film projects often start with a manuscript (essay, scene notes)
 in great-authors. If you don't have a source file yet, run
 /authors-project-init first to scaffold the bible.
 
-Run /film-project-init now? [y/N]
+Run /filmmakers-project-init now? [y/N]
 ```
 
 **Publication of a finished manuscript (option 4):**
@@ -263,7 +263,7 @@ If the user comes back to `/constellation-start` later in the same session, trea
 - `phil-jackson-orchestrator.md` — the constellation-level orchestrator persona this skill channels for ambiguous projects (great-minds v1.3+)
 - `/agency-start` — the swarm-pattern entry point for software-product projects (this plugin)
 - `/authors-project-init` — the writing-stage entry point (great-authors)
-- `/film-project-init` — the film-stage entry point (great-filmmakers)
+- `/filmmakers-project-init` — the film-stage entry point (great-filmmakers)
 - `/publishers-project-init` — the publication-form entry point (great-publishers)
 - `/marketers-project-init` — the marketing-stage entry point (great-marketers)
 - `~/brain/projects/caseproof-ai-company-constellation.md` — the constellation roadmap

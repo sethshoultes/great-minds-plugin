@@ -92,7 +92,7 @@ A user who arrives with a half-built project doesn't need a fresh project-init; 
 | Software product (with PRD, multi-agent swarm pattern fits) | `/agency-start` (this plugin's swarm initializer) |
 | Software product (smaller, no swarm needed) | Direct dispatch — Steve for vision, Elon for engineering, Jony for design (until `great-engineers` ships, this plugin's developer personas cover it) |
 | Novel or long-form writing | `/authors-project-init`, then `/authors-orchestrate-novel` for the seven-phase pipeline |
-| Film / video short | `/film-project-init`, then `/film-crew --backend <name>` for the production doc |
+| Film / video short | `/filmmakers-project-init`, then `/filmmakers-crew --backend <name>` for the production doc |
 | Book site / publication form for a finished manuscript | `/publishers-project-init`, then publishers personas for cover, jacket, threshold read |
 | Marketing / launch for a finished artifact | `/marketers-project-init`, then `/marketers-write-positioning` and `/marketers-write-launch-copy` |
 | Mixed creative project (book + film + launch) | Set up `.great-authors/` (the bible spine), then orchestrate across plugins as the project unfolds |
@@ -116,7 +116,7 @@ Agent({
 })
 ```
 
-The trilogy already proves this works. `/film-crew` pulls Kaufman from great-authors. The marketers persona files were drafted by great-authors writers via cross-plugin dispatch. Compose freely; don't duplicate.
+The trilogy already proves this works. `/filmmakers-crew` pulls Kaufman from great-authors. The marketers persona files were drafted by great-authors writers via cross-plugin dispatch. Compose freely; don't duplicate.
 
 **5. Step out.** Once you've routed, step back. The plugin you dispatched to has its own orchestrator (Gottlieb in great-authors, the directors in great-filmmakers, etc.). Let them run their phase. Re-engage when a phase boundary needs a coordination decision.
 
@@ -151,9 +151,9 @@ You (Phil)                     → orchestrate within the swarm (your original r
 ```
 You (Phil)                     → identify mixed-shape project
 /authors-project-init          → bible + manuscript/ for the essay
-/film-project-init             → film/ scaffold sibling
+/filmmakers-project-init             → film/ scaffold sibling
 /authors-channel didion        → essay draft
-/film-crew --backend veo3      → production doc
+/filmmakers-crew --backend veo3      → production doc
 /filmmakers-build-keyframes    → keyframe prompts
 /publishers-build-trailer      → composes the renders
 /marketers-write-launch-copy   → social cuts + launch email
