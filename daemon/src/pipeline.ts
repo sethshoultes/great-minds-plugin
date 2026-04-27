@@ -686,6 +686,31 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
     await runShip(project);
     await notifyPhase(project, "ship", "done");
 
+    // Deploy phase — auto-deploy Cloudflare Workers if wrangler.toml exists
+    try {
+      const delDir = resolve(DELIVERABLES_DIR, project);
+      const wranglerPath = resolve(delDir, "wrangler.toml");
+      if (existsSync(wranglerPath)) {
+        log(`DEPLOY: wrangler.toml found in ${delDir} — running wrangler deploy`);
+        try {
+          const out = execSync(`cd ${JSON.stringify(delDir)} && npm install --no-fund --no-audit 2>&1 | tail -5 && npx wrangler deploy 2>&1 | tail -20`, {
+            encoding: "utf-8",
+            timeout: 300_000,
+            env: process.env,
+          });
+          log(`DEPLOY: success — ${out.trim().split("\n").slice(-3).join(" | ")}`);
+          await notify(`*DEPLOYED* ${project} via wrangler`, "info");
+        } catch (e: any) {
+          log(`DEPLOY: failed — ${e.message?.slice(0, 200) || e}`);
+          await notify(`Deploy *failed* for ${project}: \`${e.message?.slice(0, 200) || e}\``, "warning");
+        }
+      } else {
+        log(`DEPLOY: skipped — no wrangler.toml in deliverables/${project}`);
+      }
+    } catch (e: any) {
+      log(`DEPLOY: error in deploy phase — ${e.message || e}`);
+    }
+
     // Archive completed PRD so daemon doesn't rebuild it
     const prdPath = resolve(PRDS_DIR, prdFile);
     const archiveDir = resolve(PRDS_DIR, "completed");
@@ -694,6 +719,21 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
     const { rename } = await import("fs/promises");
     await rename(prdPath, archivePath).catch(() => {});
     log(`ARCHIVE: Moved ${prdFile} to prds/completed/`);
+
+    // Auto-close GitHub issue if PRD was created from one
+    const issueMatch = prdFile.match(/^github-issue-([^-]+)-([^-]+)-(\d+)\.md$/);
+    if (issueMatch) {
+      const [, owner, repo, num] = issueMatch;
+      try {
+        execSync(
+          `gh issue close ${num} --repo ${owner}/${repo} --reason completed --comment "Shipped by autonomous pipeline as project \\\`${project}\\\`. See git log for details."`,
+          { encoding: "utf-8", timeout: 30_000 }
+        );
+        log(`CLOSED: ${owner}/${repo}#${num} marked completed`);
+      } catch (e: any) {
+        log(`CLOSE-FAILED: ${owner}/${repo}#${num} — ${e.message?.slice(0, 150) || e}`);
+      }
+    }
 
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`═══════════════════════════════════════════════════`);
