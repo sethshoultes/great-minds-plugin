@@ -33,7 +33,7 @@ Cross-dispatched from great-operators:
 
 ```js
 Agent({
-  subagent_type: "great-operators:marty-cagan-operator",
+  subagent_type: "great-designers:marty-cagan-designer",
   prompt: "Stall detected for project <slug>. Reasons: <reasons>. Read the analysis docs. Write a build-or-kill recommendation. Recommend ONE of: BUILD (with smallest viable scope and the riskiest assumption to test first), PIVOT (with the new framing), or KILL (with the reason the four risks failed). Do NOT defer. Do NOT request more analysis."
 })
 ```
@@ -86,7 +86,7 @@ Cagan is the canonical decision-forcer for build-or-kill on a product question. 
 
 | Stall shape | Forcing-function persona |
 |---|---|
-| "Should we build this at all? Have the four risks been tested?" | `great-operators:marty-cagan-operator` |
+| "Should we build this at all? Have the four risks been tested?" | `great-designers:marty-cagan-designer` |
 | "The team disagreed and a debate round didn't resolve it" | `great-minds:phil-jackson-orchestrator` |
 | "The product feels off and nobody can articulate why" | `great-minds:rick-rubin-creative` (essence) or `great-minds:marcus-aurelius-mod` (Stoic mediation) |
 | "The legal/policy/ethics question is blocking commitment" | `great-counsels:*` (NOT LEGAL ADVICE — see disclaimer) |
@@ -112,7 +112,7 @@ For anyone building a Shipyard-style consumer system using great-minds (or any c
 - **Shipyard's full diagnosis:** [shipyard-ai/docs/PRODUCT-MANAGEMENT-GAP.md](https://github.com/sethshoultes/shipyard-ai/blob/main/docs/PRODUCT-MANAGEMENT-GAP.md)
 - **Reference daemon code:** [shipyard-ai/pipeline/auto/stall-detector.mjs](https://github.com/sethshoultes/shipyard-ai/blob/main/pipeline/auto/stall-detector.mjs)
 - **Reference operator guide:** [shipyard-ai/pipeline/auto/STALL-DETECTOR.md](https://github.com/sethshoultes/shipyard-ai/blob/main/pipeline/auto/STALL-DETECTOR.md)
-- **Cagan's persona file:** `great-operators-plugin/agents/marty-cagan-operator.md`
+- **Cagan's persona file:** `great-designers-plugin/agents/marty-cagan-designer.md` (product discovery is a design-management craft, not an operations craft)
 - **Phil Jackson's persona file:** `great-minds-plugin/agents/phil-jackson-orchestrator.md`
 - **Constellation roadmap (architectural rules):** `brain/projects/caseproof-ai-company-constellation.md`
 - **OPERATIONS.md** — the great-minds operations guide (links to this doc when relevant to a stalled great-minds pipeline)
