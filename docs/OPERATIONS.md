@@ -35,7 +35,7 @@ Commits and pushes uncommitted work across all repos. Checks GitHub issues. Ensu
 
 ### Stall Detector (every 4 hours, recommended)
 
-Watches projects for the analysis-as-progress failure mode — analysis docs piling up while no code commits land. Dispatches Marty Cagan from `great-operators` to force build-or-kill decisions when projects stall. Has a hard cap (2 dispatches per project per week) before escalating to the human.
+Watches projects for the analysis-as-progress failure mode — analysis docs piling up while no code commits land. Dispatches Marty Cagan from `great-designers` (`great-designers:marty-cagan-designer` — product discovery is a design-management craft) to force build-or-kill decisions when projects stall. Has a hard cap (2 dispatches per project per week) before escalating to the human.
 
 **This is the load-bearing fix for autonomous pipelines** running great-minds personas at scale (Shipyard AI is the canonical case study). See [docs/STALLED-PIPELINES.md](./STALLED-PIPELINES.md) for the full pattern, and `shipyard-ai/pipeline/auto/stall-detector.mjs` for reference daemon code. Crons should NOT be auto-installed — review with the human first, then activate.
 
