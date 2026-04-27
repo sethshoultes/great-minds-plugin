@@ -40,7 +40,7 @@ const PERSONA_BLURBS = {
 };
 
 const server = new Server(
-  { name: "great-minds", version: "1.3.1" },
+  { name: "great-minds", version: "1.4.0" },
   { capabilities: { tools: {} } }
 );
 

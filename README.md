@@ -14,6 +14,25 @@ The discoverable entry point for the Caseproof persona constellation. Asks 2-3 q
 
 If you already know which plugin you want, you can skip the entry point and run that plugin's project-init directly. `/constellation-start` exists for the case where you don't.
 
+## What's new in v1.4
+
+Polish from the cross-plugin quality review. No new user-facing features; everything is hygiene and parity with the rest of the constellation.
+
+### Added
+
+- **`tests/smoke.sh`** — first smoke test for great-minds. Validates SKILL.md frontmatter, persona frontmatter (name / description / model / color), DXT persona-subset membership against `agents/`, version coherence across `package.json` / `plugin.json` / DXT manifests / DXT server self-report, DXT tool-handler alignment, and v1.3+ `/constellation-start` skill presence.
+- **`LICENSE`** — MIT, matching the rest of the constellation. The plugin had been shipping without one.
+- **Frontmatter** added to three SKILL.md files that predated the convention: `agency-daemon`, `scope-check`, `agency-memory`.
+- **`color:` field** added to `aaron-sorkin-screenwriter.md` (the only persona missing it).
+
+### Changed
+
+- **`distribution/plugin/skills/constellation-start/`** — the lite distribution now includes the constellation entry point. Newcomers using the lite install can run `/constellation-start` without falling back to the full bundle. Phil Jackson's persona file in lite is also resynced with the constellation-aware expansion from v1.3.
+
+### Why
+
+A cross-plugin review pass surfaced these as accumulated drift. None were user-blocking, but together they were a real consistency gap — every other plugin in the constellation had smoke tests, and great-minds was the most likely to drift without them given its breadth (22 personas, 20 skills, infrastructure for a swarm runtime).
+
 ## What's new in v1.3
 
 **Constellation-level entry point.** The plugin now has a discoverable starting point for newcomers to the entire Caseproof persona constellation (great-minds + great-authors + great-filmmakers + great-publishers + great-marketers — five plugins, each owning one craft).

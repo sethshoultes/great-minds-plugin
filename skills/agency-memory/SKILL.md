@@ -1,4 +1,11 @@
-# Agency Memory
+---
+name: agency-memory
+description: Query and manage the Great Minds agency vector store — semantic search over memories stored in SQLite with embeddings. Subcommands - search, add, list, import, export, stats. Filters by type (learning, decision, board-review), agent, project. Use to recall prior decisions, learnings, or critiques across multiple agency projects.
+argument-hint: <subcommand> [options]
+allowed-tools: [Bash, Read, Write]
+---
+
+# /agency-memory
 
 Query and manage the Great Minds agency vector store. Memories are stored in SQLite with embeddings for semantic search.
 

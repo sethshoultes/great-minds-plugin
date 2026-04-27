@@ -1,3 +1,9 @@
+---
+name: agency-daemon
+description: Install and run the Great Minds autonomous daemon — a single persistent Node.js process that watches for work and runs the full GSD pipeline. Replaces the cron-based scripts with a unified daemon. Use when setting up a new agency project's runtime infrastructure or restarting the daemon after a reboot.
+allowed-tools: [Bash, Read]
+---
+
 # /agency-daemon — Autonomous Agent Daemon
 
 ## Purpose

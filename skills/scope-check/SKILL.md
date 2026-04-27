@@ -1,3 +1,9 @@
+---
+name: scope-check
+description: Compare current work against the original plan to detect scope creep. Reads .planning/*-PLAN.md or prds/*.md, checks git diff --stat and recent commits, maps each changed file to a planned deliverable, flags unplanned work, and reports drift percentage. Use during execution when context-guard signals drift, or run manually to keep a project on-spec.
+allowed-tools: [Read, Bash, Grep, Glob]
+---
+
 # /scope-check — Scope Creep Detection
 
 Compare current work against the original plan. Flags drift before it becomes technical debt.
