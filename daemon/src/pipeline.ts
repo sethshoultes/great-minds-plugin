@@ -597,14 +597,26 @@ Do NOT push yet — the merge step handles that.`, DEFAULT_MAX_TURNS, "ship", "h
         execSync(`git commit -m "Resolve conflicts: accept ${project} changes"`, opts);
       }
 
-      // Step 4: Push
+      // Step 4: Pull-rebase to recover from divergence, then push
+      try {
+        execSync('git pull --rebase origin main', opts);
+      } catch {
+        try { execSync('git rebase --abort', opts); } catch {}
+        log("SHIP: pull --rebase failed before push, retrying push anyway");
+      }
       execSync('git push origin main', opts);
       log("SHIP: PUSHED TO GITHUB");
 
       // Step 5: Switch back
       execSync(`git checkout ${branch}`, opts);
     } else {
-      // Already on main
+      // Already on main — pull-rebase first to recover from any divergence
+      try {
+        execSync('git pull --rebase origin main', opts);
+      } catch {
+        try { execSync('git rebase --abort', opts); } catch {}
+        log("SHIP: pull --rebase failed, retrying push anyway");
+      }
       execSync('git push origin main', opts);
       log("SHIP: Already on main, pushed directly");
     }

@@ -361,12 +361,19 @@ export function gitAutoCommit(): void {
           `cd "${repo.path}" && git add -A && git commit -m "daemon: auto-commit ${fileCount} files" 2>&1`,
           { encoding: "utf-8", timeout: 30_000 },
         );
-        // Push if we have an upstream
+        // Push if we have an upstream — pull-rebase first to recover from divergence
         try {
+          try {
+            execSync(`cd "${repo.path}" && git pull --rebase 2>&1`, { encoding: "utf-8", timeout: 60_000 });
+          } catch (rebaseErr: any) {
+            log(`GIT: ${repo.name} pull --rebase failed — ${(rebaseErr.message || "").slice(0, 120)}`);
+            try { execSync(`cd "${repo.path}" && git rebase --abort 2>&1`, { encoding: "utf-8", timeout: 10_000 }); } catch {}
+            throw rebaseErr;
+          }
           execSync(`cd "${repo.path}" && git push 2>&1`, { encoding: "utf-8", timeout: 30_000 });
           log(`GIT: ${repo.name} pushed`);
         } catch {
-          log(`GIT: ${repo.name} push failed (no upstream or auth issue)`);
+          log(`GIT: ${repo.name} push failed (rebase conflict, auth, or no upstream)`);
         }
       }
     } catch {
