@@ -666,6 +666,33 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
     await runBuild(project, isHotfix);
     await notifyPhase(project, "build", "done");
 
+    // Deliverable-substance gate: fail fast if build produced no source files.
+    // Skip for hotfixes (they modify existing code, no new deliverable expected).
+    // Skip for known minimal-deliverable PRDs (smoke tests, templates).
+    if (!isHotfix) {
+      let prdSrc = "";
+      try { prdSrc = readFileSync(resolve(PRDS_DIR, prdFile), "utf-8"); } catch {}
+      const isMinimalIntent = /^# (PRD — Kimi Smoke Test|PRD — .*Template|PRD .*Template)/im.test(prdSrc);
+      if (!isMinimalIntent) {
+        const delDir = resolve(DELIVERABLES_DIR, project);
+        let count = 0;
+        try {
+          const out = execSync(
+            `find "${delDir}" -maxdepth 6 -type f \\( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.php" -o -name "*.py" -o -name "*.go" -o -name "*.rs" \\) ! -path "*/node_modules/*" ! -name "*.d.ts" 2>/dev/null | wc -l`,
+            { encoding: "utf-8", timeout: 10_000 },
+          );
+          count = parseInt(out.trim(), 10) || 0;
+        } catch {}
+        if (count < 3) {
+          const msg = `Build produced ${count} source file(s) — below threshold of 3. Refusing to ship hollow.`;
+          log(`BUILD-GATE FAIL: ${msg}`);
+          await notify(`*${project}* | Build gate FAILED: ${msg}`, "critical");
+          throw new Error(`hollow build: ${msg}`);
+        }
+        log(`BUILD-GATE OK: ${count} source files in deliverable`);
+      }
+    }
+
     checkAbort();
     // QA pass 1
     await notifyPhase(project, "qa-1", "start");
