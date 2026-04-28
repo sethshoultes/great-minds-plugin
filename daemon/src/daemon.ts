@@ -85,10 +85,15 @@ function loadQueue(): void {
 // ─── Hotfix Detection ──────────────────────────────────────
 
 function detectHotfix(prdContent: string): boolean {
-  // Check frontmatter flag
+  // Check explicit frontmatter flag — most reliable
   if (/^hotfix:\s*true/m.test(prdContent)) return true;
-  // Check title for fix/hotfix/patch/config keywords
-  if (/^#.*\b(fix|hotfix|patch|config)\b/im.test(prdContent)) return true;
+  // Title prefix — match only the FIRST line and only an explicit
+  // "# fix:" / "# hotfix:" / "# patch:" prefix. The previous regex
+  // searched any heading anywhere for any of those words, mis-classifying
+  // PRDs with sub-headings like "### Config / infra" as hotfixes and
+  // skipping the build-gate.
+  const firstLine = prdContent.split("\n", 1)[0] || "";
+  if (/^#\s+(fix|hotfix|patch):/i.test(firstLine)) return true;
   return false;
 }
 
