@@ -259,12 +259,45 @@ async function processNextPrd(): Promise<void> {
   } catch (err) {
     logError(`Pipeline failed for "${project}"`, err);
 
+    // Retry budget logic — max 3 attempts per PRD
+    const retries = getRetryCount(prdFile);
+    const maxRetries = 3;
+
+    if (!isHotfix) {
+      incrementRetryCount(prdFile);
+      if (retries + 1 >= maxRetries) {
+        await notify(
+          `Budget EXHAUSTED for *${project}* — moved to prds/parked/ after ${retries + 1} failures.
+Last error: \`${(err as Error)?.message || err}\``,
+          "warning",
+        ).catch(() => {});
+        try {
+          const parkDir = resolve(PRDS_DIR, "parked");
+          await mkdirAsync(parkDir, { recursive: true });
+          const prdPath = resolve(PRDS_DIR, prdFile);
+          if (existsSync(prdPath)) {
+            await rename(prdPath, resolve(parkDir, prdFile)).catch(() => {});
+            log(`ARCHIVE: Moved exhausted PRD ${prdFile} to prds/parked/`);
+          }
+        } catch (archiveErr) {
+          logError("Failed to park exhausted PRD", archiveErr);
+        }
+        // Don't requeue — budget exhausted
+        return;
+      }
+    }
+
     await notify(
-      `Pipeline crashed for *${project}*:\n\`${err}\`\nArchiving failed PRD and continuing.`,
+      `Pipeline crashed for *${project}*:\n\`${err}\`\nAttempt ${retries + 1}/${maxRetries}. Requeuing for retry.`,
       "critical",
     ).catch(() => {});
 
-    // Archive the failed PRD
+    // Requeue to end of queue for retry (budget not exhausted yet)
+    prdQueue.push(project);
+    saveQueue();
+    log(`ARCHIVE: Requeued "${project}" for attempt ${retries + 2}/${maxRetries}`);
+
+    // Also archive to failed/ for inspection
     try {
       const failedDir = resolve(PRDS_DIR, "failed");
       await mkdirAsync(failedDir, { recursive: true });
