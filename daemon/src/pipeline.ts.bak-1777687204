@@ -45,8 +45,6 @@ export function setCurrentProject(project: string): void {
 
 // ─── Agent Runner ───────────────────────────────────────────
 
-// Build-phase model override (env BUILD_PHASE_MODEL). Default "sonnet" maps to Kimi via Ollama. Set BUILD_PHASE_MODEL=qwen3.5:cloud to test alternate model for build phase only.
-const BUILD_MODEL = process.env.BUILD_PHASE_MODEL || "sonnet";
 const ALLOWED_TOOLS = ["Read", "Write", "Edit", "Bash", "Agent", "Glob", "Grep"];
 
 /**
@@ -359,7 +357,7 @@ Create these three files:
    - Make scripts executable (chmod +x)
 
 Do NOT write any implementation code yet. Only create spec.md, todo.md, and tests/.`,
-    15, "build", BUILD_MODEL);
+    15, "build", "sonnet");
 
   // ── Step 2: Execute todo.md tasks ──────────────────────────
   log("BUILD STEP 2: Executing todo.md tasks");
@@ -390,7 +388,7 @@ CRITICAL RULES:
 Put all output in ${delDir}/. Write ${resolve(REPO_PATH, ".planning/execution-report.md")} when done.`;
 
   await runAgent("builder", builderPrompt,
-    isHotfix ? 15 : DEFAULT_MAX_TURNS, "build", BUILD_MODEL);
+    isHotfix ? 15 : DEFAULT_MAX_TURNS, "build", "sonnet");
 
   // ── Step 3: Mid-build adversarial review (full pipeline only) ──
   if (!isHotfix) {
@@ -413,7 +411,7 @@ Check for:
 Write ${reviewPath} with:
 - PASS if everything aligns
 - BLOCK with specific issues if gaps found — list exact files and line numbers`,
-      15, "build", BUILD_MODEL);
+      15, "build", "sonnet");
 
     // If reviewer found issues, run a fix pass
     if (existsSync(reviewPath)) {
@@ -424,7 +422,7 @@ Write ${reviewPath} with:
 Fix every issue listed. Re-read spec.md at ${specPath} for correct approach.
 Run tests in ${testsDir}/ after each fix.
 Update todo.md at ${todoPath} with any new tasks. Check them off when done.
-Commit fixes.`, DEFAULT_MAX_TURNS, "build", BUILD_MODEL);
+Commit fixes.`, DEFAULT_MAX_TURNS, "build", "sonnet");
       }
     }
   }
