@@ -150,27 +150,26 @@ function getRepoSlug(repo: string): string {
 }
 
 function isIssueAlreadyConverted(state: IntakeState, repo: string, number: number): boolean {
-  const key = \`${repo}#${number}\`;
+  const key = `${repo}#${number}`;
   if (!state.convertedIssues.includes(key)) {
     return false;
   }
 
   // If the PRD ended up in failed/, allow re-conversion
-  const repoSlug = getRepoSlug(repo);
-  const failedPRDPath = resolve(PRDS_DIR, "failed", \`github-issue-${repoSlug}-${number}.md\`);
+  const repoSlug = sanitizeRepoSlug(repo);
+  const failedPRDPath = resolve(PRDS_DIR, "failed", `github-issue-${repoSlug}-${number}.md`);
   if (existsSync(failedPRDPath)) {
     return false;
   }
 
   // If the deliverable directory does not exist, the build was hollow/never shipped
-  const deliverableDir = resolve(DELIVERABLES_DIR, \`github-issue-${repoSlug}-${number}\`);
+  const deliverableDir = resolve(DELIVERABLES_DIR, `github-issue-${repoSlug}-${number}`);
   if (!existsSync(deliverableDir)) {
     return false;
   }
 
   return true;
 }
-
 
 function markIssueConverted(state: IntakeState, repo: string, number: number): void {
   const key = `${repo}#${number}`;
