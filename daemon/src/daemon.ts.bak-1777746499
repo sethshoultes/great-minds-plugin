@@ -12,7 +12,7 @@
 import { watch } from "chokidar";
 import { basename, resolve } from "path";
 import { readdir, stat, mkdir as mkdirAsync, rename } from "fs/promises";
-import { existsSync, writeFileSync, readFileSync, unlinkSync, statSync } from "fs";
+import { existsSync, writeFileSync, readFileSync, unlinkSync } from "fs";
 import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH, AGENT_TIMEOUT_MS, PIPELINE_TIMEOUT_MS } from "./config.js";
 import { runPipeline } from "./pipeline.js";
 import { runFeatureDream } from "./dream.js";
@@ -101,24 +101,9 @@ function detectHotfix(prdContent: string): boolean {
 
 function isAlreadyProcessed(prdFile: string): boolean {
   const completedPath = resolve(PRDS_DIR, "completed", prdFile);
-  if (existsSync(completedPath)) return true;
-
-  const livePath = resolve(PRDS_DIR, prdFile);
   const failedPath = resolve(PRDS_DIR, "failed", prdFile);
   const parkedPath = resolve(PRDS_DIR, "parked", prdFile);
-
-  for (const archivePath of [failedPath, parkedPath]) {
-    if (!existsSync(archivePath)) continue;
-    if (!existsSync(livePath)) return true;
-    try {
-      const archiveMtime = statSync(archivePath).mtimeMs;
-      const liveMtime = statSync(livePath).mtimeMs;
-      if (liveMtime <= archiveMtime) return true;
-    } catch {
-      return true;
-    }
-  }
-  return false;
+  return existsSync(completedPath) || existsSync(failedPath) || existsSync(parkedPath);
 }
 
 // ─── PRD Watcher ────────────────────────────────────────────
