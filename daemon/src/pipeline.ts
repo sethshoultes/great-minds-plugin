@@ -684,7 +684,7 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
   await notify(`Pipeline *started*${isHotfix ? " (HOTFIX)" : ""} for project *${project}*\nPRD: \`${prdFile}\``, "info");
 
   // C4: Import abort check from daemon
-  const { isPipelineAborted } = await import("./daemon.js");
+  const { isPipelineAborted, resetRetryCount } = await import("./daemon.js");
   const checkAbort = () => {
     if (isPipelineAborted()) throw new Error("Pipeline aborted by watchdog");
   };
@@ -828,6 +828,11 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
       `Pipeline *SHIPPED* for *${project}* in ${elapsed} minutes`,
       "info",
     );
+    // Budget reset on successful ship
+    if (resetRetryCount) {
+      resetRetryCount(prdFile);
+      log(`RETRY RESET: Budget cleared for ${prdFile}`);
+    }
   } catch (err) {
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`PIPELINE FAILED: ${project} after ${elapsed} minutes — ${err}`);
