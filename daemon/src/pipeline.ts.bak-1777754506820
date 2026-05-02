@@ -24,7 +24,6 @@ import {
 } from "./agents.js";
 import { log, logError } from "./logger.js";
 import { TokenLedger, estimateCost } from "./token-ledger.js";
-import { logCost } from "./cost-tracker.js";
 import { generateProjectHindsight, hindsightPlannerContext, hindsightExecutorContext } from "./git-intelligence-integration.js";
 
 // ─── Token Ledger ───────────────────────────────────────────
@@ -129,21 +128,6 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
       outputTokens,
       estimatedCost: estimateCost(inputTokens, outputTokens),
     });
-    try {
-      logCost({
-        prdId: currentProject || name,
-        model: model || 'default',
-        tokensIn: inputTokens,
-        tokensOut: outputTokens,
-        costUsd: estimateCost(inputTokens, outputTokens),
-        durationMs: Math.round(parseFloat(elapsed) * 1000) || 0,
-        timestamp: new Date().toISOString(),
-        phase: (phase || name.split('-')[0]) as any,
-        success: !result.includes('ERROR') && !result.includes('FAIL'),
-      });
-    } catch (e) {
-      log(`COST WARN: ${e}`);
-    }
   } catch (err) {
     log(`LEDGER WARN: Failed to log token usage for ${name}: ${err}`);
   }

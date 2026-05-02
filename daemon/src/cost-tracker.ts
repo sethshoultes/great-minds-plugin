@@ -1,28 +1,36 @@
-import Database from "better-sqlite3";
+// @ts-ignore
+import DatabaseLib from 'better-sqlite3';
+const Database = DatabaseLib as any;
 
 const DB_PATH = process.env.COST_DB_PATH || "/home/agent/shipyard-ai/data/costs.db";
 
 export interface CostRecord {
   prdId: string; model: string; tokensIn: number; tokensOut: number;
   costUsd: number; durationMs: number; timestamp: string;
-  phase: "plan" | "build" | "verify" | "ship"; success: boolean;
+  phase: "plan" | "build" | "verify" | "ship";
+  success: boolean;
 }
 
-let db: Database.Database | null = null;
+let db: any = null;
 
-function getDb(): Database.Database {
+function getDb(): any {
   if (!db) {
     db = new Database(DB_PATH);
     db.exec(`CREATE TABLE IF NOT EXISTS costs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      prd_id TEXT NOT NULL, model TEXT, tokens_in INTEGER, tokens_out INTEGER,
-      cost_usd REAL, duration_ms INTEGER,
+      prd_id TEXT NOT NULL,
+      model TEXT,
+      tokens_in INTEGER,
+      tokens_out INTEGER,
+      cost_usd REAL,
+      duration_ms INTEGER,
       timestamp TEXT DEFAULT (datetime('now')),
-      phase TEXT, success INTEGER);
-      CREATE INDEX IF NOT EXISTS idx_prd ON costs(prd_id);
-      CREATE INDEX IF NOT EXISTS idx_date ON costs(timestamp);
-      CREATE INDEX IF NOT EXISTS idx_model ON costs(model);
-    `);
+      phase TEXT,
+      success INTEGER
+    );
+    CREATE INDEX IF NOT EXISTS idx_prd ON costs(prd_id);
+    CREATE INDEX IF NOT EXISTS idx_date ON costs(timestamp);
+    CREATE INDEX IF NOT EXISTS idx_model ON costs(model);`);
   }
   return db;
 }
@@ -35,13 +43,17 @@ export function logCost(record: CostRecord): void {
     record.costUsd, record.durationMs, record.phase, record.success ? 1 : 0);
 }
 
-export function getSummary() {
+export function getSummary(): { totalCost: number; totalRuns: number; avgDuration: number; successRate: number } {
   const row = getDb().prepare(
     `SELECT COALESCE(SUM(cost_usd),0) as total_cost, COUNT(*) as total_runs,
      COALESCE(AVG(duration_ms),0) as avg_duration, COALESCE(AVG(success),0) as success_rate FROM costs`
   ).get() as { total_cost: number; total_runs: number; avg_duration: number; success_rate: number };
-  return { totalCost: row.total_cost, totalRuns: row.total_runs,
-    avgDuration: row.avg_duration, successRate: row.success_rate };
+  return {
+    totalCost: row.total_cost,
+    totalRuns: row.total_runs,
+    avgDuration: row.avg_duration,
+    successRate: row.success_rate
+  };
 }
 
 export function closeDb(): void { if (db) { db.close(); db = null; } }
