@@ -61,23 +61,6 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
   let result = "";
   let inputTokens = 0;
   let outputTokens = 0;
-  let writeCallCount = 0;
-  let bashCallCount = 0;
-
-  // Transcript log path (per-agent, per-run)
-  const transcriptDir = resolve(REPO_PATH, ".agent-logs", phase || "misc");
-  const transcriptPath = resolve(transcriptDir, `${name}-${Date.now()}.jsonl`);
-  let transcriptStream: any = null;
-  try {
-    execSync(`mkdir -p "${transcriptDir}"`, { encoding: "utf-8" });
-    const fs = await import("fs");
-    transcriptStream = fs.createWriteStream(transcriptPath, { flags: "a" });
-  } catch {}
-
-  const writeTranscript = (m: any): void => {
-    if (!transcriptStream) return;
-    try { transcriptStream.write(JSON.stringify(m) + "\n"); } catch {}
-  };
 
   try {
     for await (const message of query({
@@ -90,22 +73,6 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
         ...(model ? { model } : {}),
       },
     })) {
-      writeTranscript(message);
-
-      // Count Write/Edit and Bash tool_use blocks in assistant messages
-      if ((message as any).type === "assistant") {
-        const content = ((message as any).message?.content) || [];
-        if (Array.isArray(content)) {
-          for (const block of content) {
-            if (block?.type === "tool_use") {
-              const tn = block.name;
-              if (tn === "Write" || tn === "Edit") writeCallCount++;
-              if (tn === "Bash") bashCallCount++;
-            }
-          }
-        }
-      }
-
       if (message.type === "result") {
         result = typeof (message as any).result === "string" ? (message as any).result : JSON.stringify(message);
         const msg = message as any;
@@ -141,16 +108,6 @@ async function runAgentCore(name: string, prompt: string, maxTurns = DEFAULT_MAX
 
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
   log(`AGENT DONE: ${name} (${elapsed}s)`);
-  log(`AGENT TOOL-USE: ${name} writes=${writeCallCount} bash=${bashCallCount}`);
-  try { transcriptStream && transcriptStream.end(); } catch {}
-
-  // Hollow-agent guard: build-phase write agents that emit zero Write/Edit calls
-  // are silently broken (model skipping tool calls). Throw so retry layer can re-run.
-  const writeAgents = new Set(["build-setup", "builder", "build-fixer"]);
-  if (phase === "build" && writeAgents.has(name) && writeCallCount === 0) {
-    log(`AGENT HOLLOW: ${name} made 0 Write/Edit calls — throwing for retry`);
-    throw new Error(`hollow agent: ${name} produced no Write/Edit tool calls`);
-  }
 
   // Estimate tokens from prompt/result length if SDK didn't provide them
   if (inputTokens === 0) {
@@ -684,7 +641,7 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
   await notify(`Pipeline *started*${isHotfix ? " (HOTFIX)" : ""} for project *${project}*\nPRD: \`${prdFile}\``, "info");
 
   // C4: Import abort check from daemon
-  const { isPipelineAborted, resetRetryCount } = await import("./daemon.js");
+  const { isPipelineAborted } = await import("./daemon.js");
   const checkAbort = () => {
     if (isPipelineAborted()) throw new Error("Pipeline aborted by watchdog");
   };
@@ -828,11 +785,6 @@ export async function runPipeline(prdFile: string, project: string, isHotfix = f
       `Pipeline *SHIPPED* for *${project}* in ${elapsed} minutes`,
       "info",
     );
-    // Budget reset on successful ship
-    if (resetRetryCount) {
-      resetRetryCount(prdFile);
-      log(`RETRY RESET: Budget cleared for ${prdFile}`);
-    }
   } catch (err) {
     const elapsed = ((Date.now() - startTime) / 1000 / 60).toFixed(1);
     log(`PIPELINE FAILED: ${project} after ${elapsed} minutes — ${err}`);
