@@ -97,6 +97,38 @@ function detectHotfix(prdContent: string): boolean {
   return false;
 }
 
+// ─── Retry Budget ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+const RETRY_STATE_FILE = resolve(REPO_PATH, ".daemon-retry-state.json");
+
+function getRetryCount(prdFile: string): number {
+  try {
+    if (!existsSync(RETRY_STATE_FILE)) return 0;
+    const data = JSON.parse(readFileSync(RETRY_STATE_FILE, "utf-8"));
+    return data[prdFile] || 0;
+  } catch { return 0; }
+}
+
+function incrementRetryCount(prdFile: string): void {
+  try {
+    const data = existsSync(RETRY_STATE_FILE)
+      ? JSON.parse(readFileSync(RETRY_STATE_FILE, "utf-8"))
+      : {};
+    data[prdFile] = (data[prdFile] || 0) + 1;
+    writeFileSync(RETRY_STATE_FILE, JSON.stringify(data, null, 2));
+  } catch {}
+}
+
+function resetRetryCount(prdFile: string): void {
+  try {
+    if (!existsSync(RETRY_STATE_FILE)) return;
+    const data = JSON.parse(readFileSync(RETRY_STATE_FILE, "utf-8"));
+    delete data[prdFile];
+    writeFileSync(RETRY_STATE_FILE, JSON.stringify(data, null, 2));
+  } catch {}
+}
+
+// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 // ─── Duplicate Detection ────────────────────────────────────
 
 function isAlreadyProcessed(prdFile: string): boolean {
@@ -432,3 +464,5 @@ main().catch((err) => {
   releaseLock();
   process.exit(1);
 });
+// ══ EXPORTS ════════════════════════════════════════════════
+export { getRetryCount, incrementRetryCount, resetRetryCount };
