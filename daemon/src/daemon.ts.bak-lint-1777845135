@@ -13,7 +13,6 @@ import { watch } from "chokidar";
 import { basename, resolve } from "path";
 import { readdir, stat, mkdir as mkdirAsync, rename } from "fs/promises";
 import { existsSync, writeFileSync, readFileSync, unlinkSync, statSync } from "fs";
-import { execSync } from "child_process";
 import { PRDS_DIR, STATUS_FILE, INTERVALS, REPO_PATH, AGENT_TIMEOUT_MS, PIPELINE_TIMEOUT_MS } from "./config.js";
 import { runPipeline } from "./pipeline.js";
 import { runFeatureDream } from "./dream.js";
@@ -167,7 +166,7 @@ function startPrdWatcher(): void {
 
   const handleNewOrChanged = (filePath: string): void => {
     const name = basename(filePath);
-    if (!name.endsWith(".md") || name === "TEMPLATE.md" || name === "CODE-TEMPLATE.md" || name === "PAID-TEMPLATE.md") return;
+    if (!name.endsWith(".md") || name === "TEMPLATE.md") return;
 
     const slug = name.replace(/\.md$/, "");
 
@@ -179,28 +178,6 @@ function startPrdWatcher(): void {
     if (slug === currentlyProcessing) {
       log(`WATCHER: Skipping "${name}" — currently building`);
       return;
-    }
-
-    // ── PRD lint pre-flight ──────────────────────────────────
-    const lintScript = resolve(PRDS_DIR, "..", "pipeline", "auto", "prd-lint.sh");
-    if (existsSync(lintScript)) {
-      try {
-        execSync(`"${lintScript}" "${filePath}"`, { encoding: "utf-8", timeout: 10_000 });
-        log(`WATCHER: Lint PASS for "${name}"`);
-      } catch (err: any) {
-        const lintFailedDir = resolve(PRDS_DIR, "lint-failed");
-        try { execSync(`mkdir -p "${lintFailedDir}"`); } catch {}
-        try {
-          execSync(`mv "${filePath}" "${lintFailedDir}/${name}"`);
-          const reportSrc = filePath.replace(/\.md$/, ".lint-report.md");
-          const reportDst = resolve(lintFailedDir, name.replace(/\.md$/, ".lint-report.md"));
-          if (existsSync(reportSrc)) execSync(`mv "${reportSrc}" "${reportDst}"`);
-          log(`WATCHER: Lint FAIL for "${name}" — moved to prds/lint-failed/. See ${reportDst}`);
-        } catch (mvErr) {
-          log(`WATCHER: Lint FAIL for "${name}" but move failed: ${mvErr}`);
-        }
-        return;
-      }
     }
 
     log(`WATCHER: New PRD detected — ${name}`);
