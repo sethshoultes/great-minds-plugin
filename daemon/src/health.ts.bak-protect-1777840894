@@ -378,29 +378,6 @@ export function gitAutoCommit(): void {
       if (dirty) {
         const fileCount = dirty.split("\n").length;
         log(`GIT: ${repo.name} has ${fileCount} dirty files — auto-committing`);
-
-        // Protect daemon source files from agent-induced edits.
-        // If protected files are dirty, log loudly so we can audit before commit.
-        if (repo.name === "great-minds-plugin") {
-          const protectedPaths = [
-            "daemon/src/pipeline.ts",
-            "daemon/src/daemon.ts",
-            "daemon/src/agents.ts",
-            "daemon/src/config.ts",
-            "daemon/src/health.ts",
-            "daemon/src/cost-tracker.ts",
-          ];
-          for (const path of protectedPaths) {
-            try {
-              const diff = execSync(
-                `git -C "${repo.path}" diff --shortstat -- "${path}" 2>/dev/null`,
-                { encoding: "utf-8", timeout: 5_000 },
-              ).trim();
-              if (diff) log(`GIT: PROTECTED-DIRTY ${repo.name}/${path} — ${diff}`);
-            } catch {}
-          }
-        }
-
         execSync(
           `cd "${repo.path}" && git add -A && git commit -m "daemon: auto-commit ${fileCount} files" 2>&1`,
           { encoding: "utf-8", timeout: 30_000 },
