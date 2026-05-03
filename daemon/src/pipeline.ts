@@ -204,7 +204,7 @@ async function runAgentWithRetry(
   name: string,
   prompt: string,
   maxTurns = DEFAULT_MAX_TURNS,
-  maxRetries = 2,
+  maxRetries = 5,
   phase = "",
   model?: string,
 ): Promise<string> {
@@ -241,7 +241,7 @@ async function runAgentWithTimeout(
   prompt: string,
   maxTurns = DEFAULT_MAX_TURNS,
   timeoutMs = AGENT_TIMEOUT_MS,
-  maxRetries = 2,
+  maxRetries = 5,
   phase = "",
   model?: string,
 ): Promise<string> {

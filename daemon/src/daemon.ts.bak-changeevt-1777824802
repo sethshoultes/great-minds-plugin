@@ -164,7 +164,7 @@ function startPrdWatcher(): void {
     awaitWriteFinish: { stabilityThreshold: 2000, pollInterval: 500 },
   });
 
-  const handleNewOrChanged = (filePath: string): void => {
+  watcher.on("add", (filePath: string) => {
     const name = basename(filePath);
     if (!name.endsWith(".md") || name === "TEMPLATE.md") return;
 
@@ -187,10 +187,7 @@ function startPrdWatcher(): void {
       saveQueue();
       log(`QUEUE: Added "${slug}" (${prdQueue.length} in queue)`);
     }
-  };
-
-  watcher.on("add", handleNewOrChanged);
-  watcher.on("change", handleNewOrChanged);
+  });
 
   watcher.on("error", (err) => {
     logError("File watcher error", err);
