@@ -272,7 +272,7 @@ async function runAgentWithTimeout(
  * This is the function all pipeline phases should call.
  */
 export async function runAgent(name: string, prompt: string, maxTurns = DEFAULT_MAX_TURNS, phase = "", model?: string): Promise<string> {
-  return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 2, phase, model);
+  return runAgentWithTimeout(name, prompt, maxTurns, AGENT_TIMEOUT_MS, 5, phase, model);
 }
 
 // ─── Pipeline Phases ────────────────────────────────────────
