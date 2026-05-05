@@ -167,7 +167,7 @@ function startPrdWatcher(): void {
 
   const handleNewOrChanged = (filePath: string): void => {
     const name = basename(filePath);
-    if (!name.endsWith(".md") || name === "TEMPLATE.md" || name === "CODE-TEMPLATE.md" || name === "PAID-TEMPLATE.md") return;
+    if (!name.endsWith(".md") || name === "TEMPLATE.md" || name === "CODE-TEMPLATE.md" || name === "PAID-TEMPLATE.md" || name.endsWith(".lint-report.md")) return;
 
     const slug = name.replace(/\.md$/, "");
 
