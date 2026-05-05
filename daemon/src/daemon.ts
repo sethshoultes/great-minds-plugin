@@ -226,7 +226,7 @@ async function scanExistingPrds(): Promise<void> {
   try {
     const files = await readdir(PRDS_DIR);
     for (const file of files) {
-      if (!file.endsWith(".md") || file === "TEMPLATE.md") continue;
+      if (!file.endsWith(".md") || file === "TEMPLATE.md" || file === "CODE-TEMPLATE.md" || file === "PAID-TEMPLATE.md" || file.endsWith(".lint-report.md")) continue;
 
       // Check it's a file, not a directory
       const filePath = resolve(PRDS_DIR, file);
