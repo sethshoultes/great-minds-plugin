@@ -162,6 +162,12 @@ function isIssueAlreadyConverted(state: IntakeState, repo: string, number: numbe
     return false;
   }
 
+  // If the PRD is in completed/, it shipped — never recreate
+  const completedPRDPath = resolve(PRDS_DIR, "completed", `github-issue-${repoSlug}-${number}.md`);
+  if (existsSync(completedPRDPath)) {
+    return true;
+  }
+
   // If the deliverable directory does not exist, the build was hollow/never shipped
   const deliverableDir = resolve(DELIVERABLES_DIR, `github-issue-${repoSlug}-${number}`);
   if (!existsSync(deliverableDir)) {
