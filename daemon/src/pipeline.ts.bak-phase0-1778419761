@@ -295,28 +295,15 @@ export async function runDebate(prdPath: string, project: string): Promise<void>
     runAgent("elon-musk-r1", elonMuskDebateR1(prd, r1Elon), DEFAULT_MAX_TURNS, "debate", "sonnet"),
   ]);
 
-  // Round 2 — OPT-IN ONLY 2026-05-10 (per visionary directive: cut debate runtime).
-  // Add `debate_r2: true` to PRD frontmatter to re-enable for genuinely contested PRDs.
+  // Round 2 — Challenge each other (run in parallel)
   const r2Steve = resolve(roundsDir, "round-2-steve.md");
   const r2Elon = resolve(roundsDir, "round-2-elon.md");
-  const prdSrc = (() => { try { return readFileSync(prd, "utf-8"); } catch { return ""; } })();
-  const enableR2 = /^debate_r2:\s*true/mi.test(prdSrc);
 
-  if (enableR2) {
-    log("DEBATE R2: Steve + Elon challenge each other (opt-in via frontmatter)");
-    await Promise.all([
-      runAgent("steve-jobs-r2", steveJobsDebateR2(r1Steve, r1Elon, r2Steve), DEFAULT_MAX_TURNS, "debate", "sonnet"),
-      runAgent("elon-musk-r2", elonMuskDebateR2(r1Steve, r1Elon, r2Elon), DEFAULT_MAX_TURNS, "debate", "sonnet"),
-    ]);
-  } else {
-    log("DEBATE R2: SKIPPED (default — add 'debate_r2: true' to PRD frontmatter to enable)");
-    // Stub the R2 files so essence/consolidation can still read them (fall back to R1 content).
-    try {
-      const fs = require("fs");
-      if (fs.existsSync(r1Steve)) fs.copyFileSync(r1Steve, r2Steve);
-      if (fs.existsSync(r1Elon)) fs.copyFileSync(r1Elon, r2Elon);
-    } catch {}
-  }
+  log("DEBATE R2: Steve + Elon challenge each other");
+  await Promise.all([
+    runAgent("steve-jobs-r2", steveJobsDebateR2(r1Steve, r1Elon, r2Steve), DEFAULT_MAX_TURNS, "debate", "sonnet"),
+    runAgent("elon-musk-r2", elonMuskDebateR2(r1Steve, r1Elon, r2Elon), DEFAULT_MAX_TURNS, "debate", "sonnet"),
+  ]);
 
   // Rick Rubin distills the essence
   const essencePath = resolve(roundsDir, "essence.md");

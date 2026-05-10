@@ -402,12 +402,15 @@ async function runPeriodicTasks(): Promise<void> {
     }
   }
 
-  // featureDream — DISABLED 2026-05-10 (per visionary directive: stop generating new ideas, focus on integration of existing builds)
-  // To re-enable: revert this block to call runFeatureDream() and remove this comment.
-  // if (!pipelineRunning && now - lastDream >= INTERVALS.DREAM_MS) {
-  //   lastDream = now;
-  //   try { await runFeatureDream(); } catch (err) { logError("Feature dream failed", err); }
-  // }
+  // featureDream — every 4 hours (only when idle)
+  if (!pipelineRunning && now - lastDream >= INTERVALS.DREAM_MS) {
+    lastDream = now;
+    try {
+      await runFeatureDream();
+    } catch (err) {
+      logError("Feature dream failed", err);
+    }
+  }
 
   // Memory maintenance — every 6 hours
   if (now - lastMemoryMaintain >= INTERVALS.MEMORY_MAINTAIN_MS) {
