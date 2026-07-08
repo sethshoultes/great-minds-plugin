@@ -107,4 +107,4 @@ EOF
 rm -f "$TMPFILE"
 
 # Output hook result
-echo "{\"hookSpecificOutput\":{\"hookEventName\":\"AnatomyHook\",\"additionalContext\":\"[Anatomy] Generated .wolf/anatomy.md — ${TOTAL_FILES} files, ~${TOTAL_TOKENS} tokens indexed.\"}}"
+echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Anatomy] Generated .wolf/anatomy.md — ${TOTAL_FILES} files, ~${TOTAL_TOKENS} tokens indexed.\"}}"
