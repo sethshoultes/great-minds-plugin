@@ -9,7 +9,7 @@ DNR_FILE="${PLUGIN_DIR}/DO-NOT-REPEAT.md"
 
 if [ -f "$DNR_FILE" ]; then
   CONTENT=$(cat "$DNR_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')
-  echo "{\"hookSpecificOutput\":{\"hookEventName\":\"DoNotRepeat\",\"additionalContext\":\"${CONTENT}\"}}"
+  echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"${CONTENT}\"}}"
 else
-  echo "{\"hookSpecificOutput\":{\"hookEventName\":\"DoNotRepeat\",\"additionalContext\":\"[Do-Not-Repeat] No DO-NOT-REPEAT.md found.\"}}"
+  echo "{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"[Do-Not-Repeat] No DO-NOT-REPEAT.md found.\"}}"
 fi
